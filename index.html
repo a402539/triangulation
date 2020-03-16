@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Триангуляция многоугольника</title>
+    <!-- https://neerc.ifmo.ru/wiki/index.php?title=Триангуляция_полигонов_(ушная_%2B_монотонная) -->
+    <!-- http://grafika.me/node/175 -->
+    <!-- https://www.npmjs.com/package/earcut -->
+</head>
+
+<body>
+    <label>Задайте точки многоугольника (x1, y1, x2, y2, и.т.д.):</label>
+    <br><input id="polygon1" value="0, 0, 100, 0, 100, 120, 50, 120, 60, 20, 40, 40" size="150" type="text" />
+    <input type="button" onclick="update1()" value="Нарисовать" /><br />
+    <canvas id="canvas11" width="400" height="180" style="background: #F4F4F4;"></canvas>
+    <canvas id="canvas12" width="400" height="180" style="background: #F4F4F4;"></canvas>
+    <canvas id="canvas13" width="400" height="180" style="background: #F4F4F4;"></canvas>
+    <br><input id="polygon2" value="60, 0, 120, 50, 100, 100, 60, 120, 20, 100, 0, 50" size="150" type="text" />
+    <input type="button" onclick="update2()" value="Нарисовать" /><br/>
+    <canvas id="canvas21" width="400" height="180" style="background: #F4F4F4;"></canvas>
+    <canvas id="canvas22" width="400" height="180" style="background: #F4F4F4;"></canvas>
+    <canvas id="canvas23" width="400" height="180" style="background: #F4F4F4;"></canvas>
+   <script>
+        var Point = function(x, y) {
+            this.x = x;
+            this.y = y;
+        };
+        //var polygon = [];
+        //var len = 0;
+        //var triangles = [];
+        /*
+        function pind(ind) {
+            return (ind<len)?ind:ind-len;
+        }
+        */
+        function det(p0,p1,p2) // определитель
+        {
+        return (p2.x-p0.x)*(p1.y-p0.y)-(p2.y-p0.y)*(p1.x-p0.x);
+        }
+        function skal(p0,p1,p2) // скалярное произведение векторов p1-p0 и p2-p0
+        {
+        return (p2.x-p0.x)*(p1.x-p0.x)+(p2.y-p0.y)*(p1.y-p0.y);
+        }
+
+        function triangulate( indexes ) // список индексов вершин контура
+        {
+            console.log('триангуляция контура',indexes);
+            count = indexes.length;
+            var triangles = [];
+            if ( count < 3 ) // нет треугольника
+            {
+                return triangles;
+            }
+            else if ( count == 3) // только треугольник
+            {
+                triangles.push([indexes[0],indexes[1],indexes[2]]);
+                console.log('добавляем треугольник',indexes[0],indexes[1],indexes[2]);
+                return triangles;
+            }
+            // многоугольник с контуром, обходимым по часовой стрелке
+            //  треугольник с вершинами i,i+1,i+2 с углом i,i+1,i+2, меньшим развернутого
+            //     это значит, что окрестность вершины 1 в треугольнике находится внутри многоугольника
+            // A x=0,y=0 B x=1,y=0 C y<0
+            // A x=1,y=0 B x=0,y=0 C y>0
+            // (x-x0)*(y1-y0)-(y-y0)*(x1-x0) уравнение прямой через 0,1
+            // (x2-x0)*(y1-y0)-(y2-y0)*(x1-x0) > 0
+            // |x0 x1 x2|
+            // |y0 y1 y2| < 0
+            // | 1  1  1|
+            // в canvas ось y направлена в обратную сторону, поэтому в canvas условие меняет знак
+            for (var i = 0; i < count; i++){
+                var ind0 = indexes[i]; var ind1 = indexes[i+1]; var ind2 = indexes[i+2];
+                p0 = polygon[ind0];
+                p1 = polygon[ind1];
+                p2 = polygon[ind2];
+                _det = det(p0,p1,p2);
+                if ( _det > 0 ){
+                    console.log(ind0,p0.x,p0.y,ind1,p1.x,p1.y,ind2,p2.x,p2.y,'угол больше развернутого, пропускаем');
+                    continue;
+                };
+                console.log(ind0,p0.x,p0.y,ind1,p1.x,p1.y,ind2,p2.x,p2.y,'угол меньше развернутого, рассматриваем');
+                console.log('проверяем все остальные вершины на принадлежность треугольнику');
+                var maxj = i+2;
+                var maxcos2 = 0;
+                for (var j = i+3; j < count; j++){
+                    ind3 = indexes[j]
+                    p3 = polygon[ind3];
+                    // если точка p3 находится внутри или на границе треугольника p0,p1,p2
+                    // то она должна быть выпуклой линейной комбинацией вершин треугольника
+                    // p3=a*p0+b*p1*c*p2, a,b,c>=0, a+b+c=1
+                    // |x0 x1 x2|   |a|   |x3|
+                    // |y0 y1 y2| * |b| = |y3|
+                    // | 1  1  1|   |c|   | 1|
+                    //  abc = p3*A012^(-1)
+                    //         |x3 x1 x2|
+                    // a*det = |y3 y1 y2|
+                    //         | 1  1  1|
+                    //
+                    a = det(p3,p1,p2)/_det; b = det(p0,p3,p2)/_det; c = det(p0,p1,p3)/_det;
+                    //a = det(p3,p1,p2); b = det(p0,p3,p2); c = det(p0,p1,p3);
+                    if (a < 0 || b < 0 || c < 0) {
+                        console.log(ind3,p3.x,p3.y,a,b,c,'снаружи треугольника');
+                        continue;
+                    };
+                    // среди внутренних точек выбираем наименьший угол p3,p0,p1
+                    // p3-p0 = a*(p1-p0)+b*(p10), p10*(p1-p0)=0
+                    // b = (p3-p0)*p10/(p10*p10)
+                    // sin(alpha) = (p3-p0)*p10/(p10*p10)/((p3-p0)*(p3-p0))
+                    // p1-p0 = (p1.x-p0.x,p1.y-p0.y)
+                    // p10 = (-(p1.y-p0.y),p1.x-p0.x)
+                    // (p3-p0)*p10 = -(p3.x-p0.x)*(p1.y-p0.y)+(p3.y-p0.y)*(p1.x-p0.x)
+                    // d = det(p3,p0,p1);
+                    _skal = skal(p0,p1,p3); // скалярное произведение
+                    cos2 = _skal*_skal / (skal(p0,p1,p1)*skal(p0,p3,p3)); // квадрат косинуса
+                    console.log(ind3,p3.x,p3.y,a,b,c,'внутри треугольника, cos2=',cos2);
+                    if (cos2 > maxcos2) {
+                        maxj = j; maxind3 = indexes[maxj]; maxcos2 = cos2;
+                        console.log('maxind3,maxcos2',maxind3,maxcos2);
+                    };
+                }
+                if (maxcos2 == 0) {
+                    // случай 1) в треугольнике нет других вершин
+                    console.log('в треугольнике нет других вершин');
+                    console.log('добавляем треугольник',ind0,ind1,ind2);
+                    triangles.push([ind0,ind1,ind2]); // три подряд идущие вершины
+                    triangles1 = triangulate(indexes.slice(i+2).concat(indexes.slice(0,i+1)));
+                    return triangles.concat(triangles1); // все последующие вершины
+                    return;
+                }
+                else {
+                    // случай 2) в треугольнике есть другие вершины
+                    console.log('отрезок',ind0,maxind3,'составляет диагональ');
+                    console.log('добавляем треугольник',ind0,ind1,maxind3);
+                    triangles.push([ind0,ind1,maxind3]);
+                    console.log('все вершины в диапазоне от',ind1,'до',maxind3);
+                    triangles1 = triangulate(indexes.slice(i+1,maxj+1)); // все вершины в диапазоне от ind1 до maxind3
+                    console.log('все вершины в диапазоне от',maxind3,'до',ind0);
+                    triangles2 = triangulate(indexes.slice(maxj).concat(ind0)); // все вершины в диапазоне от maxind3 до ind0
+                    return triangles.concat(triangles1,triangles2);
+                }
+            }
+            return;
+        }
+        function getPolygon(polygonValue){
+            //var polygonValue = document.getElementById('polygon1');
+            var _polygon = polygonValue.value.split(", ");
+            polygon = []; 
+            for (var i = 0; i < _polygon.length; i +=2) { 
+                polygon.push(new Point(parseInt(_polygon[i]), parseInt(_polygon[i +
+                1]))); 
+            }
+            return polygon;
+        }
+        function drawPolygon(polygon,canvas){
+            //var canvas=document.getElementById("canvas1")
+            var ctx = canvas.getContext('2d');
+            // Сохраняем текущую матрицу трансформации
+            ctx.save();
+            // Используем идентичную матрицу трансформации на время очистки
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Возобновляем матрицу трансформации
+            ctx.restore();       
+            ctx.fillStyle = '#f00';
+            ctx.beginPath();
+            ctx.moveTo(polygon[0].x, polygon[0].y);
+            for (d in polygon) {
+                ctx.lineTo(polygon[d].x, polygon[d].y);
+            }
+            ctx.closePath();
+            ctx.stroke();
+        };
+        function drawTriangles(polygon,triangles,canvas){
+            //var canvas=document.getElementById("canvas2")
+            var ctx = canvas.getContext('2d');
+            // Сохраняем текущую матрицу трансформации
+            ctx.save();
+            // Используем идентичную матрицу трансформации на время очистки
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Возобновляем матрицу трансформации
+            ctx.restore();
+            ctx.fillStyle = '#f00';
+            //console.log(poly[0], poly[1]);
+            for( d in triangles ){
+                //console.log(poly[item] , poly[item+1]);
+                ctx.beginPath();
+                ctx.moveTo( polygon[triangles[d][0]].x, polygon[triangles[d][0]].y );
+                ctx.lineTo( polygon[triangles[d][1]].x, polygon[triangles[d][1]].y );
+                ctx.lineTo( polygon[triangles[d][2]].x, polygon[triangles[d][2]].y );
+                ctx.closePath();
+                ctx.stroke();
+            }            
+        };
+        function incidence(triangles){
+            incdm = [];
+            len = triangles.length;
+            for (i = 0; i < len-1; i++){
+                d = triangles[i];
+                console.log('соседи треугольника', d)
+                for (j = i+1; j <len; j++){
+                    m = triangles[j];
+                    s = new Set(d.concat(m));
+                    if (s.size == 4){
+                        incdm.push([i,j]);
+                        console.log(' треугольник',m,'соседний');
+                   }
+                    else {
+                        console.log(' треугольник',m,'не соседний');
+                    };
+                };
+            }
+
+            vertices = [];
+            phi = Math.PI/count;
+            for (k=0; k<len;k++){
+                vertices.push(new Point(60+50*Math.cos(k*phi),60+50*Math.sin(k*phi)));
+            };
+           
+            return [vertices, incdm];
+        }
+        function drawIncidence(graph, canvas){
+            vertices = graph[0];
+            incdm = graph[1];
+            var ctx = canvas.getContext('2d');
+            // Сохраняем текущую матрицу трансформации
+            ctx.save();
+            // Используем идентичную матрицу трансформации на время очистки
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Возобновляем матрицу трансформации
+            ctx.restore();
+            ctx.fillStyle = '#f00';
+            //console.log(poly[0], poly[1]);
+            ctx.beginPath();
+            for (d in incdm){
+                //console.log(poly[item] , poly[item+1]);
+                p0 = vertices[incdm[d][0]]; p1 = vertices[incdm[d][1]];
+                ctx.moveTo( p0.x, p0.y );
+                ctx.lineTo( p1.x, p1.y );
+                //ctx.closePath();
+            }                      
+            ctx.stroke();
+        }
+        function update1(){
+            console.clear();
+            var polygon = getPolygon(document.getElementById('polygon1'));
+            drawPolygon(polygon,document.getElementById("canvas11"));
+            triangles = triangulate( polygon.map((_,i)=>i) ); // исходный список индексов вершин
+            drawTriangles(polygon,triangles,document.getElementById("canvas12"));
+            graph = incidence(triangles);
+            drawIncidence(graph,document.getElementById("canvas13"));
+       }
+        function update2(){
+            console.clear();
+            var polygon = getPolygon(document.getElementById('polygon2'));
+            drawPolygon(polygon,document.getElementById("canvas21"));
+            triangles = triangulate( polygon.map((_,i)=>i) ); // исходный список индексов вершин
+            drawTriangles(polygon,triangles,document.getElementById("canvas22"));
+            graph = incidence(triangles);
+            drawIncidence(graph,document.getElementById("canvas23"));
+        }
+    </script>
+</body>
+
+</html>
