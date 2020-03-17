@@ -11,6 +11,10 @@
 
 [Covering Paths for Planar Point Sets](https://link.springer.com/content/pdf/10.1007/s00454-013-9563-4.pdf)
 
+[Generation of simple polygons from ordered points using an iterative insertion algorithm](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0230342)
+
+Additionally, it is impossible to prove that a simple polygon can be formed using a given set of discrete points.
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
