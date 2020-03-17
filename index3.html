@@ -246,7 +246,7 @@
 			
 			        // If i is more counterclockwise 
 			        // than current q, then update q 
-			        if (det(points[p], points[i], points[q]) > 0)
+			        if (det(points[p], points[i], points[q]) < 0)
                         //(orientation(points[p], points[i], points[q]) == 2)
 				        q = i;
                 };
@@ -302,7 +302,7 @@
                 p = points[i];
                 console.log('рассматриваем точку', p);
                 while (lower.length >= 2 && 
-                    det(lower.slice(-2,-1), lower.slice(-1), p) > 0)
+                    det(lower.slice(-2,-1), lower.slice(-1), p) < 0)
                     //orientation(lower.slice(-2,-1), lower.slice(-1), p) == 2)
                     //cross(lower.slice(-2,-1), lower.slice(-1), p) >= 0)
                     {
