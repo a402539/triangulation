@@ -29,6 +29,23 @@ Additionally, it is impossible to prove that a simple polygon can be formed usin
 
 Given two n point sets in general position in the plane, it is an open question as to whether compatible triangulations always exist between them.
 
+[On joint triangulations of two sets of points in the plane](https://arxiv.org/abs/1102.1235)
+
+The problem of joint triangulation of A and B has two variations depending upon whether
+the bijection between points of A and B are fixed in advance. The problem, where the bijection
+is not fixed in advance (see Figure 1(i)), has been studied by Aichholzer et al. [1]. In this paper,
+we consider the other problem, where the bijection is fixed in advance (see Figure 1(ii)).
+
+Let A = {a1, a2, . . . , an} and B = {b1, b2, . . . , bn} be two disjoint sets of points in the plane,
+specified by their respective x and y coordinates. A line segment bibj is called the corresponding
+line segment of the line segment aiaj and vice versa. Similarly, a triangle bibjbk is called the
+corresponding triangle of aiajak and vice versa. Let T (A) and T (B) denote the set of all
+triangulations of A and B. The problem of joint triangulation of A and B, as stated earlier, is
+to find triangulations T(A) ∈ T (A) and T(B) ∈ T (B), if they exist, such that for each region
+bounded by a triangle aiajak in T(A), the corresponding triangle bibjbk bounds a region in
+T(B) (see Figure 1(ii)). The problem was posed in 1987 by Saalfeld [9], and since then, several
+researchers have worked on this problem but the problem is still open.
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
