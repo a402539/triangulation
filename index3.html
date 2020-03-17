@@ -12,7 +12,7 @@
 </head>
 
 <body>
-    <label>Задайте точки (x1, y1, x2, y2, и так далее!!):</label><br>
+    <label>Задайте точки (x1, y1, x2, y2, и так далее):</label><br>
     <!--
     // 20, 20, 100, 20, 100, 100, 20, 100
     // 10, 10, 100, 10, 100, 100, 10, 100, 60, 60
@@ -25,12 +25,12 @@
     <input type="button" onclick="update('1')" value="Нарисовать" />
     <table border=1>
         <tr>
-            <td>Исходные точки</td>
+            <td>Отсортированные точки</td>
             <td>Выпуклая оболочка</td>
             <!--<td>Триангуляция выпуклой оболочки</td>-->
             <td>Триангуляция всех точек</td>
             <td>Универсальный граф</td>
-            <td>Наложение графов</td>
+            <td>Полигон</td>
         </tr>
         <tr><td><canvas id="canvas11" width="200" height="200" style="background: #F4F4F4;"></canvas></td>
             <td><canvas id="canvas12" width="200" height="200" style="background: #F4F4F4;"></canvas></td>
@@ -53,7 +53,7 @@
             <!--<td>Триангуляция выпуклой оболочки</td>-->
             <td>Триангуляция всех точек</td>
             <td>Универсальный граф</td>
-            <td>Наложение графов</td>
+            <td>Полигон</td>
         </tr>
         <tr><td><canvas id="canvas21" width="200" height="200" style="background: #F4F4F4;"></canvas></td>
             <td><canvas id="canvas22" width="200" height="200" style="background: #F4F4F4;"></canvas></td>
@@ -79,12 +79,12 @@
             // This method will handle the coordinates and will draw them in the canvas.
             //drawCoordinates(canvas,x,y);
             points_set = (event.target.id == 'canvas11')?'1':'2';
-            updatePoints('points'+points_set, new Point(x, y));
+            updatePoints(points_set, new Point(x, y));
             update(points_set);
         };
 
-        function updatePoints(pointsEl, point = undefined){
-            _points = document.getElementById(pointsEl);
+        function updatePoints(points_set, point = undefined){
+            _points = document.getElementById('points'+points_set);
             points_list = getpoints(_points);
             if (point) {
                 near_points = false;
@@ -100,8 +100,10 @@
                     points_list.push(point);
                 }
             };
-            points = [...(new Set(points_list))].sort((a,b)=>(a.x<b.x || (a.x==b.x && a.y>b.y)?-1:1));
-            document.getElementById(pointsEl).value = points.map(p=>[p.x,p.y].join(', ')).join(', ');
+            if (points_set=='1') {
+                points = [...(new Set(points_list))].sort((a,b)=>(a.x<b.x || (a.x==b.x && a.y>b.y)?-1:1));
+            };
+            document.getElementById('points'+points_set).value = points.map(p=>[p.x,p.y].join(', ')).join(', ');
             return points;
         };
 
@@ -291,9 +293,11 @@
             // 2D cross product of OA and OB vectors, i.e. z-component of their 3D cross product.
             // Returns a positive value, if OAB makes a counter-clockwise turn,
             // negative for clockwise turn, and zero if the points are collinear.
+            /* заменяется функцией det
             function cross(o, a, b) {
                 return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
             };
+            */
 
             // Build lower hull 
             console.log('строим нижнюю половину выпуклой оболочки');
@@ -557,6 +561,17 @@
             return [vertices, incdm];
         };
 
+        function simple_polygon(points){
+            len = points.length;
+            new_points = []; edges = [];
+            for (i=0; i<len; i++){
+                if(i<3) {
+                    new_points.push(points[i]);
+                    continue;
+                };
+            };
+            return new_points;
+        }
         function update(points_set){
             console.clear();
             /*
@@ -565,7 +580,7 @@
             var points = [...(new Set(points_list))].sort((a,b)=>(a.x<b.x || (a.x==b.x && a.y>b.y)?-1:1));
             document.getElementById('points'+points_set).value = points.map(p=>[p.x,p.y].join(', ')).join(', ');
             */
-            points = updatePoints('points'+points_set);
+            points = updatePoints(points_set);
             hull = convexHull_wrapping(points);
             hull2 = convexHull_monotone(points);
             internal_points = points.map((_,i)=>i).filter(function(cv){return ! hull.includes(cv)});
@@ -587,6 +602,9 @@
             drawGraph(points, alledges, document.getElementById('canvas'+points_set+'3'), false);
             universal = universal_points(points.length);
             drawGraph(universal, alledges, document.getElementById('canvas'+points_set+'4'), false);
+            new_points = simple_polygon(points); // полигон по точкам с сохранением их порядка
+            new_edges = new_points.map((cv,i)=>[i,(i+1)%new_points.length]);
+            drawGraph(new_points, new_edges, document.getElementById('canvas'+points_set+'5'), false);
         }
 
     </script>
