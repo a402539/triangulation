@@ -338,7 +338,7 @@
         function triangulate( points, indexes ) // список индексов вершин контура
         {
             console.log('триангуляция контура',indexes);
-            len = points.length; count = indexes.length;
+            count = indexes.length;
             var triangles = [];
             if ( count < 3 ) // нет треугольника
             {
@@ -362,7 +362,7 @@
             // | 1  1  1|
             // в canvas ось y направлена в обратную сторону, поэтому в canvas условие меняет знак
             for (var i = 0; i < count; i++){
-                var ind0 = indexes[i]; var ind1 = indexes[(i+1)%len]; var ind2 = indexes[(i+2)%len];
+                var ind0 = indexes[i]; var ind1 = indexes[(i+1)%count]; var ind2 = indexes[(i+2)%count];
                 p0 = points[ind0];
                 p1 = points[ind1];
                 p2 = points[ind2];
