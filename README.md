@@ -9,27 +9,27 @@
 
 Текущая версия [index3.html](https://github.com/a402539/triangulation/blob/master/index3.html)
 
-[Covering Paths for Planar Point Sets](https://link.springer.com/content/pdf/10.1007/s00454-013-9563-4.pdf)
+[2014. Adrian Dumitrescu · Dániel Gerbner · Balázs Keszegh · Csaba D. TóthCovering Paths for Planar Point Sets](https://link.springer.com/content/pdf/10.1007/s00454-013-9563-4.pdf)
 
-[Generation of simple polygons from ordered points using an iterative insertion algorithm](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0230342)
+[2020. Hongyun Zhang, Quanhua Zhao, Yu Li. Generation of simple polygons from ordered points using an iterative insertion algorithm](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0230342)
 
 Additionally, it is impossible to prove that a simple polygon can be formed using a given set of discrete points.
 
-[Generating a simple polygonalizations](https://www.researchgate.net/publication/224255947_Generating_a_Simple_Polygonalizations)
+[2011. V. Muravitskiy, Vasyl Tereshchenko. Generating a simple polygonalizations](https://www.researchgate.net/publication/224255947_Generating_a_Simple_Polygonalizations)
 
-[On compatible triangulations of simple polygons](https://pdf.sciencedirectassets.com/271512/1-s2.0-S0925772100X00703/1-s2.0-0925772193900285/main.pdf?X-Amz-Security-Token=IQoJb3JpZ2luX2VjELj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJGMEQCIFXUl9GBfexpaRZ5NDyRfpHm6k%2BK9F13IoQMpcqlw50QAiBs%2FFll0%2FSI7jkyDlf%2F2CuxuIs39KArBpiS1pwBCaj3Hiq9Awih%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAIaDDA1OTAwMzU0Njg2NSIM1fBQT6jkzovFi2pSKpEDq3XbUbwMd1GcZm0M6rw0DCL3oNshG62B%2FXL2o8JbNlGGuF24iKYETlTP2NbpZ938C54atNaLsATAjdj753nnS%2B8IltVGraxxeGI7%2Fb3Sm7hMfBVwRkhY7biS6yVNPFYcgKIWXV1QkOgyK2GikM3b1bhySY2hQCtkkeP1xR%2FKr7F5CKi6nE%2Fa6qxQlfacRkZ4Qf%2F1DIxkGg%2BLmlFjJP1osTIOx0kJ4tPV1zKHYpr9S0GOE3Rl6Ed4AXbB5Rmk7p%2FX%2F%2FXdpiQQurjua84Nag8l8ku3E5HArBU3yi4xubMvHqMYlJUbaDGL3bsXXdUjdvizyVTxP08p8Ai3QXBgPd9z0DJV7VY7mOxKeCoRC%2B0Wo%2BmcQw0PzR7zO7HiI2hqkmnX%2Bx9t4GPnj7pJYu5VpU07uewbggi3eVZAjfdV3lZN3lzMFm%2BKEjw1aCiE4nTHjq018%2BVOn%2BnZCBZFFyqznosZo2VKGsENxTIDgioFOnRh4Og5tOUg4AUSRAWpZe6rzcbcDzOyaas8QH7FOPfj4n3QvxMw7oTC8wU67AFkpLzIx9hijLapXijUrXPaD3GFSZmLOZApj5TKe4NHZCamcKY%2F41e7o3%2F63%2BsvG4ORfdFpRCiy39QJOt7zC2Wr1tM9rUUOy0M8sBhbqSEtE9X8PPOyyJTSvNP1jg08apk0QAr%2BScUah2JTf0M3jRoDTwvP8cW%2BhsU8cZlYKgHugA7dycUAyNRnHmUusOv6prdh9T%2BD%2BsndQO2pD%2FhX5X4gKHyY%2F88Fcl75sfWms4wtmXQRW1k8WRUtxrhQaoljQivcK5gOmJBBD%2B2WgUDNLYhmXG%2FFpRGWM0E36K9JPhEpLZqsJiy43gKz5t%2FCNA%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200317T085358Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAQ3PHCVTY45EZTMZS%2F20200317%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=56aec5be2dcc12bc2c0269a469cc47f83e70d9ae6689428a87ac34ecd934e924&hash=ce8862fc5fa98f88250769a8852fa64e8120c7eb124dd87ae7a9fb377b1442b4&host=68042c943591013ac2b2430a89b270f6af2c76d8dfd086a07176afe7c76c2c61&pii=0925772193900285&tid=spdf-b83ddf6f-cae4-4289-ab16-9593c0046de7&sid=0739735d7cee664f78795166e0c75d7c76e7gxrqb&type=client)
+[1993. B. Aronov, R. Seidel, and D. Souvaine. On compatible triangulations of simple polygons](https://pdf.sciencedirectassets.com/271512/1-s2.0-S0925772100X00703/1-s2.0-0925772193900285/main.pdf?X-Amz-Security-Token=IQoJb3JpZ2luX2VjELj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJGMEQCIFXUl9GBfexpaRZ5NDyRfpHm6k%2BK9F13IoQMpcqlw50QAiBs%2FFll0%2FSI7jkyDlf%2F2CuxuIs39KArBpiS1pwBCaj3Hiq9Awih%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAIaDDA1OTAwMzU0Njg2NSIM1fBQT6jkzovFi2pSKpEDq3XbUbwMd1GcZm0M6rw0DCL3oNshG62B%2FXL2o8JbNlGGuF24iKYETlTP2NbpZ938C54atNaLsATAjdj753nnS%2B8IltVGraxxeGI7%2Fb3Sm7hMfBVwRkhY7biS6yVNPFYcgKIWXV1QkOgyK2GikM3b1bhySY2hQCtkkeP1xR%2FKr7F5CKi6nE%2Fa6qxQlfacRkZ4Qf%2F1DIxkGg%2BLmlFjJP1osTIOx0kJ4tPV1zKHYpr9S0GOE3Rl6Ed4AXbB5Rmk7p%2FX%2F%2FXdpiQQurjua84Nag8l8ku3E5HArBU3yi4xubMvHqMYlJUbaDGL3bsXXdUjdvizyVTxP08p8Ai3QXBgPd9z0DJV7VY7mOxKeCoRC%2B0Wo%2BmcQw0PzR7zO7HiI2hqkmnX%2Bx9t4GPnj7pJYu5VpU07uewbggi3eVZAjfdV3lZN3lzMFm%2BKEjw1aCiE4nTHjq018%2BVOn%2BnZCBZFFyqznosZo2VKGsENxTIDgioFOnRh4Og5tOUg4AUSRAWpZe6rzcbcDzOyaas8QH7FOPfj4n3QvxMw7oTC8wU67AFkpLzIx9hijLapXijUrXPaD3GFSZmLOZApj5TKe4NHZCamcKY%2F41e7o3%2F63%2BsvG4ORfdFpRCiy39QJOt7zC2Wr1tM9rUUOy0M8sBhbqSEtE9X8PPOyyJTSvNP1jg08apk0QAr%2BScUah2JTf0M3jRoDTwvP8cW%2BhsU8cZlYKgHugA7dycUAyNRnHmUusOv6prdh9T%2BD%2BsndQO2pD%2FhX5X4gKHyY%2F88Fcl75sfWms4wtmXQRW1k8WRUtxrhQaoljQivcK5gOmJBBD%2B2WgUDNLYhmXG%2FFpRGWM0E36K9JPhEpLZqsJiy43gKz5t%2FCNA%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200317T085358Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAQ3PHCVTY45EZTMZS%2F20200317%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=56aec5be2dcc12bc2c0269a469cc47f83e70d9ae6689428a87ac34ecd934e924&hash=ce8862fc5fa98f88250769a8852fa64e8120c7eb124dd87ae7a9fb377b1442b4&host=68042c943591013ac2b2430a89b270f6af2c76d8dfd086a07176afe7c76c2c61&pii=0925772193900285&tid=spdf-b83ddf6f-cae4-4289-ab16-9593c0046de7&sid=0739735d7cee664f78795166e0c75d7c76e7gxrqb&type=client)
 
-[A Linear-Time Algorithm for Computing the Voronoi Diagram of a Convex Polygon](https://link.springer.com/content/pdf/10.1007/BF02187749.pdf)
+[1987. Aggarwal, Guibas, Saxe, Shor. A Linear-Time Algorithm for Computing the Voronoi Diagram of a Convex Polygon](https://link.springer.com/content/pdf/10.1007/BF02187749.pdf)
 
-[Point set triangulation](https://en.wikipedia.org/wiki/Point_set_triangulation)
+[wikipedia. Point set triangulation](https://en.wikipedia.org/wiki/Point_set_triangulation)
 
-[Optimal Area Triangulation](https://harvest.usask.ca/bitstream/handle/10388/etd-08232005-111957/thesisFF.pdf?sequence=1&isAllowed=y)
+[2005. Tzvetalin Simeonov Vassilev. Optimal Area Triangulation](https://harvest.usask.ca/bitstream/handle/10388/etd-08232005-111957/thesisFF.pdf?sequence=1&isAllowed=y)
 
-[COMPATIBLE TRIANGULATIONS AND POINT PARTITIONS BY SERIES-TRIANGULAR GRAPHS](https://arxiv.org/pdf/cs/0502043.pdf)
+[2005. JEFF DANCIGER, SATYAN L. DEVADOSS, AND DON SHEEHY. COMPATIBLE TRIANGULATIONS AND POINT PARTITIONS BY SERIES-TRIANGULAR GRAPHS](https://arxiv.org/pdf/cs/0502043.pdf)
 
 Given two n point sets in general position in the plane, it is an open question as to whether compatible triangulations always exist between them.
 
-[Diwan, Ghosh, Goswami, Lingas. On joint triangulations of two sets of points in the plane](https://arxiv.org/abs/1102.1235)
+[2009. Diwan, Ghosh, Goswami, Lingas. On joint triangulations of two sets of points in the plane](https://arxiv.org/abs/1102.1235)
 
 The problem of joint triangulation of A and B has two variations depending upon whether
 the bijection between points of A and B are fixed in advance. The problem, where the bijection
@@ -71,9 +71,9 @@ is called the set of legal triangles. Now, we state the second necessary conditi
 Necessary condition 2: If there exits a joint triangulation of A and B, then the set of legal
 triangles S is not empty.
 
-[A. Saalfeld. Joint triangulations and triangulation maps](https://www.researchgate.net/publication/234800587_Joint_triangulations_and_triangulation_maps)
+[1987. A. Saalfeld. Joint triangulations and triangulation maps](https://www.researchgate.net/publication/234800587_Joint_triangulations_and_triangulation_maps)
 
-[Oswin Aichholzera, Franz Aurenhammera, Ferran Hurtadob, Hannes Krassera. Towards compatible triangulations]()
+[2003. Oswin Aichholzera, Franz Aurenhammera, Ferran Hurtadob, Hannes Krassera. Towards compatible triangulations]()
 
 
 
