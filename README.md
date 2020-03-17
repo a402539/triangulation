@@ -46,6 +46,10 @@ bounded by a triangle aiajak in T(A), the corresponding triangle bibjbk bounds a
 T(B) (see Figure 1(ii)). The problem was posed in 1987 by Saalfeld [9], and since then, several
 researchers have worked on this problem but the problem is still open.
 
+[A. Saalfeld. Joint triangulations and triangulation maps](https://www.researchgate.net/publication/234800587_Joint_triangulations_and_triangulation_maps)
+
+
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
