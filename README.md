@@ -4,8 +4,12 @@
 Построение кусочно-линейного отображения полигонов и выпуклых оболочек точек.
 
 Начальная версия [index.html](index.html)
+
 Промежуточная версия [index2.html](index2.html)
+
 Текущая версия [index3.html](index3.html)
+
+[Covering Paths for Planar Point Sets](https://link.springer.com/content/pdf/10.1007/s00454-013-9563-4.pdf)
 
 ## Getting Started
 
