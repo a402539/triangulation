@@ -75,7 +75,9 @@ triangles S is not empty.
 
 [2003. Oswin Aichholzera, Franz Aurenhammera, Ferran Hurtadob, Hannes Krassera. Towards compatible triangulations]()
 
+[1995. Diane Souvaine, Rephael Wenger. Constructing Piecewise Linear Homeomorphisms](https://www.researchgate.net/publication/2624459_Constructing_Piecewise_Linear_Homeomorphisms)
 
+Let P = fp 1 ; : : : ; p n g and Q = fq 1 ; : : : ; q n g be two point sets lying in the interior of rectangles in the plane. We show how to construct a piecewise linear homeomorphism of size O(n 2 ) between the rectangles which maps p i to q i for each i. This bound is optimal in the worst case; i.e., there exist point sets for which any piecewise linear homeomorphism has sizeOmegaGamma n 2 ). Introduction A homeomorphism is a 1-1, onto, continuous map with continuous inverse. Problems of constructing homeomorphisms arise in cartography, animation and computational fluid dynamics. A cartographer may wish to merge two similar maps, perhaps slightly distorting one, so that common landmarks coincide. A computer animator may want to transform one shape into the another, while preserving certain features. An aeronautical engineer using computational fluid dynamics may need to map a mesh onto the region surrounding the wing of a plane. Each application places different requirement...
 
 ## Getting Started
 
