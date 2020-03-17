@@ -177,14 +177,15 @@
             return minn
         };
 
+        /*
         function orientation(p, q, r){
-            /*
-            To find orientation of ordered triplet (p, q, r).
-            The function returns following values
-            0 --> p, q and r are colinear
-            1 --> Clockwise
-            2 --> Counterclockwise
-            */
+            //
+            //To find orientation of ordered triplet (p, q, r).
+            //The function returns following values
+            //0 --> p, q and r are colinear
+            //1 --> Clockwise
+            //2 --> Counterclockwise
+            //
             val = (q.y - p.y) * (r.x - q.x) - 
             (q.x - p.x) * (r.y - q.y);
 
@@ -195,6 +196,7 @@
             else
                 return 2;
         };
+        */
 
         function convexHull_wrapping(points){
 
@@ -228,7 +230,8 @@
 			
 			        // If i is more counterclockwise 
 			        // than current q, then update q 
-			        if (orientation(points[p], points[i], points[q]) == 2)
+			        if (det(points[p], points[i], points[q]) > 0)
+                        //(orientation(points[p], points[i], points[q]) == 2)
 				        q = i;
                 };
                 /*
@@ -283,7 +286,8 @@
                 p = points[i];
                 console.log('рассматриваем точку', p);
                 while (lower.length >= 2 && 
-                    orientation(lower.slice(-2,-1), lower.slice(-1), p) == 2)
+                    det(lower.slice(-2,-1), lower.slice(-1), p) > 0)
+                    //orientation(lower.slice(-2,-1), lower.slice(-1), p) == 2)
                     //cross(lower.slice(-2,-1), lower.slice(-1), p) >= 0)
                     {
                         console.log('    удаляем точку', lower.slice(-1));
@@ -299,7 +303,9 @@
             upper = [];
             for (j=0;j<points.length;j++){
                 p = points[points.length-1-j];
-                while (upper.length >= 2 && orientation(upper.slice(-2,-1), upper.slice(-1), p) == 2)
+                while (upper.length >= 2 && 
+                    det(upper.slice(-2,-1), upper.slice(-1), p) > 0
+                    //orientation(upper.slice(-2,-1), upper.slice(-1), p) == 2)
                     {upper.pop();};
                 upper.push(p); //append(p);
             };
