@@ -68,8 +68,8 @@
             this.y = y;
         };
         var radius = 5; delta = new Point(-20,20);
-        document.getElementById("canvas11").addEventListener('mousedown', getPosition);
-        document.getElementById("canvas21").addEventListener('mousedown', getPosition);
+        document.getElementById("canvas11").addEventListener('mouseup', getPosition);
+        document.getElementById("canvas21").addEventListener('mouseup', getPosition);
         // Event will be a click event which can be retrieved as first parameter 
         // in the addEventListener(function(event){});
         function getPosition(event){
