@@ -29,7 +29,7 @@ Additionally, it is impossible to prove that a simple polygon can be formed usin
 
 Given two n point sets in general position in the plane, it is an open question as to whether compatible triangulations always exist between them.
 
-[On joint triangulations of two sets of points in the plane](https://arxiv.org/abs/1102.1235)
+[Diwan, Ghosh, Goswami, Lingas. On joint triangulations of two sets of points in the plane](https://arxiv.org/abs/1102.1235)
 
 The problem of joint triangulation of A and B has two variations depending upon whether
 the bijection between points of A and B are fixed in advance. The problem, where the bijection
@@ -46,7 +46,34 @@ bounded by a triangle aiajak in T(A), the corresponding triangle bibjbk bounds a
 T(B) (see Figure 1(ii)). The problem was posed in 1987 by Saalfeld [9], and since then, several
 researchers have worked on this problem but the problem is still open.
 
+2 Necessary conditions
+
+Let CH(A) and CH(B) denote the boundary of convex hulls of A and B respectively. We state
+the first necessary condition for the existence of a joint triangulation of A and B, which relates
+the edges of CH(A) and CH(B),
+
+Necessary condition 1: If there exists a joint triangulation of A and B, then aiaj is an edge
+of CH(A) if and only if the corresponding edge bibj is an edge of CH(B).
+
+...
+
+Intuitively, if a triangle ijk is a component triangle in a joint triangulation, one of the
+successors on each edge of ijk that is not a convex hull edge is also a component triangle in the
+joint triangulation. Let S denote the maximal subset of triangles in SA and SB such that each
+triangle ijk in S has at least one successor triangle in S, on the edges ij, jk and ki that are
+not convex hull edges. Note that if a triangle ijk does not have a successor triangle on a non
+
+4
+
+convex hull edge, then ijk can not belong to S. We call triangles in S as legal triangles and S
+is called the set of legal triangles. Now, we state the second necessary condition.
+
+Necessary condition 2: If there exits a joint triangulation of A and B, then the set of legal
+triangles S is not empty.
+
 [A. Saalfeld. Joint triangulations and triangulation maps](https://www.researchgate.net/publication/234800587_Joint_triangulations_and_triangulation_maps)
+
+[Oswin Aichholzera, Franz Aurenhammera, Ferran Hurtadob, Hannes Krassera. Towards compatible triangulations]()
 
 
 
