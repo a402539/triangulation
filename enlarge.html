@@ -108,7 +108,7 @@
             return points;
         };
 
-        function enlarge_x(points_set){
+        function enlarge(points_set){
             // точки
             // 0 30,160
             // 1 30,30
@@ -137,42 +137,67 @@
                 for (j=i+1; j<points.length; j++) {
                     u = points[i].x - points[j].x;
                     v = points[i].y - points[j].y;
-                    if (u >= 0) {
-                        birds.push([u,v]);
-                    }
-                    else {
-                        birds.push([-u,-v]);
-                    };
+                    //if (u >= 0) {
+                    birds.push([u,v]);
+                    //}
+                    //else {
+                        //birds.push([-u,-v]);
+                    //};
                 };
             };
-            candidates = [];
+            candidates_a = []; candidates_b = [];
             for (k=0; k<birds.length-1; k++) {
                 u = birds[k][0]; v = birds[k][1];
                 for (m=k+1; m<birds.length; m++) {
                     u_ = birds[m][0]; v_ = birds[m][1];
-                    //abs(u+v*a)=abs(u_+v_*a)
-                    if (v_ != v) candidates.push(-(u-u_)/(v-v_));
-                    if (v_ != -v) candidates.push(-(u+u_)/(v+v_));
+                    //abs(u+a*v)=abs(u_+a*v_)
+                    // u+a*v = u_+a*v_ или u+a*v=-(u_+a*v_)
+                    // a = -(u-u_)/(v-v_u) или a = -(u+u_)/(v+v_)
+                    if (v_ != v) candidates_a.push(-(u-u_)/(v-v_));
+                    if (v_ != -v) candidates_a.push(-(u+u_)/(v+v_));
+                    //abs(b*u+v)=abs(b*u_+v_)
+                    // b*u+v = b*u_+v_ или b*u+v = -(b*u_+v_)
+                    // b = -(v-v_)/(u-u_) или b = -(v+v_)/(u+u_)
+                    if (u_ != u) candidates_b.push(-(v-v_)/(u-u_));
+                    if (u_ != -u) candidates_b.push(-(v+v_)/(u+u_));
                 };
             };
             // compares
-            a_best = 0; dist_best = 0;
-            for (i=0; i<candidates.length; i++) {
-                a = candidates[i];
+            a_best = 0; a_dist_best = 0;
+            for (i=0; i<candidates_a.length; i++) {
+                a = candidates_a[i];
                 for (j=0; j<birds.length; j++){
                     dist = birds[j][0]+a*birds[j][1];
+                    if (dist < 0) dist = -dist;
                     if (j==0) dist_min = dist;
                     else {
                         if (dist < dist_min) dist_min = dist;
                     };
                 };
-                if (dist_min > dist_best){
+                if (dist_min > a_dist_best){
                     a_best = a;
-                    dist_best = dist_min;
-                    console.log('a_best',a_best,'dist_best',dist_best);
+                    a_dist_best = dist_min;
+                    console.log('a_best',a_best,'a_dist_best',a_dist_best);
                 };
             };
-            new_points = points.map(p=>new Point(p.x+a_best*p.y, p.y));
+            b_best = 0; b_dist_best = 0;
+            for (i=0; i<candidates_b.length; i++) { 
+                b = candidates_b[i]; 
+                for (j=0; j<birds.length; j++){
+                    dist = b*birds[j][0]+birds[j][1]; 
+                    if (dist < 0) dist=-dist; 
+                    if (j==0) dist_min=dist; 
+                    else { 
+                        if (dist < dist_min) dist_min=dist; 
+                    };
+                };
+                if (dist_min> b_dist_best){
+                    b_best = b;
+                    b_dist_best = dist_min;
+                    console.log('b_best',b_best,'b_dist_best',b_dist_best);
+                };
+            };
+            new_points = points.map(p=>new Point(p.x+a_best*p.y, b_best*p.x+p.y));
             return new_points;
         };
 
@@ -651,7 +676,7 @@
             */
             points = updatePoints(points_set);
             drawGraph(points, undefined, document.getElementById('canvas'+points_set+'1'), true);
-            enlarged = enlarge_x(points_set);
+            enlarged = enlarge(points_set);
             drawGraph(enlarged, undefined, document.getElementById('canvas'+points_set+'2'), true);
             /*
             hull = convexHull_wrapping(points);
