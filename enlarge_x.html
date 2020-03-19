@@ -152,6 +152,8 @@
                     };
                 };
             };
+            new_points = points.map(p=>p.x+a_best*p.y);
+            return new_points;
         };
 
         function getpoints(pointsString){
