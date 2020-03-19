@@ -197,8 +197,20 @@
                     console.log('b_best',b_best,'b_dist_best',b_dist_best);
                 };
             };
+            min_x = points.map(p=>p.x).reduce((p,q)=>(p<q)?p:q);
+            max_x = points.map(p=>p.x).reduce((p,q)=>(p>q)?p:q);
+            min_y = points.map(p=>p.y).reduce((p,q)=>(p<q)?p:q);
+            max_y = points.map(p=>p.y).reduce((p,q)=>(p>q)?p:q);
             new_points = points.map(p=>new Point(p.x+a_best*p.y, b_best*p.x+p.y));
-            return new_points;
+            new_min_x = new_points.map(p=>p.x).reduce((p,q)=>(p<q)?p:q);
+            new_max_x = new_points.map(p=>p.x).reduce((p,q)=>(p>q)?p:q);
+            new_min_y = new_points.map(p=>p.y).reduce((p,q)=>(p<q)?p:q);
+            new_max_y = new_points.map(p=>p.y).reduce((p,q)=>(p>q)?p:q);
+            result = points.map(p=>new Point(
+                min_x+(p.x+a.best*p.y-new_min_x)/(new_max_x-new_min_x)),
+                min_y+(b_best*p.x+p.y-new_min_y)/(new_max_y-new_min_y))
+                );
+            return result;
         };
 
         function getpoints(pointsString){
