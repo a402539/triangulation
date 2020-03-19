@@ -3,11 +3,11 @@
 Алгоритмы триангуляции полигонов и наборов точек.
 Построение кусочно-линейного отображения полигонов и выпуклых оболочек точек.
 
-Начальная версия [index.html](https://github.io/a402539/triangulation/index.html)
+Начальная версия [index.html](https://a402539.github.io/triangulation/index.html)
 
-Промежуточная версия [index2.html](https://github.io/a402539/triangulation/index2.html)
+Промежуточная версия [index2.html](https://a402539.github.io/triangulation/index2.html)
 
-Текущая версия [index3.html](https://github.io/a402539/triangulation/index3.html)
+Текущая версия [index3.html](https://a402539.github.io/triangulation/index3.html)
 
 [2014. Adrian Dumitrescu · Dániel Gerbner · Balázs Keszegh · Csaba D. TóthCovering Paths for Planar Point Sets](https://link.springer.com/content/pdf/10.1007/s00454-013-9563-4.pdf)
 
