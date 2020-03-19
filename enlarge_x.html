@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Триангуляция множества точек</title>
+    <!-- https://neerc.ifmo.ru/wiki/index.php?title=Триангуляция_полигонов_(ушная_%2B_монотонная) -->
+    <!-- http://grafika.me/node/175 -->
+    <!-- https://www.npmjs.com/package/earcut -->
+    <!-- Алгоритм триангуляции Делоне методом заметающей прямой https://habr.com/ru/post/445048/ -->
+    <!-- https://github.com/Vemmy124/Delaunay-Triangulation-Algorithm -->
+</head>
+
+<body>
+    <label>Задайте точки (x1, y1, x2, y2, и так далее):</label><br>
+    <!--
+    // 20, 20, 100, 20, 100, 100, 20, 100
+    // 10, 10, 100, 10, 100, 100, 10, 100, 60, 60
+    // 10, 10, 100, 10, 100, 120, 50, 120, 60, 20, 140, 80
+    // 10, 10, 100, 10, 150, 120, 50, 140, 60, 60, 40, 80, 70, 80
+    // 10, 10, 160, 10, 160, 160, 10, 160, 40, 80, 70, 30
+    // 30, 30, 160, 30, 160, 160, 30, 160, 70, 50, 40, 80
+    -->
+    <input id="points1" value="30, 30, 160, 30, 160, 160, 30, 160, 60, 50, 140, 60" size="150" type="text" />
+    <input type="button" onclick="update('1')" value="Нарисовать" />
+    <table border=1>
+        <tr>
+            <td>Отсортированные точки</td>
+            <td>Выпуклая оболочка</td>
+            <!--<td>Триангуляция выпуклой оболочки</td>-->
+            <td>Триангуляция всех точек</td>
+            <td>Универсальный граф</td>
+            <td>Полигон</td>
+        </tr>
+        <tr><td><canvas id="canvas11" width="200" height="200" style="background: #F4F4F4;"></canvas></td>
+            <td><canvas id="canvas12" width="200" height="200" style="background: #F4F4F4;"></canvas></td>
+            <td><canvas id="canvas13" width="200" height="200" style="background: #F4F4F4;"></canvas></td>
+            <td><canvas id="canvas14" width="200" height="200" style="background: #F4F4F4;"></canvas></td>
+            <td><canvas id="canvas15" width="200" height="200" style="background: #F4F4F4;"></canvas></td>
+        </tr>
+    </table>
+    <!--
+    // 20, 20, 100, 20, 20, 100, 100, 100
+    // 20, 20, 100, 20, 20, 100, 100, 100, 30, 50, 50, 60, 40, 90
+    // 10, 10, 160, 10, 10, 160, 160, 160, 50, 40, 130, 90
+    -->
+    <input id="points2" value="30, 30, 160, 30, 160, 160, 30, 160, 140, 50, 60, 60" size="150" type="text" />
+    <input type="button" onclick="update('2')" value="Нарисовать" />
+    <table border=1>
+        <tr>
+            <td>Исходные точки</td>
+            <td>Выпуклая оболочка</td>
+            <!--<td>Триангуляция выпуклой оболочки</td>-->
+            <td>Триангуляция всех точек</td>
+            <td>Универсальный граф</td>
+            <td>Полигон</td>
+        </tr>
+        <tr><td><canvas id="canvas21" width="200" height="200" style="background: #F4F4F4;"></canvas></td>
+            <td><canvas id="canvas22" width="200" height="200" style="background: #F4F4F4;"></canvas></td>
+            <td><canvas id="canvas23" width="200" height="200" style="background: #F4F4F4;"></canvas></td>
+            <td><canvas id="canvas24" width="200" height="200" style="background: #F4F4F4;"></canvas></td>
+            <td><canvas id="canvas25" width="200" height="200" style="background: #F4F4F4;"></canvas></td>
+       </tr>
+    </table>
+   <script>
+        var Point = function(x, y) {
+            this.x = x;
+            this.y = y;
+        };
+        var radius = 5; delta = new Point(-20,20);
+        document.getElementById("canvas11").addEventListener('mouseup', getPosition);
+        document.getElementById("canvas21").addEventListener('mouseup', getPosition);
+        // Event will be a click event which can be retrieved as first parameter 
+        // in the addEventListener(function(event){});
+        function getPosition(event){
+            rect = event.target.getBoundingClientRect();
+            x = event.clientX - rect.left; // x == the location of the click in the document - the location (relative to the left) of the canvas in the document
+            y = event.clientY - rect.top; // y == the location of the click in the document - the location (relative to the top) of the canvas in the document
+            // This method will handle the coordinates and will draw them in the canvas.
+            //drawCoordinates(canvas,x,y);
+            points_set = (event.target.id == 'canvas11')?'1':'2';
+            updatePoints(points_set, new Point(x, y));
+            update(points_set);
+        };
+
+        function updatePoints(points_set, point = undefined){
+            _points = document.getElementById('points'+points_set);
+            points_list = getpoints(_points);
+            if (point) {
+                near_points = false;
+                for(i=0; i<points_list.length; i++){
+                    p = points_list[i];
+                    near_points = near_points || skal(p, point, point) <= radius*radius;
+                    if (near_points) break;
+                };
+                if (near_points) {
+                    points_list.splice(i,1);
+                }
+                else {
+                    points_list.push(point);
+                }
+            };
+            if (points_set=='1') {
+                points = [...(new Set(points_list))].sort((a,b)=>(a.x<b.x || (a.x==b.x && a.y>b.y)?-1:1));
+            };
+            document.getElementById('points'+points_set).value = points.map(p=>[p.x,p.y].join(', ')).join(', ');
+            return points;
+        };
+
+        function enlarge_x(points_set){
+            _points = document.getElementById('points'+points_set);
+            points_list = getpoints(_points);
+            points = [...(new Set(points_list))].sort((a,b)=>(a.x<b.x || (a.x==b.x && a.y>b.y)?-1:1));
+            a_best = 0; dist_best = 0;
+            for (i=0; i<points.length-1; i++) {
+                for (j=i+1; j<points.length; j++) {
+                    u = points[i].x - points[j].x;
+                    v = points[i].y - points[j].y;
+                    for (k=0; k<points.length-1; k++) {
+                        for (m=k+1; m<points.length; m++) {
+                            if (k==i && m==j) continue;
+                            u_ = points[k].x - points[m].x;
+                            v_ = points[k].y - points[m].y;
+                            // u+a*v=u_+a*v_
+                            if (v==v_) {
+                                a = undefined;
+                                dist = u-u_;
+                                if (dist<0) dist = -dist;
+                            }
+                            else {
+                                a = -(u-u_)/(v-v_);
+                                dist = u+a*v;
+                                if (dist<0) dist = -dist;
+                                bad = false;
+                                for (k_=0; k_<points.length-1; k_++) { 
+                                    for (m_=k_+1; m_<points.length; m_++) {
+                                        u__ = points[k_].x - points[m_].x;
+                                        v__ = points[k_].y - points[m_].y;
+                                        dist_ = u__+a*v__;
+                                        if (dist_<0) dist_ = -dist_;
+                                        bad = dist_ < dist;
+                                        if (bad) break;
+                                    };
+                                    if (bad) break;
+                                };
+                            };
+                            if (dist>dist_best){
+                                a_best = a;
+                                dist_best = dist;
+                            };
+                        };
+                    };
+                };
+            };
+        };
+
+        function getpoints(pointsString){
+            //var pointsValue = document.getElementById('points1');
+            _points = pointsString.value.split(", ");
+            points = [];
+            for (i = 0; i < _points.length; i +=2) { 
+                points.push(new Point(parseInt(_points[i]), parseInt(_points[i + 1]))); 
+            } ;
+            return points; 
+        };
+
+        function det(p0,p1,p2) // определитель = площадь*2 = ориентация
+        {
+            //To find orientation of ordered triplet (p, q, r) = (p0, p1, p2).
+            //The function returns following values
+            //0 --> p, q and r are colinear
+            //1 --> Clockwise
+            //2 --> Counterclockwise
+            //
+            //val = (q.y - p.y) * (r.x - q.x) -
+            //(q.x - p.x) * (r.y - q.y);
+            // | p.x q.x r.x |
+            // | p.y q.y r.y |
+            // |  1   1   1  |
+            // = - (p.x*(q.y-r.y) + q.x*(r.y-p.y) + r.x*(p.y-q.y))
+
+            return (p2.x-p0.x)*(p1.y-p0.y)-(p2.y-p0.y)*(p1.x-p0.x);
+            // = - (p0.x*(p1.y-p2.y) + p1.x*(p2.y-p0.y) + p2.x*(p0.y-p1.y))
+        }
+        function skal(p0,p1,p2) // скалярное произведение векторов p1-p0 и p2-p0
+        {
+        return (p2.x-p0.x)*(p1.x-p0.x)+(p2.y-p0.y)*(p1.y-p0.y);
+        }
+        function pointInTriangle(points, pt){
+            //console.log('точки',points,'четверки',pt);
+            for(i=0;i<4;i++) pt[i] = points[pt[i]];
+            a = det(pt[3], pt[1], pt[2]);
+            b = det(pt[0], pt[3], pt[2]);
+            c = det(pt[0], pt[1], pt[3]);
+            //console.log('a',a,'b',b,'c',c,'a <= 0 && b <= 0 && c <= 0',a <= 0 && b <= 0 && c <= 0);
+            return a <= 0 && b <= 0 && c <= 0;
+        }
+
+        //////////////////////////// convex hull
+        //////////// Convex Hull | Set 1 (Jarvis’s Algorithm or Wrapping)
+        //////////// https://www.geeksforgeeks.org/convex-hull-set-1-jarviss-algorithm-or-wrapping/
+
+        /*
+        Following is the detailed algorithm.
+
+        1) Initialize p as leftmost point.
+        2) Do following while we don’t come back to the first (or leftmost) point.
+        …..a) The next point q is the point such that the triplet (p, q, r) is counterclockwise for any other point r.
+        …..b) next[p] = q (Store q as next of p in the output convex hull).
+        …..c) p = q (Set p as q for next iteration).
+        */
+
+        // конвертация в код javascript
+
+        /*
+        C# program to find convex hull of a set of points. Refer
+        https://www.geeksforgeeks.org/orientation-3-ordered-points/
+        for explanation of orientation()
+        */
+
+        // point class with x, y as point
+        /* это уже есть в коде
+        class Point:
+        def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        */
+
+        /*
+        function Left_index(points){
+
+            // Finding the left most point
+
+            minn = 0;
+            for (i = 0; i < points.length; i++){
+                if (points[i].x < points[minn].x ||
+                    (points[i].x == points[minn].x 
+                    && points[i].y > points[minn].y))
+                    minn = i;
+            };
+            return minn
+        };
+        */
+
+        /*
+        function orientation(p, q, r){
+            //
+            //To find orientation of ordered triplet (p, q, r).
+            //The function returns following values
+            //0 --> p, q and r are colinear
+            //1 --> Clockwise
+            //2 --> Counterclockwise
+            //
+            val = (q.y - p.y) * (r.x - q.x) - 
+            (q.x - p.x) * (r.y - q.y);
+
+            if (val == 0)
+                return 0;
+            else if (val > 0)
+                return 1;
+            else
+                return 2;
+        };
+        */
+
+        function convexHull_wrapping(points){
+
+            console.log('выпуклая оболочка множества точек',points);
+            n = points.length;
+            // There must be at least 3 points
+            if (n < 3) return;
+            // Find the leftmost point 
+            l = 0; //Left_index(points); // точки уже отсортированы
+            hull = [];
+            /*
+            Start from leftmost point, keep moving counterclockwise 
+	        until reach the start point again. This loop runs O(h) 
+	        times where h is number of points in result or output. 
+            */
+	        p = l;
+            q = 0;
+            while(true){    
+                // Add current point to result 
+                hull.push(p);
+                console.log('  добавляем точку с индексом',p);
+                /*
+		        Search for a point ' q' such that 
+                orientation(p, x, q) is counterclockwise for all points 'x' . 
+                The idea is to keep track of last visited most counterclock-wise point in q. 
+                If any point 'i' is more counterclock-wise than q, then update q. 
+                */
+		        q = (p + 1) % n;
+
+		        for (i=0; i<n; i++){
+			
+			        // If i is more counterclockwise 
+			        // than current q, then update q 
+			        if (det(points[p], points[i], points[q]) < 0)
+                        //(orientation(points[p], points[i], points[q]) == 2)
+				        q = i;
+                };
+                /*
+                Now q is the most counterclockwise with respect to p 
+                Set p as q for next iteration, so that q is added to result 'hull' 
+                */
+                p = q;
+
+                // While we don' t come to first point
+                if (p == l) break;
+            };
+            return hull;
+        };
+
+         // Convex Hull | Monotone chain algorithm
+        // https://www.geeksforgeeks.org/convex-hull-monotone-chain-algorithm/
+        
+        // Algorithm Implementation/Geometry/Convex hull/Monotone chain
+        // https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain#Python
+        // A. M. Andrew, "Another Efficient Algorithm for Convex Hulls in Two Dimensions", Info. Proc. Letters 9, 216-219 (1979).
+        //
+        // porting from Python code
+        function convexHull_monotone(points){
+            /*
+            Computes the convex hull of a set of 2D points.
+
+            Input: an iterable sequence of (x, y) pairs representing the points.
+            Output: a list of vertices of the convex hull in counter-clockwise order,
+            starting from the vertex with the lexicographically smallest coordinates.
+            Implements Andrew's monotone chain algorithm. O(n log n) complexity.
+            */
+
+            // Sort the points lexicographically (tuples are compared lexicographically).
+            // Remove duplicates to detect the case we have just one unique point.
+            //points = [...(new Set(points))].sort((a,b)=>(a.x<b.x || (a.x==b.x && a.t<b.y)?1:-1)); //sorted(set(points));
+            console.log('отсортированные точки', points);
+            // Boring case: no points or a single point, possibly repeated multiple times.
+            if (points.length <= 1)
+                return points;
+
+            // 2D cross product of OA and OB vectors, i.e. z-component of their 3D cross product.
+            // Returns a positive value, if OAB makes a counter-clockwise turn,
+            // negative for clockwise turn, and zero if the points are collinear.
+            /* заменяется функцией det
+            function cross(o, a, b) {
+                return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+            };
+            */
+
+            // Build lower hull 
+            console.log('строим нижнюю половину выпуклой оболочки');
+            lower = [];
+            for(i=0;i<points.length;i++){
+                p = points[i];
+                console.log('рассматриваем точку', p);
+                while (lower.length >= 2 && 
+                    det(lower.slice(-2,-1), lower.slice(-1), p) < 0)
+                    //orientation(lower.slice(-2,-1), lower.slice(-1), p) == 2)
+                    //cross(lower.slice(-2,-1), lower.slice(-1), p) >= 0)
+                    {
+                        console.log('    удаляем точку', lower.slice(-1));
+                        lower.pop();
+                    };
+                console.log('  добавляем точку', p);
+                lower.push(p); //append(p);
+            };
+            console.log('нижняя часть',lower);
+            //lower.pop();
+
+            //# Build upper hull
+            upper = [];
+            for (j=0;j<points.length;j++){
+                p = points[points.length-1-j];
+                while (upper.length >= 2 && 
+                    det(upper.slice(-2,-1), upper.slice(-1), p) > 0)
+                    //orientation(upper.slice(-2,-1), upper.slice(-1), p) == 2)
+                    {upper.pop();};
+                upper.push(p); //append(p);
+            };
+            console.log('верхняя часть', upper);
+            //upper.pop();
+
+            // Concatenation of the lower and upper hulls gives the convex hull.
+            // Last point of each list is omitted because it is repeated at the beginning of the other list. 
+            console.log('выпуклая оболочка', lower.concat(upper));
+            return lower.concat(upper);// lower.slice(-1) + upper.slice(-1);
+        }
+       ////////////////////////////
+
+        function triangulate( points, indexes ) // список индексов вершин контура
+        {
+            console.log('триангуляция контура',indexes);
+            count = indexes.length;
+            var triangles = [];
+            if ( count < 3 ) // нет треугольника
+            {
+                return triangles;
+            }
+            else if ( count == 3) // только треугольник
+            {
+                triangles.push([indexes[0],indexes[1],indexes[2]]);
+                console.log('добавляем треугольник',indexes[0],indexes[1],indexes[2]);
+                return triangles;
+            }
+            // многоугольник с контуром, обходимым по часовой стрелке
+            //  треугольник с вершинами i,i+1,i+2 с углом i,i+1,i+2, меньшим развернутого
+            //     это значит, что окрестность вершины 1 в треугольнике находится внутри многоугольника
+            // A x=0,y=0 B x=1,y=0 C y<0
+            // A x=1,y=0 B x=0,y=0 C y>0
+            // (x-x0)*(y1-y0)-(y-y0)*(x1-x0) уравнение прямой через 0,1
+            // (x2-x0)*(y1-y0)-(y2-y0)*(x1-x0) > 0
+            // |x0 x1 x2|
+            // |y0 y1 y2| < 0
+            // | 1  1  1|
+            // в canvas ось y направлена в обратную сторону, поэтому в canvas условие меняет знак
+            for (var i = 0; i < count; i++){
+                var ind0 = indexes[i]; var ind1 = indexes[(i+1)%count]; var ind2 = indexes[(i+2)%count];
+                p0 = points[ind0];
+                p1 = points[ind1];
+                p2 = points[ind2];
+                _det = det(p0,p1,p2);
+                if ( _det > 0 ){
+                    console.log(ind0,p0.x,p0.y,ind1,p1.x,p1.y,ind2,p2.x,p2.y,'угол больше развернутого, пропускаем');
+                    continue;
+                };
+                console.log(ind0,p0.x,p0.y,ind1,p1.x,p1.y,ind2,p2.x,p2.y,'угол меньше развернутого, рассматриваем');
+                console.log('проверяем все остальные вершины на принадлежность треугольнику');
+                var maxj = i+2;
+                var maxcos2 = 0;
+                for (var j = i+3; j < count; j++){
+                    ind3 = indexes[j]
+                    p3 = points[ind3];
+                    // если точка p3 находится внутри или на границе треугольника p0,p1,p2
+                    // то она должна быть выпуклой линейной комбинацией вершин треугольника
+                    // p3=a*p0+b*p1*c*p2, a,b,c>=0, a+b+c=1
+                    // |x0 x1 x2|   |a|   |x3|
+                    // |y0 y1 y2| * |b| = |y3|
+                    // | 1  1  1|   |c|   | 1|
+                    //  abc = p3*A012^(-1)
+                    //         |x3 x1 x2|
+                    // a*det = |y3 y1 y2|
+                    //         | 1  1  1|
+                    //
+                    a = det(p3,p1,p2)/_det; b = det(p0,p3,p2)/_det; c = det(p0,p1,p3)/_det;
+                    //a = det(p3,p1,p2); b = det(p0,p3,p2); c = det(p0,p1,p3);
+                    if (a < 0 || b < 0 || c < 0) {
+                        console.log(ind3,p3.x,p3.y,a,b,c,'снаружи треугольника');
+                        continue;
+                    };
+                    // среди внутренних точек выбираем наименьший угол p3,p0,p1
+                    // p3-p0 = a*(p1-p0)+b*(p10), p10*(p1-p0)=0
+                    // b = (p3-p0)*p10/(p10*p10)
+                    // sin(alpha) = (p3-p0)*p10/(p10*p10)/((p3-p0)*(p3-p0))
+                    // p1-p0 = (p1.x-p0.x,p1.y-p0.y)
+                    // p10 = (-(p1.y-p0.y),p1.x-p0.x)
+                    // (p3-p0)*p10 = -(p3.x-p0.x)*(p1.y-p0.y)+(p3.y-p0.y)*(p1.x-p0.x)
+                    // d = det(p3,p0,p1);
+                    _skal = skal(p0,p1,p3); // скалярное произведение
+                    cos2 = _skal*_skal / (skal(p0,p1,p1)*skal(p0,p3,p3)); // квадрат косинуса
+                    console.log(ind3,p3.x,p3.y,a,b,c,'внутри треугольника, cos2=',cos2);
+                    if (cos2 > maxcos2) {
+                        maxj = j; maxind3 = indexes[maxj]; maxcos2 = cos2;
+                        console.log('maxind3,maxcos2',maxind3,maxcos2);
+                    };
+                }
+                if (maxcos2 == 0) {
+                    // случай 1) в треугольнике нет других вершин
+                    console.log('в треугольнике нет других вершин');
+                    console.log('добавляем треугольник',ind0,ind1,ind2);
+                    triangles.push([ind0,ind1,ind2]); // три подряд идущие вершины
+                    triangles1 = triangulate(points, indexes.slice(i+2).concat(indexes.slice(0,i+1)));
+                    return triangles.concat(triangles1); // все последующие вершины
+                    return;
+                }
+                else {
+                    // случай 2) в треугольнике есть другие вершины
+                    console.log('отрезок',ind0,maxind3,'составляет диагональ');
+                    console.log('добавляем треугольник',ind0,ind1,maxind3);
+                    triangles.push([ind0,ind1,maxind3]);
+                    console.log('все вершины в диапазоне от',ind1,'до',maxind3);
+                    triangles1 = triangulate(points, indexes.slice(i+1,maxj+1)); // все вершины в диапазоне от ind1 до maxind3
+                    console.log('все вершины в диапазоне от',maxind3,'до',ind0);
+                    triangles2 = triangulate(points, indexes.slice(maxj).concat(ind0)); // все вершины в диапазоне от maxind3 до ind0
+                    return triangles.concat(triangles1,triangles2);
+                }
+            }
+            return;
+        }
+
+        function triangulate_internal(points, triangles, internal_points){
+            for (var i=0; i<internal_points.length; i++){
+                p = internal_points[i];
+                len = triangles.length;
+                for (var j=0; j<len; j++){
+                    t = triangles[j];
+                    if (pointInTriangle(points, [t[0],t[1],t[2],p])) {
+                        triangles.splice(j, 1, [p, t[1], t[2]], [t[0], p, t[2]], [t[0], t[1], p]);
+                       break;
+                    };
+                };
+            };
+            return triangles;
+        }
+       
+        function canvasClear(canvas){
+            ctx = canvas.getContext('2d');
+            // Сохраняем текущую матрицу трансформации
+            //ctx.save();
+            // Используем идентичную матрицу трансформации на время очистки
+            //ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Возобновляем матрицу трансформации
+            //ctx.restore();       
+        }
+
+        function drawCircle(ctx, center, text){
+            // ctx.moveTo(center.x + radius, center.y);
+            ctx.beginPath();
+            ctx.arc(center.x, center.y, radius, 0, Math.PI*2);
+			ctx.fill();
+            ctx.strokeText(text+'('+center.x.toFixed(0)+','+center.y.toFixed(0)+')',
+             center.x + delta.x, center.y + delta.y);
+        }
+
+        function drawGraph(points, edges, canvas, only = true){
+            len = points.length;
+            if (len == 0) return;
+            //var canvas=document.getElementById("canvas1")
+            canvasClear(canvas);
+            ctx = canvas.getContext('2d');
+            ctx.fillStyle = 'green';//'#f00';
+            ctx.font = "12px Arial";
+            drawCircle(ctx, points[len-1], len-1);
+            for (d in points) {
+                drawCircle(ctx, points[d], d);
+            };
+            ctx.fill();
+            if (only || edges.length == 0) return;
+            //ctx.beginPath();
+            for (d in edges) {
+                left = edges[d][0]; right = edges[d][1];
+                ctx.moveTo(points[left].x, points[left].y);
+                ctx.lineTo(points[right].x, points[right].y);
+            }
+            //ctx.closePath();
+            ctx.stroke();
+        };
+        function drawpoints(points, canvas){
+            //var canvas=document.getElementById("canvas1")
+            canvasClear(canvas);
+            ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#f00';
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            for (d in points) {
+                ctx.lineTo(points[d].x, points[d].y);
+            }
+            ctx.closePath();
+            ctx.stroke();
+        };
+       function drawTriangles(points, triangles, canvas){
+            //var canvas=document.getElementById("canvas2")
+            canvasClear(canvas);
+            ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#f00';
+            //console.log(poly[0], poly[1]);
+            for( d in triangles ){
+                //console.log(poly[item] , poly[item+1]);
+                ctx.beginPath();
+                ctx.moveTo( points[triangles[d][0]].x, points[triangles[d][0]].y );
+                ctx.lineTo( points[triangles[d][1]].x, points[triangles[d][1]].y );
+                ctx.lineTo( points[triangles[d][2]].x, points[triangles[d][2]].y );
+                ctx.closePath();
+                ctx.stroke();
+            }            
+        };
+
+        function universal_points(count, shift=90, size=70){
+            //shift = 90; size = 80;
+            vertices = [];
+            phi = 2*Math.PI/count;
+            for (k=0; k<count;k++){
+                vertices.push(new Point(shift+size*Math.cos(k*phi),shift+size*Math.sin(k*phi)));
+            };
+            return vertices;
+        }
+
+        function incidence(triangles){
+            incdm = [];
+            len = triangles.length;
+            for (i = 0; i < len-1; i++){
+                d = triangles[i];
+                console.log('соседи треугольника', d)
+                for (j = i+1; j <len; j++){
+                    m = triangles[j];
+                    s = new Set(d.concat(m));
+                    if (s.size == 4){
+                        incdm.push([i,j]);
+                        console.log(' треугольник',m,'соседний');
+                   }
+                    else {
+                        console.log(' треугольник',m,'не соседний');
+                    };
+                };
+            }
+
+            vertices = universal_points(len);
+           
+            return [vertices, incdm];
+        };
+
+        function simple_polygon(points){
+            len = points.length;
+            new_points = []; edges = [];
+            for (i=0; i<len; i++){
+                if(i<3) {
+                    new_points.push(points[i]);
+                    continue;
+                };
+            };
+            return new_points;
+        }
+        function update(points_set){
+            console.clear();
+            /*
+            var _points = document.getElementById('points'+points_set);
+            var points_list = getpoints(_points);
+            var points = [...(new Set(points_list))].sort((a,b)=>(a.x<b.x || (a.x==b.x && a.y>b.y)?-1:1));
+            document.getElementById('points'+points_set).value = points.map(p=>[p.x,p.y].join(', ')).join(', ');
+            */
+            points = updatePoints(points_set);
+            enlarged = enlarge_x(points_set);
+            hull = convexHull_wrapping(points);
+            hull2 = convexHull_monotone(points);
+            internal_points = points.map((_,i)=>i).filter(function(cv){return ! hull.includes(cv)});
+            edges = hull.map((cv,i)=>[cv,hull[(i+1)%hull.length]]);
+            drawGraph(points, edges, document.getElementById('canvas'+points_set+'1'), true);
+            drawGraph(points, edges, document.getElementById('canvas'+points_set+'2'), false);
+            hulltriangles = triangulate( points, hull ); // исходный список индексов вершин
+            //drawTriangles(points, hulltriangles, document.getElementById("canvas13"));
+            alltriangles = triangulate_internal(points, hulltriangles, internal_points);
+            //drawTriangles(points, alltriangles, document.getElementById("canvas14"));
+            // graph = incidence(triangles);
+            alledges = [];
+            for (t of alltriangles){
+                _t = (t[0]<t[1])?[t[0],t[1]]:[t[1],t[0]]; if (! alledges.includes(_t)) alledges.push(_t);
+                _t = (t[1]<t[2])?[t[1],t[2]]:[t[2],t[1]]; if (! alledges.includes(_t)) alledges.push(_t);
+                _t = (t[2]<t[0])?[t[2],t[0]]:[t[0],t[2]]; if (! alledges.includes(_t)) alledges.push(_t);
+            };
+            alledges1 = alledges.slice();
+            drawGraph(points, alledges, document.getElementById('canvas'+points_set+'3'), false);
+            universal = universal_points(points.length);
+            drawGraph(universal, alledges, document.getElementById('canvas'+points_set+'4'), false);
+            new_points = simple_polygon(points); // полигон по точкам с сохранением их порядка
+            new_edges = new_points.map((cv,i)=>[i,(i+1)%new_points.length]);
+            drawGraph(new_points, new_edges, document.getElementById('canvas'+points_set+'5'), false);
+        }
+
+    </script>
+</body>
+
+</html>
