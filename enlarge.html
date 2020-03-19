@@ -206,10 +206,12 @@
             new_max_x = new_points.map(p=>p.x).reduce((p,q)=>(p>q)?p:q);
             new_min_y = new_points.map(p=>p.y).reduce((p,q)=>(p<q)?p:q);
             new_max_y = new_points.map(p=>p.y).reduce((p,q)=>(p>q)?p:q);
+            console.table(points);
+            console.table(new_points);
             result = points.map(p=>new Point(
-                min_x+(p.x+a.best*p.y-new_min_x)/(new_max_x-new_min_x)),
-                min_y+(b_best*p.x+p.y-new_min_y)/(new_max_y-new_min_y))
-                );
+                min_x+(max_x-min_x)*(p.x+a_best*p.y-new_min_x)/(new_max_x-new_min_x),
+                min_y+(max_y-min_y)*(b_best*p.x+p.y-new_min_y)/(new_max_y-new_min_y)));
+            console.table(result);
             return result;
         };
 
