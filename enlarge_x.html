@@ -131,7 +131,7 @@
             // 1 0,1+1,2;1,2+0,2 a = -1/5 x = (30-32, 30-6, 60-10) = (-2, 24, 50) dist = 26 = 364/14
             _points = document.getElementById('points'+points_set);
             points_list = getpoints(_points);
-            points = [...(new Set(points_list))].sort((a,b)=>(a.x<b.x || (a.x==b.x && a.y>b.y)?-1:1));
+            points = [...(new Set(points_list))];//.sort((a,b)=>(a.x<b.x || (a.x==b.x && a.y>b.y)?-1:1));
             birds = [];
             for (i=0; i<points.length-1; i++) {
                 for (j=i+1; j<points.length; j++) {
