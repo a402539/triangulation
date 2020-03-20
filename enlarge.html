@@ -148,18 +148,18 @@
             candidates_a = []; candidates_b = [];
             for (k=0; k<birds.length-1; k++) {
                 u = birds[k][0]; v = birds[k][1];
+                su = (u>0)?1:(u<0)?-1:0; sv=(v>0)?1:(v<0)?-1:0;
                 for (m=k+1; m<birds.length; m++) {
                     u_ = birds[m][0]; v_ = birds[m][1];
+                    su_ = (u_>0)?1:(u_<0)?-1:0; sv_ = (v_>0)?1:(v_<0)?-1:0;
                     //abs(u+a*v)=abs(u_+a*v_)
                     // u+a*v = u_+a*v_ или u+a*v=-(u_+a*v_)
                     // a = -(u-u_)/(v-v_u) или a = -(u+u_)/(v+v_)
-                    if (v_ != v) candidates_a.push(-(u-u_)/(v-v_));
-                    if (v_ != -v) candidates_a.push(-(u+u_)/(v+v_));
+                    if (sv*sv_) candidates_a.push(-(u*sv+u_*sv_)/(v*sv+v_*sv_));
                     //abs(b*u+v)=abs(b*u_+v_)
                     // b*u+v = b*u_+v_ или b*u+v = -(b*u_+v_)
                     // b = -(v-v_)/(u-u_) или b = -(v+v_)/(u+u_)
-                    if (u_ != u) candidates_b.push(-(v-v_)/(u-u_));
-                    if (u_ != -u) candidates_b.push(-(v+v_)/(u+u_));
+                    if (su*su_) candidates_b.push(-(v*su+v_*su_)/(u*su+u_*su_));
                 };
             };
             // compares
