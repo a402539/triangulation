@@ -9,7 +9,7 @@
 
 Текущая версия [index3.html](https://a402539.github.io/triangulation/index3.html)
 
-Увеличение минимального расстояния между точками [enlarge.html](https://a402539.github.io/triangulation/enlarge.html) см. [[wiki]]
+Увеличение минимального расстояния между точками [enlarge.html](https://a402539.github.io/triangulation/enlarge.html) см. [[Home]]
 
 [2014. Adrian Dumitrescu · Dániel Gerbner · Balázs Keszegh · Csaba D. TóthCovering Paths for Planar Point Sets](https://link.springer.com/content/pdf/10.1007/s00454-013-9563-4.pdf)
 
