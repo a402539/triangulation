@@ -11,6 +11,8 @@
 
 Увеличение минимального расстояния между точками [enlarge.html](https://a402539.github.io/triangulation/enlarge.html) см. [wiki](../../wiki)
 
+Добавлен файл maple **enlarge.mw** и его экспорт в pdf **enlarge.pdf**
+
 [2014. Adrian Dumitrescu · Dániel Gerbner · Balázs Keszegh · Csaba D. TóthCovering Paths for Planar Point Sets](https://link.springer.com/content/pdf/10.1007/s00454-013-9563-4.pdf)
 
 [2020. Hongyun Zhang, Quanhua Zhao, Yu Li. Generation of simple polygons from ordered points using an iterative insertion algorithm](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0230342)
