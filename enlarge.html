@@ -132,69 +132,86 @@
             _points = document.getElementById('points'+points_set);
             points_list = getpoints(_points);
             points = [...(new Set(points_list))];//.sort((a,b)=>(a.x<b.x || (a.x==b.x && a.y>b.y)?-1:1));
-            birds = [];
+
+            birds_x = []; upper_bound_x = 0;
+            birds_y = []; upper_bound_y = 0;
             for (i=0; i<points.length-1; i++) {
                 for (j=i+1; j<points.length; j++) {
                     u = points[i].x - points[j].x;
                     v = points[i].y - points[j].y;
-                    //if (u >= 0) {
-                    birds.push([u,v]);
-                    //}
-                    //else {
-                        //birds.push([-u,-v]);
-                    //};
+                    if (u) birds_y.push([u,v,[i,j]]); else if (!upper_bound_y || v < upper_bound_y) upper_bound_y = Math.abs(v);
+                    if (v) birds_x.push([u,v,[i,j]]); else if (!upper_bound_x || u < upper_bound_x) upper_bound_x = Math.abs(u);
                 };
             };
-            candidates_a = []; candidates_b = [];
-            for (k=0; k<birds.length-1; k++) {
-                u = birds[k][0]; v = birds[k][1];
-                su = (u>0)?1:(u<0)?-1:0; sv=(v>0)?1:(v<0)?-1:0;
-                for (m=k+1; m<birds.length; m++) {
-                    u_ = birds[m][0]; v_ = birds[m][1];
-                    su_ = (u_>0)?1:(u_<0)?-1:0; sv_ = (v_>0)?1:(v_<0)?-1:0;
+
+            candidates_x = new Set();
+            for (k=0; k<birds_x.length-1; k++) {
+                bk = birds_x[k];
+                u = bk[0]; su = (u>0)?1:(u<0)?-1:0;
+                v = bk[1]; sv = (v>0)?1:(v<0)?-1:0;
+                for (m=k+1; m<birds_x.length; m++) {
+                    bm = birds_x[m];
+                    u_ = bm[0]; su_ = (u_>0)?1:(u_<0)?-1:0;
+                    v_ = bm[1]; sv_ = (v_>0)?1:(v_<0)?-1:0;
                     //abs(u+a*v)=abs(u_+a*v_)
                     // u+a*v = u_+a*v_ или u+a*v=-(u_+a*v_)
                     // a = -(u-u_)/(v-v_u) или a = -(u+u_)/(v+v_)
-                    if (sv*sv_) candidates_a.push(-(u*sv+u_*sv_)/(v*sv+v_*sv_));
+                    a = -(u*sv+u_*sv_)/(v*sv+v_*sv_);
+                    //d = |u-v*(u*sv+u_*sv_)/(v*sv+v_*sv_)|
+                    // = |(u*(v*sv+v_*sv_)-v*(u*sv+u_*sv_))/(v*sv+v_*sv_)|
+                    // = |(u*v_*sv_-v*u_*sv_)/(v*sv+v_*sv_)|
+                    // = |u*v_-u_*v|/(v*sv+v_*sv_)
+                    d = Math.abs(u*v_-u_*v)/(v*sv+v_*sv_);
+                    if (!upper_bound_x || d < upper_bound_x) candidates_x.add([d,a]);//,bk[2],bm[2]]);
+                };
+            };
+            candidates_x = [...candidates_x].sort((k,m)=>(k[0]>m[0])?-1:1);
+
+            candidates_y = new Set();
+            for (k=0; k<birds_y.length-1; k++) {
+                bk = birds_y[k];
+                u = bk[0]; su = (u>0)?1:(u<0)?-1:0;
+                v = bk[1]; sv = (v>0)?1:(v<0)?-1:0;
+                for (m=k+1; m<birds_y.length; m++) {
+                    bm = birds_y[m];
+                    u_ = bm[0]; su_ = (u_>0)?1:(u_<0)?-1:0;
+                    v_ = bm[1]; sv_ = (v_>0)?1:(v_<0)?-1:0;
                     //abs(b*u+v)=abs(b*u_+v_)
                     // b*u+v = b*u_+v_ или b*u+v = -(b*u_+v_)
                     // b = -(v-v_)/(u-u_) или b = -(v+v_)/(u+u_)
-                    if (su*su_) candidates_b.push(-(v*su+v_*su_)/(u*su+u_*su_));
+                    b = -(v*su+v_*su_)/(u*su+u_*su_);
+                    d = Math.abs(u*v_-u_*v)/(u*su+u_*su_);
+                    if (!upper_bound_y || d < upper_bound_y) candidates_y.add([d,b]);//,bk[2],bm[2]]);
                 };
             };
+            candidates_y = [...candidates_y].sort((k,m)=>(k[0]>m[0])?-1:1);
+
             // compares
             a_best = 0; a_dist_best = 0;
-            for (i=0; i<candidates_a.length; i++) {
-                a = candidates_a[i];
-                for (j=0; j<birds.length; j++){
-                    dist = birds[j][0]+a*birds[j][1];
-                    if (dist < 0) dist = -dist;
-                    if (j==0) dist_min = dist;
-                    else {
-                        if (dist < dist_min) dist_min = dist;
-                    };
+            for (c of candidates_x) {
+                d = c[0]; a = c[1]; dist_min = 0;
+                for (j=0; j<birds_x.length; j++){
+                    dist = Math.abs(birds_x[j][0]+a*birds_x[j][1]);
+                    if(!j || dist < dist_min) dist_min = dist;
                 };
-                if (dist_min > a_dist_best){
-                    a_best = a;
-                    a_dist_best = dist_min;
+                if (!upper_bound_x || dist_min <= upper_bound_x) {
+                    a_best = a; a_dist_best = d;
                     console.log('a_best',a_best,'a_dist_best',a_dist_best);
+                    break;
                 };
             };
+
             b_best = 0; b_dist_best = 0;
-            for (i=0; i<candidates_b.length; i++) { 
-                b = candidates_b[i]; 
-                for (j=0; j<birds.length; j++){
-                    dist = b*birds[j][0]+birds[j][1]; 
-                    if (dist < 0) dist=-dist; 
-                    if (j==0) dist_min=dist; 
-                    else { 
-                        if (dist < dist_min) dist_min=dist; 
-                    };
+            for (c of candidates_y) { 
+                d = c[0]; b = c[1]; dist_min = 0;
+                for (j=0; j<birds_y.length; j++){
+                    dist = Math.abs(b*birds_y[j][0]+birds_y[j][1]);
+                    if(!j || dist < dist_min) dist_min=dist;
                 };
-                if (dist_min> b_dist_best){
-                    b_best = b;
-                    b_dist_best = dist_min;
+                if (!upper_bound_y || dist_min <= upper_bound_y) {
+                    b_best = b; b_dist_best = d;
                     console.log('b_best',b_best,'b_dist_best',b_dist_best);
+                    break;
                 };
             };
             min_x = points.map(p=>p.x).reduce((p,q)=>(p<q)?p:q);
