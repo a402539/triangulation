@@ -9,13 +9,15 @@
 
 Текущая версия [index3.html](https://a402539.github.io/triangulation/index3.html)
 
-Увеличение минимального расстояния между точками [enlarge.html](https://a402539.github.io/triangulation/enlarge.html) см. [wiki](../../wiki)
+## Увеличение минимального расстояния между точками [enlarge.html](https://a402539.github.io/triangulation/enlarge.html) см. [wiki](../../wiki)
 
 Добавлен файл maple **enlarge.mw** и его экспорт в pdf **enlarge.pdf**
 
 Визуализация показывает, что во вспомогательной задаче надо искать преобразование (x,y)=>(x+a*y,y)  с последующим сдвигом и растяжение так, чтобы диапазон координат x оставался прежним, а минимальное из взаимные расстояния между точками было максимальным.
 
 Бех ограничения на сохранение диапазона задача не имеет оптимального решения - взаимные расстояния неограниченно растут при неограниченном увеличении параметра преобразования **a**.
+
+## Ссылки на тему триангуляции
 
 [2014. Adrian Dumitrescu · Dániel Gerbner · Balázs Keszegh · Csaba D. TóthCovering Paths for Planar Point Sets](https://link.springer.com/content/pdf/10.1007/s00454-013-9563-4.pdf)
 
