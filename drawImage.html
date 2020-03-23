@@ -4,20 +4,22 @@
 
 <head>
     <title>imgExample</title>
+    <!-->
     <link rel="stylesheet" href="examples.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@0.7.7/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@0.7.7/dist/leaflet.js"></script>
+    -->
 
 </head>
 
 <body>
-    <div id="map"></div>
+    <!--<div id="map"></div>-->
 
     <canvas id='example'>Обновите браузер</canvas>
     <script>
-        var osmUrl = 'https://{s}.tile.osm.org/{z}/{x}/{y}.png',
-        osm = new L.TileLayer(osmUrl, {maxZoom: 18}),
-        map = new L.Map('map', {layers: [osm], center: new L.LatLng(56, 137.23), zoom: 9});
+        //var osmUrl = 'https://{s}.tile.osm.org/{z}/{x}/{y}.png',
+        //osm = new L.TileLayer(osmUrl, {maxZoom: 18}),
+        //map = new L.Map('map', {layers: [osm], center: new L.LatLng(56, 137.23), zoom: 9});
         var example = document.getElementById('example'), // Задаём контекст
             ctx = example.getContext('2d'), // Контекст холста
             pic = new Image(); // "Создаём" изображение
@@ -31,7 +33,7 @@
             ctx.drawImage(pic, sx, sy, w, h);
             ctx.fillStyle= 'red'; r = 5;
             ctx.arc(sx+ax*w-r, sy+ay*h, r, 0, 360);
-            Sx = 200; Sy = 200; W = 150; H = 200;
+            //Sx = 200; Sy = 200; W = 150; H = 200;
             // p(x,y) -> P(X,Y)
             // px = sx+cx*w, py = sy+cy*h
             // Px = Sx+cx*W, Py = Sy+cy*H
@@ -40,7 +42,45 @@
             // матрица преобразования
             // ( W/w  0   ) Sx-sx*W/w
             // ( 0    H/h ) Sy-sy*H/h
-            ctx.setTransform(1/3,.8,.7,1/2,20,40);
+            ///////////// преобразование прямоугольника в четырехугольник
+            // a11 a12 d1
+            // a21 a22 d2
+            //             sx  sx+w sx+w sx
+            //             sy  sy   sy+h sy+h
+            //             1   1    1    1
+            //                                   p1x p2x p3x p4x
+            //                                   p1y p2y p3y p4y
+            // a11*sx+a12*sy+d1 = p1x
+            // a21*sx+a22*sy+d2 = p1y
+            //        a11*(sx+w)+a12*sy+d1 = p2x
+            //        a21*(sx+w)+a22*sy+d2 = p2y
+            //                   a11*(sx+w)+a12*(sy+h)+d1 = p3x
+            //                   a21*(sx+w)+a22*(sy+h)+d2 = p3y
+            //                              a11*sx+a12*(sy+h)+d1 = p4x
+            //                              a21*sx+a22*(sy+h)+d2 = p4y
+            // p2x-p1x=a11*w p2y-p1y=a21*w
+            // p3x-p2x=a12*h p3y-p2y=a22*h
+            ////
+            // a11 = (p2x-p1x)/w a12=(p3x-p2x)/h
+            // a21 = (p2y-p1y)/w a22=(p3y-p2y)/h
+            //    d1 = p1x - sx*(p2x-p1x)/w - sy*(p3x-p2x)/h
+            //    d2 = p1y - sx*(p2y-p1y)/w - sy*(p3y-p2y)/h
+            // p4x = a11*sx+a12*(sy+h)+d1
+            // p4y = a21*sx+a22*(sy+h)+d2
+            // 
+            //
+            /////////////
+            p = [[100,200],[350,250],[250,400]]
+            Sx = p[0][0]; Sy = p[0][1]; W = p[1][0]-p[0][0]; H = p[2][1]-p[0][1];
+            a11 = (p[1][0]-p[0][0])/W; a12 = (p[2][0]-p[1][0])/H;
+            a21 = (p[1][1]-p[0][1])/W; a22 = (p[2][1]-p[1][1])/H;
+            d1 = p[0][0]-Sx*(p[1][0]-p[0][0])/W-Sy*(p[2][0]-p[1][0])/H;
+            d2 = p[0][1]-Sx*(p[1][1]-p[0][1])/W-Sy*(p[2][1]-p[1][1])/H;
+            p.push([a11*Sx+a12*(Sy+H)+d1, a21*Sx+a22*(Sy+H)+d2]);
+            console.log('вершины четырехугольника',p);
+            console.log('первая строка матрицы преобразования',a11,a12,d1);
+            console.log('вторая строка матррицы преобразования',a21,a22,d2);
+            ctx.setTransform(a11, a12, a21, a22, d1, d2);
             ctx.drawImage(pic, sx, sy, ax*w, ay*h, Sx, Sy, Ax*W, Ay*H);
             ctx.drawImage(pic, sx+ax*w, sy, (1-ax)*w, ay*h, Sx+Ax*W, Sy, (1-Ax)*W, Ay*H);
             ctx.drawImage(pic, sx, sy+ay*h, ax*w, (1-ay)*h, Sx, Sy+Ay*H, Ax*W, (1-Ay)*H);
