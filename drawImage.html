@@ -4,25 +4,45 @@
 
 <head>
     <title>imgExample</title>
+    <link rel="stylesheet" href="examples.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@0.7.7/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@0.7.7/dist/leaflet.js"></script>
+
 </head>
 
 <body>
+    <div id="map"></div>
+
     <canvas id='example'>Обновите браузер</canvas>
     <script>
+        var osmUrl = 'https://{s}.tile.osm.org/{z}/{x}/{y}.png',
+        osm = new L.TileLayer(osmUrl, {maxZoom: 18}),
+        map = new L.Map('map', {layers: [osm], center: new L.LatLng(56, 137.23), zoom: 9});
         var example = document.getElementById('example'), // Задаём контекст
             ctx = example.getContext('2d'), // Контекст холста
             pic = new Image(); // "Создаём" изображение
         // Размер холста равный 8х8 клеток
-        example.width = 400; example.height = 400;
+        example.width = 1000; example.height = 1000;
         pic.src = 'image.png';
+        ax = 0.6; ay = 0.5; Ax = 0.8; Ay = 0.2;
         pic.onload = function () { // Событие onLoad, ждём момента пока загрузится изображение
             // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
             sx = 0; sy = 0; w = pic.width; h = pic.height;
-            Sx = 200; Sy = 200; W = 150; H = 200;
             ctx.drawImage(pic, sx, sy, w, h);
-            ctx.drawImage(pic, Sx, Sy, W, H);
-            ctx.setTransform(0.2, 0, 0, 0.3, 20, 40);
-            ctx.drawImage(pic, Sx, Sy, W, H);
+            ctx.fillStyle= 'red'; r = 5;
+            ctx.arc(sx+ax*w-r, sy+ay*h, r, 0, 360);
+            Sx = 200; Sy = 200; W = 150; H = 200;
+            // (sx+ax.w, sy+ay.h) -> (Sx+Ax*W, Sy+Ay*H)
+            // (x,y) -> (X,Y)
+            // x = sx+ax*w, y = sy+ay*h
+            // X = Sx+Ax*W, Y = Sy+Ay*H
+            ctx.setTransform(1/3,.8,.7,1/2,20,40);
+            ctx.drawImage(pic, sx, sy, ax*w, ay*h, Sx, Sy, Ax*W, Ay*H);
+            ctx.drawImage(pic, sx+ax*w, sy, (1-ax)*w, ay*h, Sx+Ax*W, Sy, (1-Ax)*W, Ay*H);
+            ctx.drawImage(pic, sx, sy+ay*h, ax*w, (1-ay)*h, Sx, Sy+Ay*H, Ax*W, (1-Ay)*H);
+            ctx.drawImage(pic, sx+ax*w, sy+ay*h, (1-ax)*w, (1-ay)*h, Sx+Ax*W, Sy+Ay*H, (1-Ax)*W, (1-Ay)*H);
+            ctx.arc(Sx+Ax*W-r, Sy+Ay*H, r, 0, 360);
+            ctx.fill();
         }
     </script>
 </body>
