@@ -26,7 +26,7 @@
         // Размер холста равный 8х8 клеток
         example.width = 1000; example.height = 1000;
         pic.src = 'image.png';
-        a = [[0, 0.2, 0.6, 1], [0, 0.3, 1]]; A = [[0, 0.2, 0.8, 1], [0, 0.4, 1]];
+        a = [[0, 0.2, 1], [0, 0.3, 1]]; A = [[0, 0.8, 1], [0, 0.4, 1]];
         pic.onload = function () { // Событие onLoad, ждём момента пока загрузится изображение
             // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
             sx = 0; sy = 0; w = pic.width; h = pic.height;
