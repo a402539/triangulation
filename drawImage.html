@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<meta charset='utf-8'>
+
+<head>
+    <title>imgExample</title>
+</head>
+
+<body>
+    <canvas id='example'>Обновите браузер</canvas>
+    <script>
+        var example = document.getElementById('example'), // Задаём контекст
+            ctx = example.getContext('2d'), // Контекст холста
+            pic = new Image(); // "Создаём" изображение
+        // Размер холста равный 8х8 клеток
+        example.width = 400; example.height = 400;
+        pic.src = 'image.png';
+        pic.onload = function () { // Событие onLoad, ждём момента пока загрузится изображение
+            // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
+            sx = 0; sy = 0; w = pic.width; h = pic.height;
+            Sx = 200; Sy = 200; W = 150; H = 200;
+            ctx.drawImage(pic, sx, sy, w, h);
+            ctx.drawImage(pic, Sx, Sy, W, H);
+            ctx.setTransform(0.2, 0, 0, 0.3, 20, 40);
+            ctx.drawImage(pic, Sx, Sy, W, H);
+        }
+    </script>
+</body>
+
+</html>
