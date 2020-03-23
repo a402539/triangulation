@@ -4,7 +4,7 @@
 
 <head>
     <title>imgExample</title>
-    <!-->
+    <!--
     <link rel="stylesheet" href="examples.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@0.7.7/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@0.7.7/dist/leaflet.js"></script>
@@ -26,13 +26,18 @@
         // Размер холста равный 8х8 клеток
         example.width = 1000; example.height = 1000;
         pic.src = 'image.png';
-        ax = 0.6; ay = 0.5; Ax = 0.8; Ay = 0.2;
+        a = [[0, 0.2, 0.6, 1], [0, 0.3, 1]]; A = [[0, 0.2, 0.8, 1], [0, 0.4, 1]];
         pic.onload = function () { // Событие onLoad, ждём момента пока загрузится изображение
             // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
             sx = 0; sy = 0; w = pic.width; h = pic.height;
             ctx.drawImage(pic, sx, sy, w, h);
             ctx.fillStyle= 'red'; r = 5;
-            ctx.arc(sx+ax*w-r, sy+ay*h, r, 0, 360);
+            for (var i=1; i<a[0].length-1; i++) {
+                for (var j=1; j<a[1].length-1; j++) {
+                    ctx.arc(sx+a[0][i]*w-r, sy+a[1][j]*h, r, 0, 360);
+                }
+            }
+            ctx.fill();
             //Sx = 200; Sy = 200; W = 150; H = 200;
             // p(x,y) -> P(X,Y)
             // px = sx+cx*w, py = sy+cy*h
@@ -70,7 +75,7 @@
             // 
             //
             /////////////
-            p = [[100,200],[350,250],[250,400]]
+            p = [[50,200],[150,250],[250,400]]
             Sx = p[0][0]; Sy = p[0][1]; W = p[1][0]-p[0][0]; H = p[2][1]-p[0][1];
             a11 = (p[1][0]-p[0][0])/W; a12 = (p[2][0]-p[1][0])/H;
             a21 = (p[1][1]-p[0][1])/W; a22 = (p[2][1]-p[1][1])/H;
@@ -79,13 +84,21 @@
             p.push([a11*Sx+a12*(Sy+H)+d1, a21*Sx+a22*(Sy+H)+d2]);
             console.log('вершины четырехугольника',p);
             console.log('первая строка матрицы преобразования',a11,a12,d1);
-            console.log('вторая строка матррицы преобразования',a21,a22,d2);
+            console.log('вторая строка матрицы преобразования',a21,a22,d2);
             ctx.setTransform(a11, a12, a21, a22, d1, d2);
-            ctx.drawImage(pic, sx, sy, ax*w, ay*h, Sx, Sy, Ax*W, Ay*H);
-            ctx.drawImage(pic, sx+ax*w, sy, (1-ax)*w, ay*h, Sx+Ax*W, Sy, (1-Ax)*W, Ay*H);
-            ctx.drawImage(pic, sx, sy+ay*h, ax*w, (1-ay)*h, Sx, Sy+Ay*H, Ax*W, (1-Ay)*H);
-            ctx.drawImage(pic, sx+ax*w, sy+ay*h, (1-ax)*w, (1-ay)*h, Sx+Ax*W, Sy+Ay*H, (1-Ax)*W, (1-Ay)*H);
-            ctx.arc(Sx+Ax*W-r, Sy+Ay*H, r, 0, 360);
+            for (var i=0; i<a[0].length-1; i++) {
+                ax = a[0][i]; aX = a[0][i+1];
+                Ax = A[0][i]; AX = A[0][i+1];
+                for (var j=0; j<a[1].length-1; j++) {
+                    ay = a[1][j]; aY = a[1][j+1];
+                    Ay = A[0][j]; AY = A[1][j+1];
+                    ctx.drawImage(pic, sx+ax*w, sy+ay*h, (aX-ax)*w, (aY-ay)*h, Sx+Ax*W, Sy+Ay*H, (AX-Ax)*W, (AY-Ay)*H);
+                    //ctx.drawImage(pic, sx+aX*w, sy+ay*h, (aX-ax)*w, (aY-ay)*h, Sx+AX*W, Sy+Ay*H, (AX-Ax)*W, (AY-Ay)*H);
+                    //ctx.drawImage(pic, sx+ax*w, sy+aY*h, ax*w, (1-ay)*h, Sx, Sy+Ay*H, Ax*W, (1-Ay)*H);
+                    //ctx.drawImage(pic, sx+ax*w, sy+ay*h, (1-ax)*w, (1-ay)*h, Sx+Ax*W, Sy+Ay*H, (1-Ax)*W, (1-Ay)*H);
+                    if (i && j) ctx.arc(Sx+Ax*W-r, Sy+Ay*H, r, 0, 360);
+                }
+            };
             ctx.fill();
         }
     </script>
