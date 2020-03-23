@@ -32,10 +32,14 @@
             ctx.fillStyle= 'red'; r = 5;
             ctx.arc(sx+ax*w-r, sy+ay*h, r, 0, 360);
             Sx = 200; Sy = 200; W = 150; H = 200;
-            // (sx+ax.w, sy+ay.h) -> (Sx+Ax*W, Sy+Ay*H)
-            // (x,y) -> (X,Y)
-            // x = sx+ax*w, y = sy+ay*h
-            // X = Sx+Ax*W, Y = Sy+Ay*H
+            // p(x,y) -> P(X,Y)
+            // px = sx+cx*w, py = sy+cy*h
+            // Px = Sx+cx*W, Py = Sy+cy*H
+            // Px = Sx+(px-sx)*W/w, Py = Sy+(py-sy)*H/h
+            // (px, py) -> (Sx+(px-sx)*W/w, Sy+(py-sy)*H/h)
+            // матрица преобразования
+            // ( W/w  0   ) Sx-sx*W/w
+            // ( 0    H/h ) Sy-sy*H/h
             ctx.setTransform(1/3,.8,.7,1/2,20,40);
             ctx.drawImage(pic, sx, sy, ax*w, ay*h, Sx, Sy, Ax*W, Ay*H);
             ctx.drawImage(pic, sx+ax*w, sy, (1-ax)*w, ay*h, Sx+Ax*W, Sy, (1-Ax)*W, Ay*H);
