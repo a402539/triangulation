@@ -24,13 +24,22 @@
             ctx = example.getContext('2d'), // Контекст холста
             pic = new Image(); // "Создаём" изображение
         // Размер холста равный 8х8 клеток
-        example.width = 1000; example.height = 1000;
+        example.width = 1000; example.height = 500;
+        pic.crossOrigin = "Anonymous";
         pic.src = 'image.png';
-        a = [[0, 0.2, 1], [0, 0.3, 1]]; A = [[0, 0.8, 1], [0, 0.4, 1]];
+        //a = [[0, 0.2, 1], [0, 0.3, 1]]; A = [[0, 0.8, 1], [0, 0.4, 1]];
         pic.onload = function () { // Событие onLoad, ждём момента пока загрузится изображение
             // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
             sx = 0; sy = 0; w = pic.width; h = pic.height;
-            ctx.drawImage(pic, sx, sy, w, h);
+            ctx.drawImage(pic, sx, sy, w, h, 0, 0, 200, 200);
+            r = ctx.getImageData(0.,0.,100.,100.);
+            for (var i=10000;i<20000;i=i+4) {
+                r.data[i+3]=0;
+            }
+            ctx.putImageData(r,300,200);
+            drawGraph(ctx, P, edges, false);
+            ctx.drawImage(pic, sx, sy, w, h, 500, 100, 200, 200);
+            /*
             ctx.fillStyle= 'red'; r = 5;
             for (var i=1; i<a[0].length-1; i++) {
                 for (var j=1; j<a[1].length-1; j++) {
@@ -38,69 +47,299 @@
                 }
             }
             ctx.fill();
-            //Sx = 200; Sy = 200; W = 150; H = 200;
-            // p(x,y) -> P(X,Y)
-            // px = sx+cx*w, py = sy+cy*h
-            // Px = Sx+cx*W, Py = Sy+cy*H
-            // Px = Sx+(px-sx)*W/w, Py = Sy+(py-sy)*H/h
-            // (px, py) -> (Sx+(px-sx)*W/w, Sy+(py-sy)*H/h)
-            // матрица преобразования
-            // ( W/w  0   ) Sx-sx*W/w
-            // ( 0    H/h ) Sy-sy*H/h
-            ///////////// преобразование прямоугольника в четырехугольник
-            // a11 a12 d1
-            // a21 a22 d2
-            //             sx  sx+w sx+w sx
-            //             sy  sy   sy+h sy+h
-            //             1   1    1    1
-            //                                   p1x p2x p3x p4x
-            //                                   p1y p2y p3y p4y
-            // a11*sx+a12*sy+d1 = p1x
-            // a21*sx+a22*sy+d2 = p1y
-            //        a11*(sx+w)+a12*sy+d1 = p2x
-            //        a21*(sx+w)+a22*sy+d2 = p2y
-            //                   a11*(sx+w)+a12*(sy+h)+d1 = p3x
-            //                   a21*(sx+w)+a22*(sy+h)+d2 = p3y
-            //                              a11*sx+a12*(sy+h)+d1 = p4x
-            //                              a21*sx+a22*(sy+h)+d2 = p4y
-            // p2x-p1x=a11*w p2y-p1y=a21*w
-            // p3x-p2x=a12*h p3y-p2y=a22*h
-            ////
-            // a11 = (p2x-p1x)/w a12=(p3x-p2x)/h
-            // a21 = (p2y-p1y)/w a22=(p3y-p2y)/h
-            //    d1 = p1x - sx*(p2x-p1x)/w - sy*(p3x-p2x)/h
-            //    d2 = p1y - sx*(p2y-p1y)/w - sy*(p3y-p2y)/h
-            // p4x = a11*sx+a12*(sy+h)+d1
-            // p4y = a21*sx+a22*(sy+h)+d2
-            // 
-            //
-            /////////////
-            p = [[50,200],[150,250],[250,400]]
-            Sx = p[0][0]; Sy = p[0][1]; W = p[1][0]-p[0][0]; H = p[2][1]-p[0][1];
-            a11 = (p[1][0]-p[0][0])/W; a12 = (p[2][0]-p[1][0])/H;
-            a21 = (p[1][1]-p[0][1])/W; a22 = (p[2][1]-p[1][1])/H;
-            d1 = p[0][0]-Sx*(p[1][0]-p[0][0])/W-Sy*(p[2][0]-p[1][0])/H;
-            d2 = p[0][1]-Sx*(p[1][1]-p[0][1])/W-Sy*(p[2][1]-p[1][1])/H;
-            p.push([a11*Sx+a12*(Sy+H)+d1, a21*Sx+a22*(Sy+H)+d2]);
-            console.log('вершины четырехугольника',p);
-            console.log('первая строка матрицы преобразования',a11,a12,d1);
-            console.log('вторая строка матрицы преобразования',a21,a22,d2);
-            ctx.setTransform(a11, a12, a21, a22, d1, d2);
-            for (var i=0; i<a[0].length-1; i++) {
-                ax = a[0][i]; aX = a[0][i+1];
-                Ax = A[0][i]; AX = A[0][i+1];
-                for (var j=0; j<a[1].length-1; j++) {
-                    ay = a[1][j]; aY = a[1][j+1];
-                    Ay = A[0][j]; AY = A[1][j+1];
-                    ctx.drawImage(pic, sx+ax*w, sy+ay*h, (aX-ax)*w, (aY-ay)*h, Sx+Ax*W, Sy+Ay*H, (AX-Ax)*W, (AY-Ay)*H);
-                    //ctx.drawImage(pic, sx+aX*w, sy+ay*h, (aX-ax)*w, (aY-ay)*h, Sx+AX*W, Sy+Ay*H, (AX-Ax)*W, (AY-Ay)*H);
-                    //ctx.drawImage(pic, sx+ax*w, sy+aY*h, ax*w, (1-ay)*h, Sx, Sy+Ay*H, Ax*W, (1-Ay)*H);
-                    //ctx.drawImage(pic, sx+ax*w, sy+ay*h, (1-ax)*w, (1-ay)*h, Sx+Ax*W, Sy+Ay*H, (1-Ax)*W, (1-Ay)*H);
-                    if (i && j) ctx.arc(Sx+Ax*W-r, Sy+Ay*H, r, 0, 360);
+            */
+        }
+
+        //Sx = 200; Sy = 200; W = 150; H = 200;
+        // p(x,y) -> P(X,Y)
+        // px = sx+cx*w, py = sy+cy*h
+        // Px = Sx+cx*W, Py = Sy+cy*H
+        // Px = Sx+(px-sx)*W/w, Py = Sy+(py-sy)*H/h
+        // (px, py) -> (Sx+(px-sx)*W/w, Sy+(py-sy)*H/h)
+        // матрица преобразования
+        // ( W/w  0   ) Sx-sx*W/w
+        // ( 0    H/h ) Sy-sy*H/h
+        ///////////// преобразование прямоугольника в четырехугольник
+        // a11 a12 d1
+        // a21 a22 d2
+        //             sx  sx+w sx+w sx
+        //             sy  sy   sy+h sy+h
+        //             1   1    1    1
+        //                                   p1x p2x p3x p4x
+        //                                   p1y p2y p3y p4y
+        // a11*sx+a12*sy+d1 = p1x
+        // a21*sx+a22*sy+d2 = p1y
+        //        a11*(sx+w)+a12*sy+d1 = p2x
+        //        a21*(sx+w)+a22*sy+d2 = p2y
+        //                   a11*(sx+w)+a12*(sy+h)+d1 = p3x
+        //                   a21*(sx+w)+a22*(sy+h)+d2 = p3y
+        //                              a11*sx+a12*(sy+h)+d1 = p4x
+        //                              a21*sx+a22*(sy+h)+d2 = p4y
+        // p2x-p1x=a11*w p2y-p1y=a21*w
+        // p3x-p2x=a12*h p3y-p2y=a22*h
+        ////
+        // a11 = (p2x-p1x)/w a12=(p3x-p2x)/h
+        // a21 = (p2y-p1y)/w a22=(p3y-p2y)/h
+        //    d1 = p1x - sx*(p2x-p1x)/w - sy*(p3x-p2x)/h
+        //    d2 = p1y - sx*(p2y-p1y)/w - sy*(p3y-p2y)/h
+        // p4x = a11*sx+a12*(sy+h)+d1
+        // p4y = a21*sx+a22*(sy+h)+d2
+        // 
+        //
+        /////////////
+        // На плоскости даны точки прообраза P и образа Q (в виде матриц 2 x n из векторов p и q)
+        // Ищем преобразование F:u->v произвольной точки u прообраза в точку v образа
+        // в виде P * G(P,u) * Q = v, где G(P,u) - вектор n x 1, удовлетворяющий условиям:
+        // 1. интерполяция G[i](P,p[j]) = delta(i,j)
+        // 2. положительность внутри выпуклой оболочки
+        //
+        // для этого в граничных и внутренних точках выпуклой оболочки выбираем преобразование по-разному
+        // пусть граничные точки p упорядочены против часовой стрелки
+        //
+        // s(t1,t2,t3) = det(<t1.x,t1.y,1|t2.x,t2.y,1|t3.x,t3.y,1>)
+        // - определитль матрицы 3 x 3, по модулю равный удвоенной площади треугольника t1,t2,t3
+        //   и положительный при ориентации t1,t2,t3 против часовой стрелки
+        // d(t1,t2) = (t1.x-t2.x)^2+(t1.y-t2.y)^2
+        //
+        // преобразование в граничных точках
+        //
+        // G(i,u) = A(i,u) * B(i,u) / (A(i,p[i]) * B(i,p[i])),
+        //  где 
+        //   индекс i пробегает по граничным точкам
+        //   A(i,u) = s(p[i+2],p[i+3],u)*s(p[i+3],p[i+4],u)*..*s(p[i+m-1],p[i+m],u)
+        //      учитываются только граничные точки p
+        //      m - число граничных точек,
+        //      в произведении участвуют m-2 сомножителей из m возможных
+        //      исключаются сомножители s(p[i-1],p[i],u), s(p[i],p[i+1],u)
+        //      индексы циклически повторяются, например, m+1 приравниявается 1, m+2 заменяется на 2, и т.д.
+        //   B(i,u) = d(p[1],u)*d(p[2],u)*..*d(p[k],u)
+        //      учитываются только внутренние точки p
+        //      k - число внутренних точек
+        //      в произведении участвуют все k возможных сомножителя
+        //
+        //  свойства
+        //  G(i,p[j]) = delta(i,j)
+        //      если j = i, то все сомножители ненулевые, 
+        //          как площади треугольников p[k],p[k+1],p[i], где k не равно i или i-1
+        //              поскольку отрезок p[k],p[k+1] составляет ребро границы, а точка p[i] отличается от них
+        //      если j = i+1, то сомножитель s(p[i+1],p[i+2],p[j]) нулевой
+        //      если j = i-1, то сомножитель s(p[i-2],p[i-1],p[j]) нулевой
+        //      иначе два сомножителя s(p[j-1],p[j],p[j]) и s(p[j],p[j+1],p[j]) равны нулю
+        //  G(i,u) >= 0 для всех точек внутри и на границе выпуклой оболочки
+        //      все сомножители неотрицательны, как площади треугольников, ориентированных против часовой стрелки
+        //  G(i,u) = 0
+        //      1) в граничных и внутренних точках P
+        //      2) на отрезке p[i-2],p[i-1]
+        //       и больше нигде в выпуклой оболочке
+        //
+        // преобразование в граничных точках
+        //
+        // G(i,u) = B(i,u) / B(i,p[i]),
+        //  где
+        //   индекс i пробегает по внутренним точкам
+        //   B(i,u) = d(p[i+1],u)*d(p[i+2],u)*..*d(p[i+k-1],u)
+        //      учитываются все точки, и граничные, и внутренние
+        //      в произведении участвуют n-1 из n возможных сомножителей
+        //      исключается сомножитель d(p[i],u)
+        //
+        // свойства
+        // G(i,p[j]) = delta(i,j)
+        // G(i,u) >= 0 для всех точек u плоскости
+        // G(i,u) = 0 только для n-1 точек p[j], j не равно i
+        // 
+        ///////////// 
+        class Point {
+            constructor (x,y) {
+                this.x = x;
+                this.y = y;
+            }
+        }
+        function s(p,q,r) {
+        //  p.x q.x r.x
+        //  p.y q.y r.x
+        //   1   1   1
+            return p.x*(q.y-r.x)+q.x*(r.x-p.y)+r.x*(p.y-q.y);
+        }
+        function d(p,q) {
+            return (p.x-q.x)*(p.x-q.x)+(p.y-q.y)*(p.y-q.y);
+        }
+        function Left_index(points) {
+            // Finding the left most point
+            minn = 0;
+            for (i = 0; i < points.length; i++){
+                if (points[i].x < points[minn].x ||
+                    (points[i].x == points[minn].x 
+                    && points[i].y > points[minn].y))
+                    minn = i;
+            };
+            return minn            
+        }
+        function convexHull_wrapping(points){
+
+            console.log('выпуклая оболочка множества точек',points);
+            n = points.length;
+            // There must be at least 3 points
+            if (n < 3) return;
+            // Find the leftmost point 
+            l = Left_index(points);
+            hull = []; in_hull = [];
+            /*
+            Start from leftmost point, keep moving counterclockwise 
+	        until reach the start point again. This loop runs O(h) 
+	        times where h is number of points in result or output. 
+            */
+	        p = l;
+            q = 0;
+            while(true){    
+                // Add current point to result 
+                hull.push(p);
+                console.log('  добавляем точку с индексом',p);
+                /*
+		        Search for a point ' q' such that 
+                orientation(p, x, q) is counterclockwise for all points 'x' . 
+                The idea is to keep track of last visited most counterclock-wise point in q. 
+                If any point 'i' is more counterclock-wise than q, then update q. 
+                */
+		        q = (p + 1) % n;
+
+		        for (i=0; i<n; i++){
+			
+			        // If i is more counterclockwise 
+			        // than current q, then update q 
+			        if (s(points[p], points[i], points[q]) > 0)
+                        //(orientation(points[p], points[i], points[q]) == 2)
+				        q = i;
+                };
+                /*
+                Now q is the most counterclockwise with respect to p 
+                Set p as q for next iteration, so that q is added to result 'hull' 
+                */
+                p = q;
+
+                // While we don' t come to first point
+                if (p == l) break;
+            };
+            return hull;
+        }
+        function meanPointOfHull(P,hull){
+            hl = hull.length;
+            return new Point(
+                hull.map(i=>P[i].x).reduce((x,y)=>x+y)/hl,
+                hull.map(i=>P[i].y).reduce((x,y)=>x+y)/hl);
+        }
+        function f(P,Q,hull,u) {
+            n = P.length; m = hull.length;
+            v = new Point(0,0);
+            for (var i=0; i<P.length; i++) {
+                Giu = 1;
+                pi = P[i]; qi = Q[i];
+                hi = hull.indexOf(i);
+                for (var j=0; j<P.length; j++) {
+                    if (hi != -1) {
+                        // граничная точка
+                        // A(i,u) = s(p[i+2],p[i+3],u)*s(p[i+3],p[i+4],u)*..*s(p[i+m-1],p[i+m],u)
+                        // i = hull[hi]
+                        // j != hull[(hi+1)%m]
+                        pj = P[j];
+                        hj = hull.indexOf(j);
+                        if (j != i) {
+                            Giu = Giu * d(pj, u)/d(pj,pi);
+                            hjp1 = hull[(hj+1)%m];
+                            if (hj != -1 && hjp1 != hi){
+                                // i,j - индексы граничных точек, 
+                                // точка с индексом j не является на контуре следующей за точкой с индексом i
+                                pk = P[hjp1];
+                                Giu = Giu * s(pj, pk, u)/s(pj, pk, pi);
+                            }
+                        }
+                        // B(i,u) = d(p[1],u)*d(p[2],u)*..*d(p[k],u)
+                    }
+                    else {
+                        // внутренняя точка
+                        // G(i,u) = B(i,u) / B(i,p[i]),
+                        // где
+                        // индекс i пробегает по внутренним точкам
+                        // B(i,u) = d(p[i+1],u)*d(p[i+2],u)*..*d(p[i+k-1],u)
+                        if (j==i) continue;
+                        pj = P[j];
+                        Giu = Giu * d(pj, u)/d(pj,pi);
+                    }
                 }
+                v = new Point(v.x + Giu*qi.x, v.y + Giu*qi.y);
+            }
+            return v;
+        }
+        function drawGraph(ctx,points, edges, only = true){
+            len = points.length;
+            if (len == 0) return;
+            //var canvas=document.getElementById("canvas1")
+            //canvasClear(canvas);
+            //ctx = canvas.getContext('2d');
+            ctx.fillStyle = 'green';//'#f00';
+            ctx.font = "12px Arial";
+            drawCircle(ctx, points[len-1], len-1);
+            for (d in points) {
+                drawCircle(ctx, points[d], d);
             };
             ctx.fill();
+            if (only || edges.length == 0) return;
+            //ctx.beginPath();
+            for (d in edges) {
+                left = edges[d][0]; right = edges[d][1];
+                ctx.moveTo(points[left].x, points[left].y);
+                ctx.lineTo(points[right].x, points[right].y);
+            }
+        //ctx.closePath();
+        ctx.stroke();
+        };
+        function drawCircle(ctx, center, text, coords = false){
+            // ctx.moveTo(center.x + radius, center.y);
+            ctx.beginPath();
+            ctx.arc(center.x, center.y, radius, 0, Math.PI*2);
+			ctx.fill();
+            ctx.strokeText(text+(coords)?'('+center.x.toFixed(0)+','+center.y.toFixed(0)+')':'',
+                center.x + delta.x, center.y + delta.y);
+
         }
+        P = [new Point(50,200), new Point(150,250), new Point(250,400), new Point(100,200)];
+        Q = [new Point(150,200), new Point(150,150), new Point(50,300), new Point(300,100)];
+        hull = convexHull_wrapping(P);
+        u = meanPointOfHull(P,hull);
+        v = f(P,Q,hull,u);
+        res = 0;
+        for(i=0;i<P.length;i++){
+            fi=f(P,Q,hull,P[i]); qi=Q[i];
+            res = res + d(fi,qi);
+        }
+        console.log('Квадрат ошибки интерполяции',res);
+        /*
+        Sx = p[0][0]; Sy = p[0][1]; W = p[1][0]-p[0][0]; H = p[2][1]-p[0][1];
+        a11 = (p[1][0]-p[0][0])/W; a12 = (p[2][0]-p[1][0])/H;
+        a21 = (p[1][1]-p[0][1])/W; a22 = (p[2][1]-p[1][1])/H;
+        d1 = p[0][0]-Sx*(p[1][0]-p[0][0])/W-Sy*(p[2][0]-p[1][0])/H;
+        d2 = p[0][1]-Sx*(p[1][1]-p[0][1])/W-Sy*(p[2][1]-p[1][1])/H;
+        p.push([a11*Sx+a12*(Sy+H)+d1, a21*Sx+a22*(Sy+H)+d2]);
+        console.log('вершины четырехугольника',p);
+        console.log('первая строка матрицы преобразования',a11,a12,d1);
+        console.log('вторая строка матрицы преобразования',a21,a22,d2);
+        //ctx.setTransform(a11, a12, a21, a22, d1, d2);
+        for (var i=0; i<a[0].length-1; i++) {
+            ax = a[0][i]; aX = a[0][i+1];
+            Ax = A[0][i]; AX = A[0][i+1];
+            for (var j=0; j<a[1].length-1; j++) {
+                ay = a[1][j]; aY = a[1][j+1];
+                Ay = A[0][j]; AY = A[1][j+1];
+                ctx.drawImage(pic, sx+ax*w, sy+ay*h, (aX-ax)*w, (aY-ay)*h, Sx+Ax*W, Sy+Ay*H, (AX-Ax)*W, (AY-Ay)*H);
+                //ctx.drawImage(pic, sx+aX*w, sy+ay*h, (aX-ax)*w, (aY-ay)*h, Sx+AX*W, Sy+Ay*H, (AX-Ax)*W, (AY-Ay)*H);
+                //ctx.drawImage(pic, sx+ax*w, sy+aY*h, ax*w, (1-ay)*h, Sx, Sy+Ay*H, Ax*W, (1-Ay)*H);
+                //ctx.drawImage(pic, sx+ax*w, sy+ay*h, (1-ax)*w, (1-ay)*h, Sx+Ax*W, Sy+Ay*H, (1-Ax)*W, (1-Ay)*H);
+                if (i && j) ctx.arc(Sx+Ax*W-r, Sy+Ay*H, r, 0, 360);
+            }
+        };
+        ctx.fill();
+        */
+        var radius = 5; delta = new Point(-20,20);
+        edges = hull.map((cv,i)=>[cv,hull[(i+1)%hull.length]]);
     </script>
 </body>
 
