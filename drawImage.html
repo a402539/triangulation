@@ -28,62 +28,6 @@
         pic.crossOrigin = "Anonymous";
         pic.src = 'image.png';
         //a = [[0, 0.2, 1], [0, 0.3, 1]]; A = [[0, 0.8, 1], [0, 0.4, 1]];
-        pic.onload = function () { // Событие onLoad, ждём момента пока загрузится изображение
-            // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
-            sx = 0; sy = 0; w = pic.width; h = pic.height;
-            ctx.drawImage(pic, sx, sy, w, h, 0, 0, 200, 200);
-            r = ctx.getImageData(0,0,200,200);
-            /*
-            for (var i=10000;i<20000;i=i+4) {
-                r.data[i+3]=0;
-            }
-            */
-            rd = r.data; rw = r.width; rh = r.height;
-            border = 10;
-            var nd = new Uint8ClampedArray(rd.length);
-            function newpixel(i,j){
-                //return [parseInt(0.5*(i-border)+0.5*(rw-border-i)), parseInt(0.3*(j-border)+0.7*(rh-border-j))];
-                return [20+parseInt(0.8*i+0.001*j**2), 40+parseInt(i/5+j**2/150)];
-            }
-            function pixel(i,j){
-                return 4*rh*i+4*j;
-            }
-            function fillBorder(){
-                for(var iw=0;iw<border;iw++){
-                    for(var ih=0;ih<border;ih++){
-                        nd[pixel(iw,ih)+1]=255;nd[pixel(iw,ih)+3]=255;
-                        nd[pixel(rw-border+iw,ih)+1]=255;nd[pixel(rw-border+iw,ih)+3]=255;
-                        nd[pixel(iw,rh-border+ih)+1]=255;nd[pixel(iw,rh-border+ih)+3]=255;
-                        nd[pixel(rw-border+iw,rh-border+ih)+1]=255;nd[pixel(rw-border+iw,rh-border+ih)+3]=255;
-                    }
-                }
-            }
-            fillBorder();
-            for(var iw_=border;iw_<rw-border;iw_++){
-                for(var ih_=border;ih_<rh-border;ih_++){
-                    oldp=pixel(iw_,ih_); 
-                    np=newpixel(iw_,ih_);
-                    if (np[0]<border || np[0]>=rw-border || np[1]<border || np[1]>=rh-border) continue;
-                    newp = pixel(np[0],np[1]);
-                    for(k=0;k<4;k++){
-                        nd[newp+k]=rd[oldp+k];
-                    }
-                }
-            }
-            var imd = new ImageData(nd,rw,rh);
-            ctx.putImageData(imd,300,200);
-            drawGraph(ctx, P, edges, false);
-            //ctx.drawImage(pic, sx, sy, w, h, 500, 100, 200, 200);
-            /*
-            ctx.fillStyle= 'red'; r = 5;
-            for (var i=1; i<a[0].length-1; i++) {
-                for (var j=1; j<a[1].length-1; j++) {
-                    ctx.arc(sx+a[0][i]*w-r, sy+a[1][j]*h, r, 0, 360);
-                }
-            }
-            ctx.fill();
-            */
-        }
 
         //Sx = 200; Sy = 200; W = 150; H = 200;
         // p(x,y) -> P(X,Y)
@@ -279,12 +223,14 @@
                         hj = hull.indexOf(j);
                         if (j != i) {
                             Giu = Giu * d(pj, u)/d(pj,pi);
+                            if (Giu==0) break;
                             hjp1 = hull[(hj+1)%m];
                             if (hj != -1 && hjp1 != hi){
                                 // i,j - индексы граничных точек, 
                                 // точка с индексом j не является на контуре следующей за точкой с индексом i
                                 pk = P[hjp1];
                                 Giu = Giu * s(pj, pk, u)/s(pj, pk, pi);
+                                if (Giu==0) break;
                             }
                         }
                         // B(i,u) = d(p[1],u)*d(p[2],u)*..*d(p[k],u)
@@ -298,8 +244,10 @@
                         if (j==i) continue;
                         pj = P[j];
                         Giu = Giu * d(pj, u)/d(pj,pi);
+                        if (Giu==0) break;
                     }
                 }
+                if (Giu==0) continue;
                 v = new Point(v.x + Giu*qi.x, v.y + Giu*qi.y);
             }
             return v;
@@ -375,6 +323,70 @@
         */
         var radius = 5; delta = new Point(-20,20);
         edges = hull.map((cv,i)=>[cv,hull[(i+1)%hull.length]]);
+
+        pic.onload = function () { // Событие onLoad, ждём момента пока загрузится изображение
+            // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
+            sx = 0; sy = 0; w = pic.width; h = pic.height;
+            ctx.drawImage(pic, sx, sy, w, h, 0, 0, 200, 200);
+            r = ctx.getImageData(0,0,200,200);
+            /*
+            for (var i=10000;i<20000;i=i+4) {
+                r.data[i+3]=0;
+            }
+            */
+            rd = r.data; rw = r.width; rh = r.height;
+            border = 10;
+            var nd = new Uint8ClampedArray(rd.length);
+            function newpixel(i,j){
+                //return [parseInt(0.5*(i-border)+0.5*(rw-border-i)), parseInt(0.3*(j-border)+0.7*(rh-border-j))];
+                return [20+parseInt(2.9*i+0.001*j**2), 40+parseInt(i/5+j**2/150)];
+            }
+            function pixel(i,j){
+                return 4*rh*i+4*j;
+            }
+            function fillBorder(){
+                for(var iw=0;iw<border;iw++){
+                    for(var ih=0;ih<border;ih++){
+                        nd[pixel(iw,ih)+1]=255;nd[pixel(iw,ih)+3]=255;
+                        nd[pixel(rw-border+iw,ih)+1]=255;nd[pixel(rw-border+iw,ih)+3]=255;
+                        nd[pixel(iw,rh-border+ih)+1]=255;nd[pixel(iw,rh-border+ih)+3]=255;
+                        nd[pixel(rw-border+iw,rh-border+ih)+1]=255;nd[pixel(rw-border+iw,rh-border+ih)+3]=255;
+                    }
+                }
+            }
+            fillBorder();
+            P = [new Point(0,0), new Point(rw,0), new Point(rw,rh), new Point(0,rh)];
+            Q = [new Point(0,0), new Point(rw/2,rh/3), new Point(rw,rh), new Point(0,rh/2)];
+            hull = convexHull_wrapping(P);
+            v = f(P,Q,hull,u);
+            for(var iw=border;iw<rw-border;iw++){
+                for(var ih=border;ih<rh-border;ih++){
+                    oldp=pixel(iw,ih); 
+                    //np=newpixel(iw_,ih_);
+                    fu=f(P,Q,hull,new Point(iw,ih));
+                    np=[parseInt(iw*fu.x/rw),parseInt(ih*fu.y/rh)]
+                    if (np[0]<border || np[0]>=rw-border || np[1]<border || np[1]>=rh-border) continue;
+                    newp = pixel(np[0],np[1]);
+                    for(k=0;k<4;k++){
+                        nd[newp+k]=rd[oldp+k];
+                    }
+                }
+            }
+            var imd = new ImageData(nd,rw,rh);
+            ctx.putImageData(imd,300,200);
+            drawGraph(ctx, P, edges, false);
+            //ctx.drawImage(pic, sx, sy, w, h, 500, 100, 200, 200);
+            /*
+            ctx.fillStyle= 'red'; r = 5;
+            for (var i=1; i<a[0].length-1; i++) {
+                for (var j=1; j<a[1].length-1; j++) {
+                    ctx.arc(sx+a[0][i]*w-r, sy+a[1][j]*h, r, 0, 360);
+                }
+            }
+            ctx.fill();
+            */
+        }
+        
     </script>
 </body>
 
