@@ -24,7 +24,7 @@
             ctx = example.getContext('2d'), // Контекст холста
             pic = new Image(); // "Создаём" изображение
         // Размер холста равный 8х8 клеток
-        example.width = 1000; example.height = 500;
+        example.width = 1000; example.height = 600;
         pic.crossOrigin = "Anonymous";
         pic.src = 'image.png';
         //a = [[0, 0.2, 1], [0, 0.3, 1]]; A = [[0, 0.8, 1], [0, 0.4, 1]];
@@ -32,13 +32,48 @@
             // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
             sx = 0; sy = 0; w = pic.width; h = pic.height;
             ctx.drawImage(pic, sx, sy, w, h, 0, 0, 200, 200);
-            r = ctx.getImageData(0.,0.,100.,100.);
+            r = ctx.getImageData(0,0,200,200);
+            /*
             for (var i=10000;i<20000;i=i+4) {
                 r.data[i+3]=0;
             }
-            ctx.putImageData(r,300,200);
+            */
+            rd = r.data; rw = r.width; rh = r.height;
+            border = 10;
+            var nd = new Uint8ClampedArray(rd.length);
+            function newpixel(i,j){
+                //return [parseInt(0.5*(i-border)+0.5*(rw-border-i)), parseInt(0.3*(j-border)+0.7*(rh-border-j))];
+                return [20+parseInt(0.8*i+0.001*j**2), 40+parseInt(i/5+j**2/150)];
+            }
+            function pixel(i,j){
+                return 4*rh*i+4*j;
+            }
+            function fillBorder(){
+                for(var iw=0;iw<border;iw++){
+                    for(var ih=0;ih<border;ih++){
+                        nd[pixel(iw,ih)+1]=255;nd[pixel(iw,ih)+3]=255;
+                        nd[pixel(rw-border+iw,ih)+1]=255;nd[pixel(rw-border+iw,ih)+3]=255;
+                        nd[pixel(iw,rh-border+ih)+1]=255;nd[pixel(iw,rh-border+ih)+3]=255;
+                        nd[pixel(rw-border+iw,rh-border+ih)+1]=255;nd[pixel(rw-border+iw,rh-border+ih)+3]=255;
+                    }
+                }
+            }
+            fillBorder();
+            for(var iw_=border;iw_<rw-border;iw_++){
+                for(var ih_=border;ih_<rh-border;ih_++){
+                    oldp=pixel(iw_,ih_); 
+                    np=newpixel(iw_,ih_);
+                    if (np[0]<border || np[0]>=rw-border || np[1]<border || np[1]>=rh-border) continue;
+                    newp = pixel(np[0],np[1]);
+                    for(k=0;k<4;k++){
+                        nd[newp+k]=rd[oldp+k];
+                    }
+                }
+            }
+            var imd = new ImageData(nd,rw,rh);
+            ctx.putImageData(imd,300,200);
             drawGraph(ctx, P, edges, false);
-            ctx.drawImage(pic, sx, sy, w, h, 500, 100, 200, 200);
+            //ctx.drawImage(pic, sx, sy, w, h, 500, 100, 200, 200);
             /*
             ctx.fillStyle= 'red'; r = 5;
             for (var i=1; i<a[0].length-1; i++) {
