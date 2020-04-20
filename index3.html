@@ -216,6 +216,46 @@
         };
         */
 
+        /*
+        Convex hull https://en.wikipedia.org/wiki/Convex_hull
+        Convex hull algorithms https://en.wikipedia.org/wiki/Convex_hull_algorithms
+        Algorithms
+        Known convex hull algorithms are listed below, ordered by the date of first publication. Time complexity of each
+        algorithm is stated in terms of the number of inputs points n and the number of points on the hull h. Note that
+        in the worst case h may be as large as n.
+        Gift wrapping, a.k.a. Jarvis march — O(nh)
+        One of the simplest (although not the most time efficient in the worst case) planar algorithms. Created
+        independently by Chand & Kapur in 1970 and R. A. Jarvis in 1973. It has O(nh) time complexity, where n is the
+        number of points in the set, and h is the number of points in the hull. In the worst case the complexity is
+        Θ(n2).
+        Graham scan — O(n log n)
+        A slightly more sophisticated, but much more efficient algorithm, published by Ronald Graham in 1972. If the
+        points are already sorted by one of the coordinates or by the angle to a fixed vector, then the algorithm takes
+        O(n) time.
+        Quickhull
+        Created independently in 1977 by W. Eddy and in 1978 by A. Bykat. Just like the quicksort algorithm, it has the
+        expected time complexity of O(n log n), but may degenerate to O(n2) in the worst case.
+        Divide and conquer — O(n log n)
+        Another O(n log n) algorithm, published in 1977 by Preparata and Hong. This algorithm is also applicable to the
+        three dimensional case.
+        Monotone chain, a.k.a. Andrew's algorithm— O(n log n)
+        Published in 1979 by A. M. Andrew. The algorithm can be seen as a variant of Graham scan which sorts the points
+        lexicographically by their coordinates. When the input is already sorted, the algorithm takes O(n) time.
+        Incremental convex hull algorithm — O(n log n)
+        Published in 1984 by Michael Kallay.
+        The ultimate planar convex hull algorithm — O(n log h)
+        The first optimal output-sensitive algorithm. It modifies the divide and conquer algorithm by using the
+        technique of marriage-before-conquest and low-dimensional linear programming. Published by Kirkpatrick and
+        Seidel in 1986.
+        Chan's algorithm — O(n log h)
+        A simpler optimal output-sensitive algorithm created by Chan in 1996. It combines gift wrapping with the
+        execution of an O(n log n) algorithm (such as Graham scan) on small subsets of the input.
+        //
+        Graham scan https://en.wikipedia.org/wiki/Graham_scan
+        JavaScript Graham's Scan Convex Hull Algorithm https://github.com/brian3kb/graham_scan_js
+        Graham's scan convex hull algorithm, updated for Python 3.x https://gist.github.com/arthur-e/5cf52962341310f438e96c1f3c3398b8
+        */
+
         function convexHull_wrapping(points){
 
             console.log('выпуклая оболочка множества точек',points);
@@ -264,7 +304,7 @@
             return hull;
         };
 
-         // Convex Hull | Monotone chain algorithm
+        // Convex Hull | Monotone chain algorithm
         // https://www.geeksforgeeks.org/convex-hull-monotone-chain-algorithm/
         
         // Algorithm Implementation/Geometry/Convex hull/Monotone chain
