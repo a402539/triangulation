@@ -3,7 +3,6 @@
 
 <head>
     <meta charset="utf-8">
-    <script type="text/javascript" src="MarchingSquaresOld.js" ></script>
     <title>Триангуляция множества точек</title>
     <!-- https://neerc.ifmo.ru/wiki/index.php?title=Триангуляция_полигонов_(ушная_%2B_монотонная) -->
     <!-- http://grafika.me/node/175 -->
@@ -69,10 +68,13 @@
    <script>
 				
    		  function contur(){
+<<<<<<< HEAD
+=======
 	   		  var canvas = document.createElement('canvas');
 	   		  var but1 = document.getElementById("but1");
 	   		  document.body.insertBefore(canvas, but1);
 					var ctx = canvas.getContext('2d');
+>>>>>>> e1d2fdf1b64dbfa1be7f5990aba2ce515a6e2b21
 					var image = document.getElementById('img1');
 	   		  var canvas = document.createElement('canvas');
 	   		  canvas.width = image.width; canvas.height = image.height;
@@ -89,63 +91,7 @@
 	        	else {ap[[ar[i],ar[i+1],ar[i+2],ar[i+3]]]=1;}
 	        };
 	        console.log(ap);
-	        // 0,0,0,0: 1756083
-					// 255,255,0,255: 52618
-					outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas);
         };
-				walkPerimeter = function(startX, startY){
-	        // Do some sanity checking, so we aren't
-	        // walking outside the image
-	        // technically this should never happen
-	        if (startX< 0){
-	            startX = 0;
-	        }
-	        if (startX> MarchingSquaresOld.sourceCanvas.width){
-	            startX= MarchingSquaresOld.sourceCanvas.width;
-	        }
-	        if (startY< 0){
-	            startY= 0;
-	        }
-	        if (startY> MarchingSquaresOld.sourceCanvas.height){
-	            startY= MarchingSquaresOld.sourceCanvas.height;
-	        }
-
-	        // Set up our return list
-	        var pointList =[];
-
-	        // Our current x and y positions, initialized
-	        // to the init values passed in
-	        var x = startX;
-	        var y = startY;
-
-	        // The main while loop, continues stepping until
-	        // we return to our initial points
-	        do{
-	            // Evaluate our state, and set up our next direction
-	            MarchingSquaresOld.step(x, y);
-
-	            // If our current point is within our image
-	            // add it to the list of points
-	            if (x >= 0 &&
-	                x < MarchingSquaresOld.sourceCanvas.width &&
-	                y >= 0 &&
-	                y < MarchingSquaresOld.sourceCanvas.height){
-	                pointList.push(x - 1, y - 1);//offset of 1 due to the 1 pixel padding added to sourceCanvas
-	            }
-
-	            switch (MarchingSquaresOld.nextStep){
-	                case MarchingSquaresOld.UP:    y--; break;
-	                case MarchingSquaresOld.LEFT:  x--; break;
-	                case MarchingSquaresOld.DOWN:  y++; break;
-	                case MarchingSquaresOld.RIGHT: x++; break;
-	                default:
-	                    break;
-	            }
-
-	        } while (x != startX || y != startY);
-
-	        return pointList;
-    		};        
 
 				var Point = function(x, y) {
             this.x = x;
