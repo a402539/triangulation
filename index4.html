@@ -62,13 +62,15 @@
             <td><canvas id="canvas25" width="200" height="200" style="background: #F4F4F4;"></canvas></td>
        </tr>
     </table>
-    <input type="button" onclick="contur()" value="Найти контур" />
+    <input id="but1" type="button" onclick="contur()" value="Найти контур" />
 	  <img id="img1" src="993.png"></img>
 
    <script>
 				
    		  function contur(){
-	   		  var canvas = document.getElementById('canvas11');
+	   		  var canvas = document.createElement('canvas');
+	   		  var but1 = document.getElementById("but1");
+	   		  document.body.insertBefore(canvas, but1);
 					var ctx = canvas.getContext('2d');
 					var image = document.getElementById('img1');
 					ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
