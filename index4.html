@@ -78,11 +78,11 @@
 	   		  canvas.width = image.width; canvas.height = image.height;
 	   		  var but1 = document.getElementById("but1");
 	   		  document.body.insertBefore(canvas, but1);
-					var ctx = canvas.getContext('2d');
+					var context = canvas.getContext('2d');
 					
-					ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+					context.drawImage(image, 0, 0, canvas.width, canvas.height);
 					
-					ar = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+					ar = context.getImageData(0, 0, canvas.width, canvas.height).data;
 	        ap = new Set();
 	        for(i=0;i<ar.length;i+=4){
 	        	if (ap.hasOwnProperty([ar[i],ar[i+1],ar[i+2],ar[i+3]])) {ap[[ar[i],ar[i+1],ar[i+2],ar[i+3]]]++;}
@@ -92,60 +92,11 @@
 	        // 0,0,0,0: 1756083
 					// 255,255,0,255: 52618
 					outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas);
+					context.fillStyle = "#FF0000";
+	        for(var i=0; i<outlinePoints.length; i+=2){
+	            context.fillRect(outlinePoints[i], outlinePoints[i+1], 1, 1);
+	        }
         };
-				walkPerimeter = function(startX, startY){
-	        // Do some sanity checking, so we aren't
-	        // walking outside the image
-	        // technically this should never happen
-	        if (startX< 0){
-	            startX = 0;
-	        }
-	        if (startX> MarchingSquaresOld.sourceCanvas.width){
-	            startX= MarchingSquaresOld.sourceCanvas.width;
-	        }
-	        if (startY< 0){
-	            startY= 0;
-	        }
-	        if (startY> MarchingSquaresOld.sourceCanvas.height){
-	            startY= MarchingSquaresOld.sourceCanvas.height;
-	        }
-
-	        // Set up our return list
-	        var pointList =[];
-
-	        // Our current x and y positions, initialized
-	        // to the init values passed in
-	        var x = startX;
-	        var y = startY;
-
-	        // The main while loop, continues stepping until
-	        // we return to our initial points
-	        do{
-	            // Evaluate our state, and set up our next direction
-	            MarchingSquaresOld.step(x, y);
-
-	            // If our current point is within our image
-	            // add it to the list of points
-	            if (x >= 0 &&
-	                x < MarchingSquaresOld.sourceCanvas.width &&
-	                y >= 0 &&
-	                y < MarchingSquaresOld.sourceCanvas.height){
-	                pointList.push(x - 1, y - 1);//offset of 1 due to the 1 pixel padding added to sourceCanvas
-	            }
-
-	            switch (MarchingSquaresOld.nextStep){
-	                case MarchingSquaresOld.UP:    y--; break;
-	                case MarchingSquaresOld.LEFT:  x--; break;
-	                case MarchingSquaresOld.DOWN:  y++; break;
-	                case MarchingSquaresOld.RIGHT: x++; break;
-	                default:
-	                    break;
-	            }
-
-	        } while (x != startX || y != startY);
-
-	        return pointList;
-    		};        
 
 				var Point = function(x, y) {
             this.x = x;
