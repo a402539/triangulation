@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="utf-8">
+    <script type="text/javascript" src="MarchingSquaresOld.js" ></script>
     <title>Триангуляция множества точек</title>
     <!-- https://neerc.ifmo.ru/wiki/index.php?title=Триангуляция_полигонов_(ушная_%2B_монотонная) -->
     <!-- http://grafika.me/node/175 -->
@@ -68,29 +69,37 @@
    <script>
 				
    		  function contur(){
-<<<<<<< HEAD
-=======
 	   		  var canvas = document.createElement('canvas');
 	   		  var but1 = document.getElementById("but1");
 	   		  document.body.insertBefore(canvas, but1);
 					var ctx = canvas.getContext('2d');
->>>>>>> e1d2fdf1b64dbfa1be7f5990aba2ce515a6e2b21
 					var image = document.getElementById('img1');
 	   		  var canvas = document.createElement('canvas');
 	   		  canvas.width = image.width; canvas.height = image.height;
 	   		  var but1 = document.getElementById("but1");
 	   		  document.body.insertBefore(canvas, but1);
-					var ctx = canvas.getContext('2d');
+					var context = canvas.getContext('2d');
 					
-					ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+					context.drawImage(image, 0, 0, canvas.width, canvas.height);
 					
-					ar = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+					ar = context.getImageData(0, 0, canvas.width, canvas.height).data;
 	        ap = new Set();
 	        for(i=0;i<ar.length;i+=4){
 	        	if (ap.hasOwnProperty([ar[i],ar[i+1],ar[i+2],ar[i+3]])) {ap[[ar[i],ar[i+1],ar[i+2],ar[i+3]]]++;}
 	        	else {ap[[ar[i],ar[i+1],ar[i+2],ar[i+3]]]=1;}
 	        };
 	        console.log(ap);
+	        // 0,0,0,0: 1756083
+					// 255,255,0,255: 52618
+					outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas);
+<<<<<<< HEAD
+=======
+					renderOutline();
+>>>>>>> 6923bed06f88c636ce35a2188b63a10fa2155e20
+					context.fillStyle = "#FF0000";
+	        for(var i=0; i<outlinePoints.length; i+=2){
+	            context.fillRect(outlinePoints[i], outlinePoints[i+1], 1, 1);
+	        }
         };
 
 				var Point = function(x, y) {
