@@ -68,10 +68,13 @@
    <script>
 				
    		  function contur(){
+<<<<<<< HEAD
+=======
 	   		  var canvas = document.createElement('canvas');
 	   		  var but1 = document.getElementById("but1");
 	   		  document.body.insertBefore(canvas, but1);
 					var ctx = canvas.getContext('2d');
+>>>>>>> e1d2fdf1b64dbfa1be7f5990aba2ce515a6e2b21
 					var image = document.getElementById('img1');
 	   		  var canvas = document.createElement('canvas');
 	   		  canvas.width = image.width; canvas.height = image.height;
