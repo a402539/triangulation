@@ -81,17 +81,30 @@
 	   		  document.body.insertBefore(canvas, but1);
 					var context = canvas.getContext('2d');
 					
-					context.globalAlpha = 0.9;
+					//context.globalAlpha = 0.9;
 					
 					context.drawImage(image, 0, 0, canvas.width, canvas.height);
 					
 					ar = context.getImageData(0, 0, canvas.width, canvas.height).data;
+	        
 	        ap = new Set();
 	        for(i=0;i<ar.length;i+=4){
 	        	if (ap.hasOwnProperty([ar[i],ar[i+1],ar[i+2],ar[i+3]])) {ap[[ar[i],ar[i+1],ar[i+2],ar[i+3]]]++;}
 	        	else {ap[[ar[i],ar[i+1],ar[i+2],ar[i+3]]]=1;}
 	        };
 	        console.log(ap);
+	        
+	        for(i=0; i<ar.length; i+=4)){
+	        	ar[i+3] = 255-ar[i+3];
+	        }
+	        
+	        ap = new Set();
+	        for(i=0;i<ar.length;i+=4){
+	        	if (ap.hasOwnProperty([ar[i],ar[i+1],ar[i+2],ar[i+3]])) {ap[[ar[i],ar[i+1],ar[i+2],ar[i+3]]]++;}
+	        	else {ap[[ar[i],ar[i+1],ar[i+2],ar[i+3]]]=1;}
+	        };
+	        console.log(ap);
+	        
 	        // 0,0,0,0: 1756083
 					// 255,255,0,255: 52618
 	        context.fillStyle = "#FF0000";
