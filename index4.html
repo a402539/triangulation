@@ -110,13 +110,15 @@
 	        
 	        // 0,0,0,0: 1756083
 					// 255,255,0,255: 52618
-	        context.fillStyle = "#FF0000";
+	        //context.fillStyle = "#FF0000";
 					//outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas);
 	        //for(var i=0; i<outlinePoints.length; i+=2){
 		      //context.fillRect(outlinePoints[i], outlinePoints[i+1], 1, 1);
+		      redgreenblue = ["red","green","blue"];
 	        pathPoints = MSQR(context, {path2D: false, maxShapes: 10});
 	        for(var i=0; i<pathPoints.length; i++){
 	        	p = pathPoints[i];
+	        	context.fillStyle = redgreenblue[i%3];
 		      	context.beginPath();
 						context.moveTo(p[0].x,p[0].y);
 		        for(var j=1; j<p.length; j+=2){
