@@ -92,14 +92,19 @@
 	        console.log(ap);
 	        // 0,0,0,0: 1756083
 					// 255,255,0,255: 52618
-					//outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas);
-	        let pathPoints = MSQR(context, {path2D: false, maxShapes: 10});
 	        context.fillStyle = "#FF0000";
+					//outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas);
+	        //for(var i=0; i<outlinePoints.length; i+=2){
+		      //context.fillRect(outlinePoints[i], outlinePoints[i+1], 1, 1);
+	        let pathPoints = MSQR(context, {path2D: false, maxShapes: 10});
 	        for(var i=0; i<pathPoints.length; i++){
 	        	p = pathPoints[i];
-		        for(var j=0; j<p.length; j+=2){
-		            context.fillRect(p[j], p[j+1], 1, 1);
+		      	context.beginPath();
+						context.moveTo(p[0].x,p[0].y);
+		        for(var j=1; j<p.length; j+=2){
+							context.lineTo([j].x,p[j].y);
 		        }
+						context.stroke();
 	      	}
         };
 
