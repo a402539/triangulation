@@ -85,23 +85,24 @@
 					
 					context.drawImage(image, 0, 0, canvas.width, canvas.height);
 					
-					ar = context.getImageData(0, 0, canvas.width, canvas.height).data;
+					ar = context.getImageData(0, 0, canvas.width, canvas.height);
+					ad = ar.data;
 	        
 	        ap = new Set();
-	        for(i=0;i<ar.length;i+=4){
-	        	if (ap.hasOwnProperty([ar[i],ar[i+1],ar[i+2],ar[i+3]])) {ap[[ar[i],ar[i+1],ar[i+2],ar[i+3]]]++;}
-	        	else {ap[[ar[i],ar[i+1],ar[i+2],ar[i+3]]]=1;}
+	        for(i=0;i<ad.length;i+=4){
+	        	if (ap.hasOwnProperty([ad[i],ad[i+1],ad[i+2],ad[i+3]])) {ap[[ad[i],ad[i+1],ad[i+2],ad[i+3]]]++;}
+	        	else {ap[[ad[i],ad[i+1],ad[i+2],ad[i+3]]]=1;}
 	        };
 	        console.log(ap);
 	        
-	        for(i=0; i<ar.length; i+=4){
-	        	ar[i+3] = 255-ar[i+3];
+	        for(i=0; i<ad.length; i+=4){
+	        	ad[i+3] = 255-ad[i+3];
 	        }
 	        
 	        ap = new Set();
-	        for(i=0;i<ar.length;i+=4){
-	        	if (ap.hasOwnProperty([ar[i],ar[i+1],ar[i+2],ar[i+3]])) {ap[[ar[i],ar[i+1],ar[i+2],ar[i+3]]]++;}
-	        	else {ap[[ar[i],ar[i+1],ar[i+2],ar[i+3]]]=1;}
+	        for(i=0;i<ad.length;i+=4){
+	        	if (ap.hasOwnProperty([ad[i],ad[i+1],ad[i+2],ad[i+3]])) {ap[[ad[i],ad[i+1],ad[i+2],ad[i+3]]]++;}
+	        	else {ap[[ad[i],ad[i+1],ad[i+2],ad[i+3]]]=1;}
 	        };
 	        console.log(ap);
 	        
