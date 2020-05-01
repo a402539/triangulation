@@ -373,5 +373,5 @@ MSQR.getBounds = function(points) {
 	}
 };
 
-export { MSQR as default };
+//export { MSQR as default };
 /*eslint-enable */
