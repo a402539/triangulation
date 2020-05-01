@@ -96,7 +96,7 @@
 					//outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas);
 	        //for(var i=0; i<outlinePoints.length; i+=2){
 		      //context.fillRect(outlinePoints[i], outlinePoints[i+1], 1, 1);
-	        let pathPoints = MSQR(context, {path2D: false, maxShapes: 10});
+	        pathPoints = MSQR(context, {path2D: false, maxShapes: 10});
 	        for(var i=0; i<pathPoints.length; i++){
 	        	p = pathPoints[i];
 		      	context.beginPath();
