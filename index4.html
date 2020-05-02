@@ -107,7 +107,7 @@
 					console.log(outlinePoints);
 					res.push(outlinePoints);
 					//ppath = points2path(outlinePoints);
-					al = 0.75;
+					al = 1;
 	        context.fillStyle = `rgba(255,255,255,${al})`;//"#FF0000";
 					context.beginPath();
 					ctx.globalCompositeOperation = "destination-out";
@@ -121,6 +121,7 @@
 					rgba_hist(context);
 					//al=0.25 {0,0,0,0: 2081101, 255,255,64,255:  128357, 255,255,0,255: 1533599, 255,255,255,64:  1839}
 					//al=0.5  {0,0,0,0: 2081101, 255,255,128,255: 128357, 255,255,0,255: 1533599, 255,255,255,128: 1839}
+					//al=0.75  0,0,0,0: 2081101, 255,255,191,255: 128357, 255,255,0,255: 1533599, 255,255,255,191: 1839}
 					context.globalCompositeOperation = "source-over";
 		    	//context.stroke(ppath);
 		      /*
