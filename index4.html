@@ -116,8 +116,8 @@
 					console.log(outlinePoints);
 					res.push(outlinePoints);
 					//ppath = points2path(outlinePoints);
-					ctx.globalCompositeOperation = "copy";
 					context.beginPath();
+					ctx.globalCompositeOperation = "copy";
 					context.moveTo(outlinePoints[0], outlinePoints[1]);
 	        for(var i=2; i<outlinePoints.length; i+=2){
 		      	//context.fillRect(outlinePoints[i], outlinePoints[i+1], 1, 1);
