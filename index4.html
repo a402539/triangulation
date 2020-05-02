@@ -137,7 +137,7 @@
 	      	*/
         };
 				function rgba_hist(context){
-					var ar = context.getImageData(0, 0, canvas.width, canvas.height);
+					var ar = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
 					var ad = ar.data;
 	        var ap = new Set();
 	        for(i=0;i<ad.length;i+=4){
