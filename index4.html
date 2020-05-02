@@ -112,13 +112,19 @@
 					// 255,255,0,255: 52618
 	        context.fillStyle = "#FF0000";
 					outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas);
+					console.log(outlinePoints);
+					ppath = points2path(outlinePoints);
+					/*
+					context.beginPath();
 					context.moveTo(outlinePoints[0], outlinePoints[1]);
 	        for(var i=2; i<outlinePoints.length; i+=2){
 		      	//context.fillRect(outlinePoints[i], outlinePoints[i+1], 1, 1);
 		      	context.lineTo(outlinePoints[i], outlinePoints[i+1]);
 		    	};
 		    	context.lineTo(outlinePoints[0], outlinePoints[1]);
-		    	context.stroke();
+		    	context.fill();
+		    	*/
+		    	context.fill(ppath);
 		      /*
 		      redgreenblue = ["red","green","blue"];
 	        pathPoints = MSQR(context, {path2D: false, maxShapes: 10, holes: true});
@@ -136,6 +142,17 @@
 	      	}
 	      	*/
         };
+        function points2path(points) {
+
+					var path = new Path2D(),
+						i = 0, point;
+
+					while(point = points[i++])
+						path.lineTo(point.x, point.y);
+
+					path.closePath();
+					return path
+				}
 
 				/*
 				var Point = function(x, y) {
