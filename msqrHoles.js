@@ -202,7 +202,7 @@ function MSQR(src, options) {
 		*/
 		
 /**/
-	// document.getElementById('res').appendChild(canvas);
+		document.getElementById('res').appendChild(canvas);
 		var res = MSQR(ctx1, {path2D: true, holes: true, maxShapes: 100});
 		return res.paths;
 	}
