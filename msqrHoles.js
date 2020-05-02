@@ -148,13 +148,9 @@ function MSQR(src, options) {
 
 	return {paths: paths, holes: holes};
 
-	function interesting(pixel, alpha){
-		if (options.holes) return pixel < 255-alpha; else return pixel>alpha;
-	}
-
 	/*
 		Holes
-	*/
+	 */
 	function traceHoles(path2d, bbox) {
 		var canvas = document.createElement('canvas'),
 			img = document.getElementById('img');
@@ -172,7 +168,6 @@ function MSQR(src, options) {
 		ctx1.fill(path2d);
 		// ctx1.stroke(path2d);
 
-		/*
 		var imageData = ctx1.getImageData(cx, cy, cw, ch);
 		var buf8 = new Uint8ClampedArray(imageData.data.buffer);
 		var data = new Uint32Array(imageData.data.buffer);
@@ -199,10 +194,9 @@ function MSQR(src, options) {
 
 		imageData.data.set(buf8);
 		ctx1.putImageData(imageData, 0, 0);
-		*/
-		
+
 /**/
-		document.getElementById('res').appendChild(canvas);
+	// document.getElementById('res').appendChild(canvas);
 		var res = MSQR(ctx1, {path2D: true, holes: true, maxShapes: 100});
 		return res.paths;
 	}
@@ -224,7 +218,7 @@ function MSQR(src, options) {
 
 		// start position
 		for(i = lastPos; i < l; i++) {
-			if (interesting(data[i]>>>24, alpha)){//((data[i]>>>24) > alpha) {
+			if ((data[i]>>>24) > alpha) {
 				start = lastPos = i;
 				break
 			}
@@ -263,7 +257,7 @@ function MSQR(src, options) {
 
 		// lookup pixel
 		function getState(x, y) {
-			return (x >= 0 && y >= 0 && x < cw && y < ch) ? interesting(data[y * cw + x]>>>24, alpha) : false //(data[y * cw + x]>>>24) > alpha : false
+			return (x >= 0 && y >= 0 && x < cw && y < ch) ? (data[y * cw + x]>>>24) > alpha : false
 		}
 
 		// Parse 2x2 pixels to determine next step direction.
