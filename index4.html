@@ -116,7 +116,7 @@
 					console.log(outlinePoints);
 					res.push(outlinePoints);
 					//ppath = points2path(outlinePoints);
-					ctx.globalCompositeOperation = "destination-out";
+					ctx.globalCompositeOperation = "source-out";
 					context.beginPath();
 					context.moveTo(outlinePoints[0], outlinePoints[1]);
 	        for(var i=2; i<outlinePoints.length; i+=2){
