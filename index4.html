@@ -107,7 +107,8 @@
 					console.log(outlinePoints);
 					res.push(outlinePoints);
 					//ppath = points2path(outlinePoints);
-	        context.fillStyle = "rgba(255,255,0,0.75";//"#FF0000";
+					al = 0.75;
+	        context.fillStyle = `rgba(255,0,255,${al})`;//"#FF0000";
 					context.beginPath();
 					//ctx.globalCompositeOperation = "destination-out";
 					context.moveTo(outlinePoints[0], outlinePoints[1]);
