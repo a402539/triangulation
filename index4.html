@@ -111,11 +111,11 @@
 	        // 0,0,0,0: 1756083
 					// 255,255,0,255: 52618
 					res = [];
-	        context.fillStyle = "#FF0000";
 	        outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas);
 					console.log(outlinePoints);
 					res.push(outlinePoints);
 					//ppath = points2path(outlinePoints);
+	        context.fillStyle = "rgba(255,255,0,0";//"#FF0000";
 					context.beginPath();
 					ctx.globalCompositeOperation = "destination-out";
 					context.moveTo(outlinePoints[0], outlinePoints[1]);
