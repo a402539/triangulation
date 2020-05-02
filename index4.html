@@ -83,16 +83,8 @@
 					
 					context.drawImage(image, 0, 0, canvas.width, canvas.height);
 					
-					ar = context.getImageData(0, 0, canvas.width, canvas.height);
-					ad = ar.data;
-	        
-	        ap = new Set();
-	        for(i=0;i<ad.length;i+=4){
-	        	if (ap.hasOwnProperty([ad[i],ad[i+1],ad[i+2],ad[i+3]])) {ap[[ad[i],ad[i+1],ad[i+2],ad[i+3]]]++;}
-	        	else {ap[[ad[i],ad[i+1],ad[i+2],ad[i+3]]]=1;}
-	        };
-	        console.log(ap);
-	        
+					rgba_hist(context);
+						        
 	        /*
 	        for(i=0; i<ad.length; i+=4){
 	        	ad[i+3] = 255-ad[i+3];
@@ -115,7 +107,7 @@
 					console.log(outlinePoints);
 					res.push(outlinePoints);
 					//ppath = points2path(outlinePoints);
-	        context.fillStyle = "rgba(255,255,0,0";//"#FF0000";
+	        context.fillStyle = "rgba(255,255,0,100";//"#FF0000";
 					context.beginPath();
 					//ctx.globalCompositeOperation = "destination-out";
 					context.moveTo(outlinePoints[0], outlinePoints[1]);
@@ -125,6 +117,7 @@
 		    	};
 		    	context.lineTo(outlinePoints[0], outlinePoints[1]);
 		    	context.fill();
+					rgba_hist(context);
 		    	//context.stroke(ppath);
 		      /*
 		      redgreenblue = ["red","green","blue"];
@@ -143,6 +136,16 @@
 	      	}
 	      	*/
         };
+				function rgba_hist(context){
+					var ar = context.getImageData(0, 0, canvas.width, canvas.height);
+					var ad = ar.data;
+	        var ap = new Set();
+	        for(i=0;i<ad.length;i+=4){
+	        	if (ap.hasOwnProperty([ad[i],ad[i+1],ad[i+2],ad[i+3]])) {ap[[ad[i],ad[i+1],ad[i+2],ad[i+3]]]++;}
+	        	else {ap[[ad[i],ad[i+1],ad[i+2],ad[i+3]]]=1;}
+	        };
+	        console.log(ap);
+				}
         function points2path(points) {
 
 					var path = new Path2D(),
