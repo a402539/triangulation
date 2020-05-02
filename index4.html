@@ -83,7 +83,7 @@
 					
 					context.drawImage(image, 0, 0, canvas.width, canvas.height);
 					
-					rgba_hist(context);
+					rgba_hist(context); // {0,0,0,0: 2082940, 255,255,0,255: 1661956}
 						        
 	        /*
 	        for(i=0; i<ad.length; i+=4){
@@ -107,7 +107,7 @@
 					console.log(outlinePoints);
 					res.push(outlinePoints);
 					//ppath = points2path(outlinePoints);
-					al = 0.25;
+					al = 0.5;
 	        context.fillStyle = `rgba(255,255,255,${al})`;//"#FF0000";
 					context.beginPath();
 					ctx.globalCompositeOperation = "destination-out";
@@ -119,6 +119,7 @@
 		    	context.lineTo(outlinePoints[0], outlinePoints[1]);
 		    	context.fill();
 					rgba_hist(context);
+					//al=0.25 {0,0,0,0: 2081101, 255,255,64,255: 128357, 255,255,0,255: 1533599, 255,255,255,64: 1839}
 					context.globalCompositeOperation = "source-over";
 		    	//context.stroke(ppath);
 		      /*
