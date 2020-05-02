@@ -116,7 +116,9 @@
 	        for(var i=2; i<outlinePoints.length; i+=2){
 		      	//context.fillRect(outlinePoints[i], outlinePoints[i+1], 1, 1);
 		      	context.lineTo(outlinePoints[i], outlinePoints[i+1]);
-		    	}
+		    	};
+		    	context.lineTo(outlinePoints[0], outlinePoints[1]);
+		    	context.fill();
 		      /*
 		      redgreenblue = ["red","green","blue"];
 	        pathPoints = MSQR(context, {path2D: false, maxShapes: 10, holes: true});
