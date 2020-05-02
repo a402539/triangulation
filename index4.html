@@ -14,22 +14,21 @@
 </head>
 
 <body>
-    <label>Задайте точки (x1, y1, x2, y2, и так далее):</label><br>
     <!--
+    <label>Задайте точки (x1, y1, x2, y2, и так далее):</label><br>
     // 20, 20, 100, 20, 100, 100, 20, 100
     // 10, 10, 100, 10, 100, 100, 10, 100, 60, 60
     // 10, 10, 100, 10, 100, 120, 50, 120, 60, 20, 140, 80
     // 10, 10, 100, 10, 150, 120, 50, 140, 60, 60, 40, 80, 70, 80
     // 10, 10, 160, 10, 160, 160, 10, 160, 40, 80, 70, 30
     // 30, 30, 160, 30, 160, 160, 30, 160, 70, 50, 40, 80
-    -->
     <input id="points1" value="30, 30, 160, 30, 160, 160, 30, 160, 60, 50, 140, 60" size="150" type="text" />
     <input type="button" onclick="update('1')" value="Нарисовать" />
     <table border=1>
         <tr>
             <td>Отсортированные точки</td>
             <td>Выпуклая оболочка</td>
-            <!--<td>Триангуляция выпуклой оболочки</td>-->
+            <td>Триангуляция выпуклой оболочки</td>
             <td>Триангуляция всех точек</td>
             <td>Универсальный граф</td>
             <td>Полигон</td>
@@ -41,18 +40,16 @@
             <td><canvas id="canvas15" width="200" height="200" style="background: #F4F4F4;"></canvas></td>
         </tr>
     </table>
-    <!--
     // 20, 20, 100, 20, 20, 100, 100, 100
     // 20, 20, 100, 20, 20, 100, 100, 100, 30, 50, 50, 60, 40, 90
     // 10, 10, 160, 10, 10, 160, 160, 160, 50, 40, 130, 90
-    -->
     <input id="points2" value="30, 30, 160, 30, 160, 160, 30, 160, 140, 50, 60, 60" size="150" type="text" />
     <input type="button" onclick="update('2')" value="Нарисовать" />
     <table border=1>
         <tr>
             <td>Исходные точки</td>
             <td>Выпуклая оболочка</td>
-            <!--<td>Триангуляция выпуклой оболочки</td>-->
+            <td>Триангуляция выпуклой оболочки</td>
             <td>Триангуляция всех точек</td>
             <td>Универсальный граф</td>
             <td>Полигон</td>
@@ -64,6 +61,7 @@
             <td><canvas id="canvas25" width="200" height="200" style="background: #F4F4F4;"></canvas></td>
        </tr>
     </table>
+    -->
     <input id="but1" type="button" onclick="contur()" value="Найти контур" />
 	  <img id="img1" src="847.png"></img>
 
@@ -134,6 +132,7 @@
 	      	*/
         };
 
+				/*
 				var Point = function(x, y) {
             this.x = x;
             this.y = y;
@@ -224,7 +223,7 @@
         //////////// Convex Hull | Set 1 (Jarvis’s Algorithm or Wrapping)
         //////////// https://www.geeksforgeeks.org/convex-hull-set-1-jarviss-algorithm-or-wrapping/
 
-        /*
+        //
         Following is the detailed algorithm.
 
         1) Initialize p as leftmost point.
@@ -232,25 +231,25 @@
         …..a) The next point q is the point such that the triplet (p, q, r) is counterclockwise for any other point r.
         …..b) next[p] = q (Store q as next of p in the output convex hull).
         …..c) p = q (Set p as q for next iteration).
-        */
+        //
 
         // конвертация в код javascript
 
-        /*
+        //
         C# program to find convex hull of a set of points. Refer
         https://www.geeksforgeeks.org/orientation-3-ordered-points/
         for explanation of orientation()
-        */
+        //
 
         // point class with x, y as point
-        /* это уже есть в коде
+        // это уже есть в коде
         class Point:
         def __init__(self, x, y):
         self.x = x
         self.y = y
-        */
+        //
 
-        /*
+        //
         function Left_index(points){
 
             // Finding the left most point
@@ -264,9 +263,8 @@
             };
             return minn
         };
-        */
+        //
 
-        /*
         function orientation(p, q, r){
             //
             //To find orientation of ordered triplet (p, q, r).
@@ -285,9 +283,7 @@
             else
                 return 2;
         };
-        */
 
-        /*
         Convex hull https://en.wikipedia.org/wiki/Convex_hull
         Convex hull algorithms https://en.wikipedia.org/wiki/Convex_hull_algorithms
         Algorithms
@@ -325,7 +321,6 @@
         Graham scan https://en.wikipedia.org/wiki/Graham_scan
         JavaScript Graham's Scan Convex Hull Algorithm https://github.com/brian3kb/graham_scan_js
         Graham's scan convex hull algorithm, updated for Python 3.x https://gist.github.com/arthur-e/5cf52962341310f438e96c1f3c3398b8
-        */
 
         function convexHull_wrapping(points){
 
@@ -336,23 +331,23 @@
             // Find the leftmost point 
             l = 0; //Left_index(points); // точки уже отсортированы
             hull = [];
-            /*
+            //
             Start from leftmost point, keep moving counterclockwise 
 	        until reach the start point again. This loop runs O(h) 
 	        times where h is number of points in result or output. 
-            */
+            //
 	        p = l;
             q = 0;
             while(true){    
                 // Add current point to result 
                 hull.push(p);
                 console.log('  добавляем точку с индексом',p);
-                /*
+                //
 		        Search for a point ' q' such that 
                 orientation(p, x, q) is counterclockwise for all points 'x' . 
                 The idea is to keep track of last visited most counterclock-wise point in q. 
                 If any point 'i' is more counterclock-wise than q, then update q. 
-                */
+                //
 		        q = (p + 1) % n;
 
 		        for (i=0; i<n; i++){
@@ -363,10 +358,10 @@
                         //(orientation(points[p], points[i], points[q]) == 2)
 				        q = i;
                 };
-                /*
+                //
                 Now q is the most counterclockwise with respect to p 
                 Set p as q for next iteration, so that q is added to result 'hull' 
-                */
+                //
                 p = q;
 
                 // While we don' t come to first point
@@ -384,14 +379,14 @@
         //
         // porting from Python code
         function convexHull_monotone(points){
-            /*
+            //
             Computes the convex hull of a set of 2D points.
 
             Input: an iterable sequence of (x, y) pairs representing the points.
             Output: a list of vertices of the convex hull in counter-clockwise order,
             starting from the vertex with the lexicographically smallest coordinates.
             Implements Andrew's monotone chain algorithm. O(n log n) complexity.
-            */
+            //
 
             // Sort the points lexicographically (tuples are compared lexicographically).
             // Remove duplicates to detect the case we have just one unique point.
@@ -404,11 +399,10 @@
             // 2D cross product of OA and OB vectors, i.e. z-component of their 3D cross product.
             // Returns a positive value, if OAB makes a counter-clockwise turn,
             // negative for clockwise turn, and zero if the points are collinear.
-            /* заменяется функцией det
+            // заменяется функцией det
             function cross(o, a, b) {
                 return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
             };
-            */
 
             // Build lower hull 
             console.log('строим нижнюю половину выпуклой оболочки');
@@ -580,9 +574,9 @@
             // ctx.moveTo(center.x + radius, center.y);
             ctx.beginPath();
             ctx.arc(center.x, center.y, radius, 0, Math.PI*2);
-			ctx.fill();
+						ctx.fill();
             ctx.strokeText(text+'('+center.x.toFixed(0)+','+center.y.toFixed(0)+')',
-             center.x + delta.x, center.y + delta.y);
+            center.x + delta.x, center.y + delta.y);
         }
 
         function drawGraph(points, edges, canvas, only = true){
@@ -685,12 +679,12 @@
         }
         function update(points_set){
             console.clear();
-            /*
+            //
             var _points = document.getElementById('points'+points_set);
             var points_list = getpoints(_points);
             var points = [...(new Set(points_list))].sort((a,b)=>(a.x<b.x || (a.x==b.x && a.y>b.y)?-1:1));
             document.getElementById('points'+points_set).value = points.map(p=>[p.x,p.y].join(', ')).join(', ');
-            */
+            //
             points = updatePoints(points_set);
             hull = convexHull_wrapping(points);
             hull2 = convexHull_monotone(points);
@@ -717,6 +711,7 @@
             new_edges = new_points.map((cv,i)=>[i,(i+1)%new_points.length]);
             drawGraph(new_points, new_edges, document.getElementById('canvas'+points_set+'5'), false);
         }
+        */
 
     </script>
 </body>
