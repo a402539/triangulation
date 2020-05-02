@@ -110,7 +110,7 @@
 					al = 0.5;
 	        context.fillStyle = `rgba(255,0,255,${al})`;//"#FF0000";
 					context.beginPath();
-					ctx.globalCompositeOperation = "copy";
+					ctx.globalCompositeOperation = "destination-over";
 					context.moveTo(outlinePoints[0], outlinePoints[1]);
 	        for(var i=2; i<outlinePoints.length; i+=2){
 		      	//context.fillRect(outlinePoints[i], outlinePoints[i+1], 1, 1);
