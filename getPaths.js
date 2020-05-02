@@ -31,7 +31,7 @@ function getPaths() {
 		console.log(x, y, red + " " + green + " " + blue + " " + alpha);  
 
 	};
-	let res = MSQR(ctx, {path2D: true, maxShapes: 100});
+	let res = MSQR(ctx, {path2D: false, maxShapes: 100});
 	console.log('getPaths', res);
 	res.paths.forEach((it, i) => {
 		ctx.stroke(it);
