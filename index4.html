@@ -111,7 +111,7 @@
 	        // 0,0,0,0: 1756083
 					// 255,255,0,255: 52618
 	        context.fillStyle = "#FF0000";
-					outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas);
+	        outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas);
 					console.log(outlinePoints);
 					ppath = points2path(outlinePoints);
 					/*
@@ -124,7 +124,7 @@
 		    	context.lineTo(outlinePoints[0], outlinePoints[1]);
 		    	context.fill();
 		    	*/
-		    	context.fill(ppath);
+		    	context.stroke(ppath);
 		      /*
 		      redgreenblue = ["red","green","blue"];
 	        pathPoints = MSQR(context, {path2D: false, maxShapes: 10, holes: true});
