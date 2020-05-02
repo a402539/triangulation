@@ -225,7 +225,7 @@ function MSQR(src, options) {
 
 		// start position
 		for(i = lastPos; i < l; i++) {
-			if interesting(data[i]>>>24, alpha, holes){//((data[i]>>>24) > alpha) {
+			if (interesting(data[i]>>>24, alpha, holes)){//((data[i]>>>24) > alpha) {
 				start = lastPos = i;
 				break
 			}
