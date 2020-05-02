@@ -68,7 +68,6 @@ function MSQR(src, options) {
 		doAlign     = !!options.align,
 		alignWeight = options.alignWeight || 0.95,
 		retPath     = !!options.path2D,
-		hole				= options.hole||false,
 		ctx2, inc;
 
 	// check bounds
@@ -149,8 +148,8 @@ function MSQR(src, options) {
 
 	return {paths: paths, holes: holes};
 
-	function interesting(pixel, alpha, hole){
-		if (hole) return pixel < 255-alpha; else return pixel>alpha;
+	function interesting(pixel, alpha){
+		if (options.holes) return pixel < 255-alpha; else return pixel>alpha;
 	}
 
 	/*
@@ -225,7 +224,7 @@ function MSQR(src, options) {
 
 		// start position
 		for(i = lastPos; i < l; i++) {
-			if (interesting(data[i]>>>24, alpha, hole)){//((data[i]>>>24) > alpha) {
+			if (interesting(data[i]>>>24, alpha)){//((data[i]>>>24) > alpha) {
 				start = lastPos = i;
 				break
 			}
@@ -264,7 +263,7 @@ function MSQR(src, options) {
 
 		// lookup pixel
 		function getState(x, y) {
-			return (x >= 0 && y >= 0 && x < cw && y < ch) ? interesting(data[y * cw + x]>>>24, alpha, hole) : false //(data[y * cw + x]>>>24) > alpha : false
+			return (x >= 0 && y >= 0 && x < cw && y < ch) ? interesting(data[y * cw + x]>>>24, alpha) : false //(data[y * cw + x]>>>24) > alpha : false
 		}
 
 		// Parse 2x2 pixels to determine next step direction.

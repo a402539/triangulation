@@ -117,7 +117,7 @@
 	        //for(var i=0; i<outlinePoints.length; i+=2){
 		      //context.fillRect(outlinePoints[i], outlinePoints[i+1], 1, 1);
 		      redgreenblue = ["red","green","blue"];
-	        pathPoints = MSQR(context, {path2D: false, maxShapes: 10, hole: true});
+	        pathPoints = MSQR(context, {path2D: false, maxShapes: 10, holes: true});
 	        for(var i=0; i<pathPoints.length; i++){
 	        	p = pathPoints[i];
 	        	context.fillStyle = redgreenblue[i%3];
