@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <script type="text/javascript" src="MarchingSquaresOld.js" ></script>
-    <script type="text/javascript" src="msqr.js" ></script> <~-- import MSQR from './msqr.js'; --></~-->
+    <script type="text/javascript" src="msqrNew.js" ></script> <!-- import MSQR from './msqr.js'; --></~-->
     <title>Триангуляция множества точек</title>
     <!-- https://neerc.ifmo.ru/wiki/index.php?title=Триангуляция_полигонов_(ушная_%2B_монотонная) -->
     <!-- http://grafika.me/node/175 -->
@@ -14,22 +14,21 @@
 </head>
 
 <body>
-    <label>Задайте точки (x1, y1, x2, y2, и так далее):</label><br>
     <!--
+    <label>Задайте точки (x1, y1, x2, y2, и так далее):</label><br>
     // 20, 20, 100, 20, 100, 100, 20, 100
     // 10, 10, 100, 10, 100, 100, 10, 100, 60, 60
     // 10, 10, 100, 10, 100, 120, 50, 120, 60, 20, 140, 80
     // 10, 10, 100, 10, 150, 120, 50, 140, 60, 60, 40, 80, 70, 80
     // 10, 10, 160, 10, 160, 160, 10, 160, 40, 80, 70, 30
     // 30, 30, 160, 30, 160, 160, 30, 160, 70, 50, 40, 80
-    -->
     <input id="points1" value="30, 30, 160, 30, 160, 160, 30, 160, 60, 50, 140, 60" size="150" type="text" />
     <input type="button" onclick="update('1')" value="Нарисовать" />
     <table border=1>
         <tr>
             <td>Отсортированные точки</td>
             <td>Выпуклая оболочка</td>
-            <!--<td>Триангуляция выпуклой оболочки</td>-->
+            <td>Триангуляция выпуклой оболочки</td>
             <td>Триангуляция всех точек</td>
             <td>Универсальный граф</td>
             <td>Полигон</td>
@@ -41,18 +40,16 @@
             <td><canvas id="canvas15" width="200" height="200" style="background: #F4F4F4;"></canvas></td>
         </tr>
     </table>
-    <!--
     // 20, 20, 100, 20, 20, 100, 100, 100
     // 20, 20, 100, 20, 20, 100, 100, 100, 30, 50, 50, 60, 40, 90
     // 10, 10, 160, 10, 10, 160, 160, 160, 50, 40, 130, 90
-    -->
     <input id="points2" value="30, 30, 160, 30, 160, 160, 30, 160, 140, 50, 60, 60" size="150" type="text" />
     <input type="button" onclick="update('2')" value="Нарисовать" />
     <table border=1>
         <tr>
             <td>Исходные точки</td>
             <td>Выпуклая оболочка</td>
-            <!--<td>Триангуляция выпуклой оболочки</td>-->
+            <td>Триангуляция выпуклой оболочки</td>
             <td>Триангуляция всех точек</td>
             <td>Универсальный граф</td>
             <td>Полигон</td>
@@ -64,50 +61,324 @@
             <td><canvas id="canvas25" width="200" height="200" style="background: #F4F4F4;"></canvas></td>
        </tr>
     </table>
-    <input id="but1" type="button" onclick="contur()" value="Найти контур" />
-	  <img id="img1" src="847.png"></img>
+    -->
+    <table><tr><td>
+    <input type="button" onclick="clearRect()" value="Очистить холст" />
+    <input type="button" onclick="rgba_hist()" value="Гистограмма" />
+    <input id="but2" type="button" onclick="drawScan()" value="Нарисовать скан" />
+    <input id="but1" type="button" onclick="contur()" value="Найти очередной контур" />
+<!--
+gco = [ 'source-over','source-in','source-out','source-atop',
+            'destination-over','destination-in','destination-out','destination-atop',
+            'lighter', 'copy','xor', 'multiply', 'screen', 'overlay', 'darken',
+            'lighten', 'color-dodge', 'color-burn', 'hard-light', 'soft-light',
+            'difference', 'exclusion', 'hue', 'saturation', 'color', 'luminosity'
+          ]
+-->              
+    <br>внешние контура
+    <br>0
+    <input type="button" onclick="drawConturs(0,0,'source-over')" value="source-over" />
+    <input type="button" onclick="drawConturs(0,0,'source-atop')" value="source-atop" />
+    <input type="button" onclick="drawConturs(0,0,'source-in')" value="source-in" />
+    <input type="button" onclick="drawConturs(0,0,'source-out')" value="source-out" />
+    <input type="button" onclick="drawConturs(0,0,'destination_over')" value="destination_over" />
+    <input type="button" onclick="drawConturs(0,0,'destination_atop')" value="destination_atop" />
+    <input type="button" onclick="drawConturs(0,0,'destination_in')" value="destination_in" />
+    <input type="button" onclick="drawConturs(0,0,'destination_out')" value="destination_out" />
+    <input type="button" onclick="drawConturs(0,0,'copy')" value="copy" />
+    <input type="button" onclick="drawConturs(0,0,'xor')" value="xor" />
+    <br>1
+    <input type="button" onclick="drawConturs(1,0,'source-over')" value="source-over" />
+    <input type="button" onclick="drawConturs(1,0,'source-atop')" value="source-atop" />
+    <input type="button" onclick="drawConturs(1,0,'source-in')" value="source-in" />
+    <input type="button" onclick="drawConturs(1,0,'source-out')" value="source-out" />
+    <input type="button" onclick="drawConturs(1,0,'destination_over')" value="destination_over" />
+    <input type="button" onclick="drawConturs(1,0,'destination_atop')" value="destination_atop" />
+    <input type="button" onclick="drawConturs(1,0,'destination_in')" value="destination_in" />
+    <input type="button" onclick="drawConturs(1,0,'destination_out')" value="destination_out" />
+    <input type="button" onclick="drawConturs(1,0,'copy')" value="copy" />
+    <input type="button" onclick="drawConturs(1,0,'xor')" value="xor" />
+    <br>2
+    <input type="button" onclick="drawConturs(2,0,'source-over')" value="source-over" />
+    <input type="button" onclick="drawConturs(2,0,'source-atop')" value="source-atop" />
+    <input type="button" onclick="drawConturs(2,0,'source-in')" value="source-in" />
+    <input type="button" onclick="drawConturs(2,0,'source-out')" value="source-out" />
+    <input type="button" onclick="drawConturs(2,0,'destination_over')" value="destination_over" />
+    <input type="button" onclick="drawConturs(2,0,'destination_atop')" value="destination_atop" />
+    <input type="button" onclick="drawConturs(2,0,'destination_in')" value="destination_in" />
+    <input type="button" onclick="drawConturs(2,0,'destination_out')" value="destination_out" />
+    <input type="button" onclick="drawConturs(2,0,'copy')" value="copy" />
+    <input type="button" onclick="drawConturs(2,0,'xor')" value="xor" />
+    <br>
+    <input type="button" onclick="findHoles()" value="Найти дырки" />
+    <br>0
+    <input type="button" onclick="drawConturs(0,1,'source-over')" value="source-over" />
+    <input type="button" onclick="drawConturs(0,1,'source-atop')" value="source-atop" />
+    <input type="button" onclick="drawConturs(0,1,'source-in')" value="source-in" />
+    <input type="button" onclick="drawConturs(0,1,'source-out')" value="source-out" />
+    <input type="button" onclick="drawConturs(0,1,'destination_over')" value="destination_over" />
+    <input type="button" onclick="drawConturs(0,1,'destination_atop')" value="destination_atop" />
+    <input type="button" onclick="drawConturs(0,1,'destination_in')" value="destination_in" />
+    <input type="button" onclick="drawConturs(0,1,'destination_out')" value="destination_out" />
+    <input type="button" onclick="drawConturs(0,1,'copy')" value="copy" />
+    <input type="button" onclick="drawConturs(0,1,'xor')" value="xor" />
+    <br>1
+    <input type="button" onclick="drawConturs(1,2,'source-over')" value="source-over" />
+    <input type="button" onclick="drawConturs(1,2,'source-atop')" value="source-atop" />
+    <input type="button" onclick="drawConturs(1,2,'source-in')" value="source-in" />
+    <input type="button" onclick="drawConturs(1,2,'source-out')" value="source-out" />
+    <input type="button" onclick="drawConturs(1,2,'destination_over')" value="destination_over" />
+    <input type="button" onclick="drawConturs(1,2,'destination_atop')" value="destination_atop" />
+    <input type="button" onclick="drawConturs(1,2,'destination_in')" value="destination_in" />
+    <input type="button" onclick="drawConturs(1,2,'destination_out')" value="destination_out" />
+    <input type="button" onclick="drawConturs(1,2,'copy')" value="copy" />
+    <input type="button" onclick="drawConturs(1,2,'xor')" value="xor" />
+    <br>2
+    <input type="button" onclick="drawConturs(2,3,'source-over')" value="source-over" />
+    <input type="button" onclick="drawConturs(2,3,'source-atop')" value="source-atop" />
+    <input type="button" onclick="drawConturs(2,3,'source-in')" value="source-in" />
+    <input type="button" onclick="drawConturs(2,3,'source-out')" value="source-out" />
+    <input type="button" onclick="drawConturs(2,3,'destination_over')" value="destination_over" />
+    <input type="button" onclick="drawConturs(2,3,'destination_atop')" value="destination_atop" />
+    <input type="button" onclick="drawConturs(2,3,'destination_in')" value="destination_in" />
+    <input type="button" onclick="drawConturs(2,3,'destination_out')" value="destination_out" />
+    <input type="button" onclick="drawConturs(2,3,'copy')" value="copy" />
+    <input type="button" onclick="drawConturs(2,3,'xor')" value="xor" />
+    </td>
+    <td id="td1">                 </td>
+  	</tr></table>
+    <canvas id="canvas"></canvas>
+	  <img id="img1" src="974.png"></img>
 
    <script>
 				
+				window.onload = function(){
+					image = document.getElementById('img1');
+   		  	canvas = document.getElementById('canvas');
+   		  	canvas.width = image.width; canvas.height = image.height;
+					context = canvas.getContext('2d');
+				};
+				
+				res = []; //blue = [16,32,64,128];
+				div1 = document.getElementById('div1');
+
    		  function contur(){
-	   		  var canvas = document.createElement('canvas');
-	   		  var but1 = document.getElementById("but1");
-	   		  document.body.insertBefore(canvas, but1);
-					var ctx = canvas.getContext('2d');
-					var image = document.getElementById('img1');
-	   		  var canvas = document.createElement('canvas');
-	   		  canvas.width = image.width; canvas.height = image.height;
-	   		  var but1 = document.getElementById("but1");
-	   		  document.body.insertBefore(canvas, but1);
-					var context = canvas.getContext('2d');
+	   		  //canvas = document.createElement('canvas');
+	   		  //var but1 = document.getElementById("but1");
+	   		  //document.body.insertBefore(canvas, but1);
+					//var ctx = canvas.getContext('2d');
 					
-					context.drawImage(image, 0, 0, canvas.width, canvas.height);
-					
-					ar = context.getImageData(0, 0, canvas.width, canvas.height).data;
+					//context.globalAlpha = 0.9;
+					//console.log('рисуем скан');	context.drawImage(image, 0, 0, canvas.width, canvas.height); rgba_hist(); // {0,0,0,0: 838538, 255,255,0,255: 234672}
+					/*
+					console.log('находим первый контур');
+					outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas); rgba_hist();
+					console.log('очищаем канвас');
+					context.clearRect(0, 0, canvas.width, canvas.height); rgba_hist();
+					drawConturs([outlinePoints]);
+					console.log('рисуем скан');	context.drawImage(image, 0, 0, canvas.width, canvas.height); rgba_hist(); // {0,0,0,0: 838538, 255,255,0,255: 234672}
+					drawConturs([outlinePoints]); // {0,0,0,0: 838538, 0,0,0,255: 11819, 255,255,0,255: 222853}
+					return;
+					*/
+	        /*
+	        for(i=0; i<ad.length; i+=4){
+	        	ad[i+3] = 255-ad[i+3];
+	        }
+	        
 	        ap = new Set();
-	        for(i=0;i<ar.length;i+=4){
-	        	if (ap.hasOwnProperty([ar[i],ar[i+1],ar[i+2],ar[i+3]])) {ap[[ar[i],ar[i+1],ar[i+2],ar[i+3]]]++;}
-	        	else {ap[[ar[i],ar[i+1],ar[i+2],ar[i+3]]]=1;}
+	        for(i=0;i<ad.length;i+=4){
+	        	if (ap.hasOwnProperty([ad[i],ad[i+1],ad[i+2],ad[i+3]])) {ap[[ad[i],ad[i+1],ad[i+2],ad[i+3]]]++;}
+	        	else {ap[[ad[i],ad[i+1],ad[i+2],ad[i+3]]]=1;}
 	        };
 	        console.log(ap);
+	        
+	        context.putImageData(ar, 0, 0);
+	        */
+	        
 	        // 0,0,0,0: 1756083
 					// 255,255,0,255: 52618
-	        context.fillStyle = "#FF0000";
-					//outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas);
-	        //for(var i=0; i<outlinePoints.length; i+=2){
-		      //context.fillRect(outlinePoints[i], outlinePoints[i+1], 1, 1);
-	        let pathPoints = MSQR(context, {path2D: false, maxShapes: 10});
+					//for (var c=0; c<10; c++){ // цикл по внешним контурам
+						//console.log('контур',(c+1)); rgba_hist();
+		        outlinePoints = [];
+		        outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas, 0); console.log(outlinePoints);
+						//if (outlinePoints.length==0) break;
+						res.push([outlinePoints]);
+						//drawConturs(res.length-1, "destination_in"); // {0,0,0,0: 838538, 0,0,0,255: 11819, 255,255,0,255: 222853}
+						//ppath = points2path(outlinePoints);
+		        /*
+		        context.fillStyle = `rgba(${5*c}, ${5*c}, ${5*c}, 1)`;//"#FF0000";
+						context.beginPath();
+						//context.globalCompositeOperation = "lighter";
+						context.moveTo(outlinePoints[0], outlinePoints[1]);
+		        for(var i=2; i<outlinePoints.length; i+=2){
+			      	//context.fillRect(outlinePoints[i], outlinePoints[i+1], 1, 1);
+			      	context.lineTo(outlinePoints[i], outlinePoints[i+1]);
+			    	};
+			    	context.lineTo(outlinePoints[0], outlinePoints[1]);
+			    	context.fill();
+			    	*/
+			    	/* 
+			    	destination-in {0,0,0,0: 3616539, 255,255,0,255: 128357}
+			    	fill
+0,0,0,0: 2081101
+0,0,0,255: 130196
+255,255,0,255: 1533599
+			    	stroke
+0,0,0,0: 2080747
+0,0,0,127: 816
+0,0,0,128: 647
+0,0,0,190: 250
+0,0,0,191: 143
+0,0,0,192: 337
+31,31,0,255: 4
+32,32,0,255: 1
+63,63,0,255: 371
+64,64,0,255: 353
+127,127,0,255: 819
+128,128,0,255: 646
+255,255,0,255: 1659762
+						*/
+						//rgba_hist();
+						//rgba_flip(context);
+						//outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas);
+						//console.log(outlinePoints);
+						//break;
+						//rgba_hist(context);
+					//};
+					return;
+					
+					//context.drawImage(image, 0, 0, canvas.width, canvas.height);
+					console.log('res', res.length, res);
+					//context.globalCompositeOperation = "source-over";
+					context.fillstyle = "red";
+					for (var cc=0; cc<res.length; cc++){
+						var r = res[cc];
+						context.moveTo(r[0], r[1]);
+						for(var i=2; i<r.length; i+=2){
+							context.lineTo(r[i], r[i+1]);
+						}
+						context.stroke();
+					}
+					console.log('переходим к дыркам');
+					console.log('очищаем канвас'); context.clearRect(0, 0, canvas.width, canvas.height); rgba_hist();
+					//console.log('рисуем скан');	context.drawImage(image, 0, 0, canvas.width, canvas.height); rgba_hist();
+					console.log('рисуем 2 контур');	drawContur(2); rgba_hist();
+					console.log('работа закончена');
+					//al=0.25 {0,0,0,0: 2081101, 255,255,64,255:  128357, 255,255,0,255: 1533599, 255,255,255,64:  1839}
+					//al=0.5  {0,0,0,0: 2081101, 255,255,128,255: 128357, 255,255,0,255: 1533599, 255,255,255,128: 1839}
+					//al=0.75 {0,0,0,0: 2081101, 255,255,191,255: 128357, 255,255,0,255: 1533599, 255,255,255,191: 1839}
+					//al=1    {0,0,0,0: 2081101, 255,255,255,255: 130196, 255,255,0,255: 1533599}
+					//context.globalCompositeOperation = "source-over";
+		    	//context.stroke(ppath);
+		      /*
+		      redgreenblue = ["red","green","blue"];
+	        pathPoints = MSQR(context, {path2D: false, maxShapes: 10, holes: true});
 	        for(var i=0; i<pathPoints.length; i++){
 	        	p = pathPoints[i];
+	        	context.fillStyle = redgreenblue[i%3];
 		      	context.beginPath();
 						context.moveTo(p[0].x,p[0].y);
 		        for(var j=1; j<p.length; j+=2){
 							context.lineTo(p[j].x,p[j].y);
 		        }
+		        context.lineTo(p[0].x,p[0].y);
+		        context.fill();
 						context.stroke();
 	      	}
+	      	*/
         };
+        function findHoles(){
+        	for (var cc=0; cc<res.length; cc++){
+		        outlinePoints = [];
+		        outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas, cc); console.log(outlinePoints);
+						if (outlinePoints.length==0) continue;
+						res[cc].push([outlinePoints]);
+					}
+        }
+        function clearRect(){
+        	context.clearRect(0,0,context.canvas.width,context.canvas.height);
+        	console.log('холст очищен');
+        }
+				function drawContur(conturN){
+					if(!context || !res || res.length <= conturN || !res[conturN].length) {console.log(`контур ${conturN} не существует`); return};
+					//context.globalCompositeOperation = "source-over";
+					context.fillstyle = "red";
+					var r = res[conturN];
+					context.moveTo(r[0], r[1]);
+					for(var i=2; i<r.length; i+=2){
+						context.lineTo(r[i], r[i+1]);
+					}
+					context.fill();
+					console.log(`контур ${conturN} из ${r.length} точек нарисован`);
+				}
+        function drawConturs(cc, hh, globalCompositeOperation){
+        	console.log('рисуем контур, всего точек', res[cc].length);
+        	console.log('гистограмма до'); rgba_hist();
+        	context.globalCompositeOperation = globalCompositeOperation;//"source-over";
+					//context.fillstyle = "red";
+	        context.fillStyle = `rgba(255, 255, ${cc}, 1)`;//"#FF0000";
+					context.beginPath();
+					//for (var cc=0; cc<arr_points.length; cc++){
+						var r = res[cc][hh]; // cc - номер внешнего контура // hh - номер дырки
+						context.moveTo(r[0], r[1]);
+						for(var i=2; i<r.length; i+=2){
+							context.lineTo(r[i], r[i+1]);
+						}
+						context.lineTo(r[0], r[1]);
+						context.fill();
+					//}
+        	console.log('гистограмма после'); rgba_hist();
+        }
+        function drawScan(){
+        	context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        	console.log('Скан нарисован');
+        }
+				function rgba_flip(){
+					/*
+					destination-in 
+					{
+					0,0,0,0: 3616539, 
+					255,255,0,255: 128357
+					}
+					*/					
+					var ar = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
+					var ad = ar.data;
+	        for(i=0;i<ad.length;i+=4){
+	        	ad[i] = 255-ad[i]; ad[i+1] = 255-ad[i+1]; ad[i+3] = 255-ad[i+3];
+	        };
+	        context.putImageData(ar, 0, 0);
+	        console.log('поменяли интенсивности точек');
+				}
+				function rgba_hist(){
+					if (context.canvas.width==0 || context.canvas.height==0) return;
+					ar = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
+					ad = ar.data;
+	        ap = new Set();
+	        for(var i=0; i<ad.length; i+=4){
+	        	if (ap.hasOwnProperty([ad[i],ad[i+1],ad[i+2],ad[i+3]])) {ap[[ad[i],ad[i+1],ad[i+2],ad[i+3]]]++;}
+	        	else {ap[[ad[i],ad[i+1],ad[i+2],ad[i+3]]]=1;}
+	        };
+	        console.log(ap);
+	        /*
+	        td1.innerText = "";
+	        for (let [key, value] of ap.entries()) {
+	        	td1.innerText += " "+key+": "+value;
+	        }
+	        */
+				}
+        function points2path(points) {
 
+					var path = new Path2D(),
+						i = 0, point;
+
+					while(point = points[i++])
+						path.lineTo(point.x, point.y);
+
+					path.closePath();
+					return path
+				}
+
+				/*
 				var Point = function(x, y) {
             this.x = x;
             this.y = y;
@@ -198,7 +469,7 @@
         //////////// Convex Hull | Set 1 (Jarvis’s Algorithm or Wrapping)
         //////////// https://www.geeksforgeeks.org/convex-hull-set-1-jarviss-algorithm-or-wrapping/
 
-        /*
+        //
         Following is the detailed algorithm.
 
         1) Initialize p as leftmost point.
@@ -206,25 +477,25 @@
         …..a) The next point q is the point such that the triplet (p, q, r) is counterclockwise for any other point r.
         …..b) next[p] = q (Store q as next of p in the output convex hull).
         …..c) p = q (Set p as q for next iteration).
-        */
+        //
 
         // конвертация в код javascript
 
-        /*
+        //
         C# program to find convex hull of a set of points. Refer
         https://www.geeksforgeeks.org/orientation-3-ordered-points/
         for explanation of orientation()
-        */
+        //
 
         // point class with x, y as point
-        /* это уже есть в коде
+        // это уже есть в коде
         class Point:
         def __init__(self, x, y):
         self.x = x
         self.y = y
-        */
+        //
 
-        /*
+        //
         function Left_index(points){
 
             // Finding the left most point
@@ -238,9 +509,8 @@
             };
             return minn
         };
-        */
+        //
 
-        /*
         function orientation(p, q, r){
             //
             //To find orientation of ordered triplet (p, q, r).
@@ -259,9 +529,7 @@
             else
                 return 2;
         };
-        */
 
-        /*
         Convex hull https://en.wikipedia.org/wiki/Convex_hull
         Convex hull algorithms https://en.wikipedia.org/wiki/Convex_hull_algorithms
         Algorithms
@@ -299,7 +567,6 @@
         Graham scan https://en.wikipedia.org/wiki/Graham_scan
         JavaScript Graham's Scan Convex Hull Algorithm https://github.com/brian3kb/graham_scan_js
         Graham's scan convex hull algorithm, updated for Python 3.x https://gist.github.com/arthur-e/5cf52962341310f438e96c1f3c3398b8
-        */
 
         function convexHull_wrapping(points){
 
@@ -310,23 +577,23 @@
             // Find the leftmost point 
             l = 0; //Left_index(points); // точки уже отсортированы
             hull = [];
-            /*
+            //
             Start from leftmost point, keep moving counterclockwise 
 	        until reach the start point again. This loop runs O(h) 
 	        times where h is number of points in result or output. 
-            */
+            //
 	        p = l;
             q = 0;
             while(true){    
                 // Add current point to result 
                 hull.push(p);
                 console.log('  добавляем точку с индексом',p);
-                /*
+                //
 		        Search for a point ' q' such that 
                 orientation(p, x, q) is counterclockwise for all points 'x' . 
                 The idea is to keep track of last visited most counterclock-wise point in q. 
                 If any point 'i' is more counterclock-wise than q, then update q. 
-                */
+                //
 		        q = (p + 1) % n;
 
 		        for (i=0; i<n; i++){
@@ -337,10 +604,10 @@
                         //(orientation(points[p], points[i], points[q]) == 2)
 				        q = i;
                 };
-                /*
+                //
                 Now q is the most counterclockwise with respect to p 
                 Set p as q for next iteration, so that q is added to result 'hull' 
-                */
+                //
                 p = q;
 
                 // While we don' t come to first point
@@ -358,14 +625,14 @@
         //
         // porting from Python code
         function convexHull_monotone(points){
-            /*
+            //
             Computes the convex hull of a set of 2D points.
 
             Input: an iterable sequence of (x, y) pairs representing the points.
             Output: a list of vertices of the convex hull in counter-clockwise order,
             starting from the vertex with the lexicographically smallest coordinates.
             Implements Andrew's monotone chain algorithm. O(n log n) complexity.
-            */
+            //
 
             // Sort the points lexicographically (tuples are compared lexicographically).
             // Remove duplicates to detect the case we have just one unique point.
@@ -378,11 +645,10 @@
             // 2D cross product of OA and OB vectors, i.e. z-component of their 3D cross product.
             // Returns a positive value, if OAB makes a counter-clockwise turn,
             // negative for clockwise turn, and zero if the points are collinear.
-            /* заменяется функцией det
+            // заменяется функцией det
             function cross(o, a, b) {
                 return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
             };
-            */
 
             // Build lower hull 
             console.log('строим нижнюю половину выпуклой оболочки');
@@ -554,9 +820,9 @@
             // ctx.moveTo(center.x + radius, center.y);
             ctx.beginPath();
             ctx.arc(center.x, center.y, radius, 0, Math.PI*2);
-			ctx.fill();
+						ctx.fill();
             ctx.strokeText(text+'('+center.x.toFixed(0)+','+center.y.toFixed(0)+')',
-             center.x + delta.x, center.y + delta.y);
+            center.x + delta.x, center.y + delta.y);
         }
 
         function drawGraph(points, edges, canvas, only = true){
@@ -659,12 +925,12 @@
         }
         function update(points_set){
             console.clear();
-            /*
+            //
             var _points = document.getElementById('points'+points_set);
             var points_list = getpoints(_points);
             var points = [...(new Set(points_list))].sort((a,b)=>(a.x<b.x || (a.x==b.x && a.y>b.y)?-1:1));
             document.getElementById('points'+points_set).value = points.map(p=>[p.x,p.y].join(', ')).join(', ');
-            */
+            //
             points = updatePoints(points_set);
             hull = convexHull_wrapping(points);
             hull2 = convexHull_monotone(points);
@@ -691,6 +957,7 @@
             new_edges = new_points.map((cv,i)=>[i,(i+1)%new_points.length]);
             drawGraph(new_points, new_edges, document.getElementById('canvas'+points_set+'5'), false);
         }
+        */
 
     </script>
 </body>
