@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="MarchingSquaresOld.js" ></script>
+	<link rel="stylesheet" href="./getPaths44.css" />
+    <title>Триангуляция множества точек</title>
+</head>
+
+<body>
+    <div>
+		<input type="button" onclick="clearRect()" value="Очистить холст" />
+		<input type="button" onclick="rgba_hist(1)" value="Гистограмма" />
+		<input id="but2" type="button" onclick="drawScan()" value="Нарисовать скан" />
+		<input id="but1" type="button" onclick="contur()" value="Найти очередной контур" />
+		<!-- <input type="button" onclick="findHoles()" value="Найти дырки" /> -->
+		<input type="button" onclick="drawAll()" value="Нарисовать контура и дырки" />
+    </div>
+    <div id="logInfo">
+    </div>
+    <div id="outCont">Внешние контура
+    </div>
+    <div id="holesCont">Дырки
+    </div>
+<!--    <table>
+    <tbody id="tbody">
+	<tr><td>
+
+gco = [ 'source-over','source-in','source-out','source-atop',
+            'destination-over','destination-in','destination-out','destination-atop',
+            'lighter', 'copy','xor', 'multiply', 'screen', 'overlay', 'darken',
+            'lighten', 'color-dodge', 'color-burn', 'hard-light', 'soft-light',
+            'difference', 'exclusion', 'hue', 'saturation', 'color', 'luminosity'
+          ]
+             
+    <br>внешние контура
+    <br>0
+    <input type="button" onclick="drawConturs(0,0,'source-over')" value="source-over" />
+    <input type="button" onclick="drawConturs(0,0,'source-atop')" value="source-atop" />
+    <input type="button" onclick="drawConturs(0,0,'source-in')" value="source-in" />
+    <input type="button" onclick="drawConturs(0,0,'source-out')" value="source-out" />
+    <input type="button" onclick="drawConturs(0,0,'destination_over')" value="destination_over" />
+    <input type="button" onclick="drawConturs(0,0,'destination_atop')" value="destination_atop" />
+    <input type="button" onclick="drawConturs(0,0,'destination_in')" value="destination_in" />
+    <input type="button" onclick="drawConturs(0,0,'destination_out')" value="destination_out" />
+    <input type="button" onclick="drawConturs(0,0,'copy')" value="copy" />
+    <input type="button" onclick="drawConturs(0,0,'xor')" value="xor" />
+    <br>1
+    <input type="button" onclick="drawConturs(1,0,'source-over')" value="source-over" />
+    <input type="button" onclick="drawConturs(1,0,'source-atop')" value="source-atop" />
+    <input type="button" onclick="drawConturs(1,0,'source-in')" value="source-in" />
+    <input type="button" onclick="drawConturs(1,0,'source-out')" value="source-out" />
+    <input type="button" onclick="drawConturs(1,0,'destination_over')" value="destination_over" />
+    <input type="button" onclick="drawConturs(1,0,'destination_atop')" value="destination_atop" />
+    <input type="button" onclick="drawConturs(1,0,'destination_in')" value="destination_in" />
+    <input type="button" onclick="drawConturs(1,0,'destination_out')" value="destination_out" />
+    <input type="button" onclick="drawConturs(1,0,'copy')" value="copy" />
+    <input type="button" onclick="drawConturs(1,0,'xor')" value="xor" />
+    <br>2
+    <input type="button" onclick="drawConturs(2,0,'source-over')" value="source-over" />
+    <input type="button" onclick="drawConturs(2,0,'source-atop')" value="source-atop" />
+    <input type="button" onclick="drawConturs(2,0,'source-in')" value="source-in" />
+    <input type="button" onclick="drawConturs(2,0,'source-out')" value="source-out" />
+    <input type="button" onclick="drawConturs(2,0,'destination_over')" value="destination_over" />
+    <input type="button" onclick="drawConturs(2,0,'destination_atop')" value="destination_atop" />
+    <input type="button" onclick="drawConturs(2,0,'destination_in')" value="destination_in" />
+    <input type="button" onclick="drawConturs(2,0,'destination_out')" value="destination_out" />
+    <input type="button" onclick="drawConturs(2,0,'copy')" value="copy" />
+    <input type="button" onclick="drawConturs(2,0,'xor')" value="xor" />
+    <br>
+    <input type="button" onclick="findHoles()" value="Найти дырки" />
+    <br>0
+    <input type="button" onclick="drawConturs(0,1,'source-over')" value="source-over" />
+    <input type="button" onclick="drawConturs(0,1,'source-atop')" value="source-atop" />
+    <input type="button" onclick="drawConturs(0,1,'source-in')" value="source-in" />
+    <input type="button" onclick="drawConturs(0,1,'source-out')" value="source-out" />
+    <input type="button" onclick="drawConturs(0,1,'destination_over')" value="destination_over" />
+    <input type="button" onclick="drawConturs(0,1,'destination_atop')" value="destination_atop" />
+    <input type="button" onclick="drawConturs(0,1,'destination_in')" value="destination_in" />
+    <input type="button" onclick="drawConturs(0,1,'destination_out')" value="destination_out" />
+    <input type="button" onclick="drawConturs(0,1,'copy')" value="copy" />
+    <input type="button" onclick="drawConturs(0,1,'xor')" value="xor" />
+    <br>1
+    <input type="button" onclick="drawConturs(1,2,'source-over')" value="source-over" />
+    <input type="button" onclick="drawConturs(1,2,'source-atop')" value="source-atop" />
+    <input type="button" onclick="drawConturs(1,2,'source-in')" value="source-in" />
+    <input type="button" onclick="drawConturs(1,2,'source-out')" value="source-out" />
+    <input type="button" onclick="drawConturs(1,2,'destination_over')" value="destination_over" />
+    <input type="button" onclick="drawConturs(1,2,'destination_atop')" value="destination_atop" />
+    <input type="button" onclick="drawConturs(1,2,'destination_in')" value="destination_in" />
+    <input type="button" onclick="drawConturs(1,2,'destination_out')" value="destination_out" />
+    <input type="button" onclick="drawConturs(1,2,'copy')" value="copy" />
+    <input type="button" onclick="drawConturs(1,2,'xor')" value="xor" />
+    <br>2
+    <input type="button" onclick="drawConturs(2,3,'source-over')" value="source-over" />
+    <input type="button" onclick="drawConturs(2,3,'source-atop')" value="source-atop" />
+    <input type="button" onclick="drawConturs(2,3,'source-in')" value="source-in" />
+    <input type="button" onclick="drawConturs(2,3,'source-out')" value="source-out" />
+    <input type="button" onclick="drawConturs(2,3,'destination_over')" value="destination_over" />
+    <input type="button" onclick="drawConturs(2,3,'destination_atop')" value="destination_atop" />
+    <input type="button" onclick="drawConturs(2,3,'destination_in')" value="destination_in" />
+    <input type="button" onclick="drawConturs(2,3,'destination_out')" value="destination_out" />
+    <input type="button" onclick="drawConturs(2,3,'copy')" value="copy" />
+    <input type="button" onclick="drawConturs(2,3,'xor')" value="xor" />
+    </td>
+    <td id="td1">                 </td>
+  	</tr>
+	</table>--> 
+    <div>Наш канвас
+		<hr />
+		<canvas id="canvas"></canvas>
+    </div>
+    <div>Наш image
+		<hr />
+	  <img id="img1" src="974.png"></img>
+    </div>
+
+</body>
+    <script type="text/javascript" src="getPaths44.js" ></script>
+
+</html>
