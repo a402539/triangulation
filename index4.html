@@ -263,7 +263,7 @@ gco = [ 'source-over','source-in','source-out','source-atop',
 						//rgba_hist(context);
 					};
 					return;
-					
+					/*
 					//context.drawImage(image, 0, 0, canvas.width, canvas.height);
 					console.log('res', res.length, res);
 					//context.globalCompositeOperation = "source-over";
@@ -287,7 +287,6 @@ gco = [ 'source-over','source-in','source-out','source-atop',
 					//al=1    {0,0,0,0: 2081101, 255,255,255,255: 130196, 255,255,0,255: 1533599}
 					//context.globalCompositeOperation = "source-over";
 		    	//context.stroke(ppath);
-		      /*
 		      redgreenblue = ["red","green","blue"];
 	        pathPoints = MSQR(context, {path2D: false, maxShapes: 10, holes: true});
 	        for(var i=0; i<pathPoints.length; i++){
@@ -304,6 +303,7 @@ gco = [ 'source-over','source-in','source-out','source-atop',
 	      	}
 	      	*/
         };
+        /*
         function findHoles(){
         	for (var cc=0; cc<res.length; cc++){
         		for (var hh=0; hh<3; hh++){
@@ -331,6 +331,7 @@ gco = [ 'source-over','source-in','source-out','source-atop',
 					context.fill();
 					console.log(`контур ${conturN} из ${r.length} точек нарисован`);
 				}
+				*/
         function drawConturs(p){
         	//if (p.length < 3) {console.log(`нет точек в контуре ${cc}`); return;}
         	console.log(`рисуем контур, всего точек ${p.length}`);
@@ -367,14 +368,15 @@ gco = [ 'source-over','source-in','source-out','source-atop',
         	context.drawImage(image, 0, 0, canvas.width, canvas.height);
         	console.log('Скан нарисован');
         }
+        /*
 				function rgba_flip(){
-					/*
+					//
 					destination-in 
 					{
 					0,0,0,0: 3616539, 
 					255,255,0,255: 128357
 					}
-					*/					
+					//					
 					var ar = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
 					var ad = ar.data;
 	        for(i=0;i<ad.length;i+=4){
@@ -383,6 +385,7 @@ gco = [ 'source-over','source-in','source-out','source-atop',
 	        context.putImageData(ar, 0, 0);
 	        console.log('поменяли интенсивности точек');
 				}
+				*/
 				function rgba_hist(){
 					if (context.canvas.width==0 || context.canvas.height==0) return;
 					ar = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
@@ -400,6 +403,7 @@ gco = [ 'source-over','source-in','source-out','source-atop',
 	        }
 	        */
 				}
+				/*
         function points2path(points) {
 
 					var path = new Path2D(),
@@ -412,7 +416,6 @@ gco = [ 'source-over','source-in','source-out','source-atop',
 					return path
 				}
 
-				/*
 				var Point = function(x, y) {
             this.x = x;
             this.y = y;
