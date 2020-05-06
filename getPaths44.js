@@ -37,150 +37,63 @@ function drawScan() {
 	logInfo.innerHTML = 'Скан нарисован';
 }
 function contur() {
-	outlinePoints = [];
-	var tStamp = Date.now();
-	outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas, 0);
-	// console.log(outlinePoints);
-	logInfo.innerHTML = JSON.stringify(outlinePoints) + ' time: ' + (Date.now() - tStamp) + ' мсек.';
-	// res.push({cont: outlinePoints, holes: []});
-	res.push([outlinePoints, []]);
-	refreshCont();
-};
-
-let gco = [
-	'source-over','source-atop','source-in','source-out',
-	'destination-over','destination-atop','destination-in','destination-out',
-	'copy','xor' /*, 'lighter', 'multiply', 'screen', 'overlay', 'darken',
-	'lighten', 'color-dodge', 'color-burn', 'hard-light', 'soft-light',
-	'difference', 'exclusion', 'hue', 'saturation', 'color', 'luminosity'*/
-];
-
-function refreshCont() {
-	var tStamp = Date.now(),
-		cont = [],
-		holes = [];
-	console.log(res);
-	res.forEach((it, index) => {
-		cont.push('<br>' + index + gco.map(pt => '<input type="button" onclick="drawConturs(' + index + ',0,\'' + pt + '\')" value="' + pt + '" />').join('\n') + '<input type="button" onclick="findNextHole(' + index + ')" value="Найти очередную дырку" />');
-
-	});
-	outCont.innerHTML = 'внешние контура' + cont.join('\n');
-}
-
-function drawConturs(cc, hh, globalCompositeOperation) {
-	var out = ['рисуем контур, всего точек: ' + res[cc].length];
-	out.push('<br>гистограмма до: ' + rgba_hist());
-	console.log('рисуем контур, всего точек', res[cc].length);
-	console.log('гистограмма до', rgba_hist());
-	context.globalCompositeOperation = globalCompositeOperation;//"source-over";
-			//context.fillstyle = "red";
-	context.fillStyle = `rgba(255, 255, ${cc}, 1)`;//"#FF0000";
-	context.beginPath();
-			//for (var cc=0; cc<arr_points.length; cc++){
-	var r = res[cc][hh]; // cc - номер внешнего контура // hh - номер дырки
-	context.moveTo(r[0], r[1]);
-	for(var i=2; i<r.length; i+=2){
-		context.lineTo(r[i], r[i+1]);
-	}
-	context.lineTo(r[0], r[1]);
-	context.fill();
-			//}
-	console.log('гистограмма после', rgba_hist());
-	out.push('<br>гистограмма после: ' + rgba_hist());
-	logInfo.innerHTML = out.join('\n');
-
-}
-
-function findNextHole(cc){
-	outlinePoints = [];
-	outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas, cc);
-	console.log(outlinePoints);
-	if (outlinePoints.length==0) {
-		console.log('Дырок нет в этом контуре');
-		return;
-	}
-	res[cc][1].push(outlinePoints);
-}
-
-function drawAll(){
-	context.globalCompositeOperation = "source-over";
-	res.forEach((it, index) => {
-		let r = it[0];
-		context.fillstyle = "red";
-		context.beginPath();
-		context.moveTo(r[0], r[1]);
-		for(var i=2; i<r.length; i+=2){
-			context.lineTo(r[i], r[i+1]);
+	for (var cc=0; cc<20; cc++){ // цикл по внешним контурам
+		console.log(`контур ${cc}`); //rgba_hist();
+    outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas, 0); console.log(outlinePoints); // внешний контур
+		if (outlinePoints.length==0) break;
+		res.push([outlinePoints]);
+		drawConturs(outlinePoints); // скрыть найденный внешний контур
+		for (hh=0; hh<20; hh++){ // цикл по дыркам
+      outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas, 1); console.log(outlinePoints); // дырка
+			if (outlinePoints.length==0) break;
+			res[cc].push(outlinePoints);
+			drawConturs(outlinePoints); // скрыть найденную дырку
 		}
-		context.lineTo(r[0], r[1]);
-		context.closePath();
-		context.stroke();
-		context.fillstyle = "blue";
-		let holes = it[1] || [];
-		holes.forEach((r, index) => {
-			// let r = pt[0];
-			context.beginPath();
-			context.moveTo(r[0], r[1]);
-			for(var i=2; i<r.length; i+=2){
-				context.lineTo(r[i], r[i+1]);
-			}
-			context.lineTo(r[0], r[1]);
-			context.closePath();
-		});
-		context.stroke();
-	});
+		strokeConturs();
+	}
 }
 
-				
-// остальное пока не понятно
-			function findHoles(){
-				for (var cc=0; cc<res.length; cc++) {
-					outlinePoints = [];
-					outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas, cc);
-					console.log(outlinePoints);
-					if (outlinePoints.length==0) continue;
-					res[cc].push([outlinePoints]);
-				}
+function drawConturs(p){
+	//if (p.length < 3) {console.log(`нет точек в контуре ${cc}`); return;}
+	console.log(`рисуем контур, всего точек ${p.length}`);
+	//console.log('гистограмма до'); rgba_hist();
+	context.globalCompositeOperation = "xor";//globalCompositeOperation;//"source-over";
+	//context.fillstyle = "red";
+  context.fillStyle = `rgba(255, 255, 1, 1)`;//"#FF0000";
+	context.beginPath();
+	context.moveTo(p[0], p[1]);
+	for(var i=2; i<p.length; i+=2){
+		context.lineTo(p[i], p[i+1]);
+	}
+	context.lineTo(p[0], p[1]);
+	context.fill();
+	//console.log('гистограмма после'); rgba_hist();
+}
+
+function strokeConturs(){
+	for (cc=0; cc<res.length; cc++){
+		for (hh=0; hh<res[cc].length; hh++){
+			p = res[cc][hh];
+      context.fillStyle = `green`;//"#FF0000";
+			context.beginPath();
+			context.moveTo(p[0], p[1]);
+			for(var i=2; i<p.length; i+=2){
+				context.lineTo(p[i], p[i+1]);
 			}
-				// res = []; //blue = [16,32,64,128];
-				// div1 = document.getElementById('div1');
+			context.lineTo(p[0], p[1]);
+			context.stroke();
+			
+		}
+	}
+}
+function points2path(points) {
 
-				function drawContur(conturN){
-					if(!context || !res || res.length <= conturN || !res[conturN].length) {console.log(`контур ${conturN} не существует`); return};
-					//context.globalCompositeOperation = "source-over";
-					context.fillstyle = "red";
-					var r = res[conturN];
-					context.moveTo(r[0], r[1]);
-					for(var i=2; i<r.length; i+=2){
-						context.lineTo(r[i], r[i+1]);
-					}
-					context.fill();
-					console.log(`контур ${conturN} из ${r.length} точек нарисован`);
-				}
-				function rgba_flip(){
-					/*
-					destination-in 
-					{
-					0,0,0,0: 3616539, 
-					255,255,0,255: 128357
-					}
-					*/					
-					var ar = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
-					var ad = ar.data;
-	        for(i=0;i<ad.length;i+=4){
-	        	ad[i] = 255-ad[i]; ad[i+1] = 255-ad[i+1]; ad[i+3] = 255-ad[i+3];
-	        };
-	        context.putImageData(ar, 0, 0);
-	        console.log('поменяли интенсивности точек');
-				}
-        function points2path(points) {
+	var path = new Path2D(),
+		i = 0, point;
 
-					var path = new Path2D(),
-						i = 0, point;
+	while(point = points[i++])
+		path.lineTo(point.x, point.y);
 
-					while(point = points[i++])
-						path.lineTo(point.x, point.y);
-
-					path.closePath();
-					return path
-				}
+	path.closePath();
+	return path
+}
