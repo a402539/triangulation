@@ -20,9 +20,9 @@
     // define the perimeter of the upper-left most
     // object in that texture, using pixel alpha>0 to define
     // the boundary.
-    MarchingSquaresOld.getBlobOutlinePoints = function(sourceCanvas, cc){ // ABV
-				// cc = 0 внешний контур
-				// cc > 0 дырка внешнего контура с индексом cc
+    MarchingSquaresOld.getBlobOutlinePoints = function(sourceCanvas, hole){ // ABV
+				// hole = 0 - РІРЅРµС€РЅРёР№ РєРѕРЅС‚СѓСЂ
+				// hole = 1 - РґС‹СЂРєР°
         //Add a padding of 1 pixel to handle points which touch edges
         MarchingSquaresOld.sourceCanvas = document.createElement("canvas");
         MarchingSquaresOld.sourceCanvas.width = sourceCanvas.width + 2;
@@ -31,20 +31,20 @@
         MarchingSquaresOld.sourceContext.drawImage(sourceCanvas,1,1);
 
         // Find the starting point
-        var startingPoint = MarchingSquaresOld.getFirstNonTransparentPixelTopDown(MarchingSquaresOld.sourceCanvas, cc); // ABV
+        var startingPoint = MarchingSquaresOld.getFirstNonTransparentPixelTopDown(MarchingSquaresOld.sourceCanvas, hole); // ABV
 
         // Return list of x and y positions
-        if (startingPoint) return MarchingSquaresOld.walkPerimeter(startingPoint.x, startingPoint.y, cc); // ABV
+        if (startingPoint) return MarchingSquaresOld.walkPerimeter(startingPoint.x, startingPoint.y, hole); // ABV
         else return []; // ABV 03.05.20
     };
 
-    MarchingSquaresOld.getFirstNonTransparentPixelTopDown = function(canvas, cc){
+    MarchingSquaresOld.getFirstNonTransparentPixelTopDown = function(canvas, hole){
         var context = canvas.getContext("2d");
         var y, i, rowData;
         for(y = 0; y < canvas.height; y++){
             rowData = context.getImageData(0, y, canvas.width, 1).data;
             for(i=0; i<rowData.length; i+=4){
-                if(rowData[i+2]==cc && rowData[i+3]==255){ // ABV 03.05.20
+                if(rowData[i+2]==hole && rowData[i+3]==255){ // ABV 05.05.20
                     return {x : i/4, y : y};
                 }
             }
@@ -52,7 +52,7 @@
         return null;
     };
 
-    MarchingSquaresOld.walkPerimeter = function(startX, startY, cc){ // ABV
+    MarchingSquaresOld.walkPerimeter = function(startX, startY, hole){ // ABV
         // Do some sanity checking, so we aren't
         // walking outside the image
         // technically this should never happen
@@ -81,7 +81,7 @@
         // we return to our initial points
         do{
             // Evaluate our state, and set up our next direction
-            MarchingSquaresOld.step(x, y, cc); // ABV
+            MarchingSquaresOld.step(x, y, hole); // ABV
 
             // If our current point is within our image
             // add it to the list of points
@@ -110,15 +110,15 @@
     // represent our current state, and sets our current and
     // previous directions
 
-    MarchingSquaresOld.step = function(x, y, cc){
+    MarchingSquaresOld.step = function(x, y, hole){
         //console.log("MarchingSquaresOld.step()");
         // Scan our 4 pixel area
         MarchingSquaresOld.sampleData = MarchingSquaresOld.sourceContext.getImageData(x-1, y-1, 2, 2).data;
 
-        MarchingSquaresOld.upLeft = MarchingSquaresOld.sampleData[2] == cc && MarchingSquaresOld.sampleData[3] == 255; // ABV 03.05.20
-        MarchingSquaresOld.upRight = MarchingSquaresOld.sampleData[6] == cc && MarchingSquaresOld.sampleData[7] == 255; // ABV 03.05.20
-        MarchingSquaresOld.downLeft = MarchingSquaresOld.sampleData[10] == cc && MarchingSquaresOld.sampleData[11] == 255; // ABV 03.05.20
-        MarchingSquaresOld.downRight = MarchingSquaresOld.sampleData[14] == cc && MarchingSquaresOld.sampleData[15] == 255; // ABV 03.05.20
+        MarchingSquaresOld.upLeft = MarchingSquaresOld.sampleData[2] == hole && MarchingSquaresOld.sampleData[3] == 255; // ABV 05.05.20
+        MarchingSquaresOld.upRight = MarchingSquaresOld.sampleData[6] == hole && MarchingSquaresOld.sampleData[7] == 255; // ABV 05.05.20
+        MarchingSquaresOld.downLeft = MarchingSquaresOld.sampleData[10] == hole && MarchingSquaresOld.sampleData[11] == 255; // ABV 05.05.20
+        MarchingSquaresOld.downRight = MarchingSquaresOld.sampleData[14] == hole && MarchingSquaresOld.sampleData[15] == 255; // ABV 05.05.20
 
         // Store our previous step
         MarchingSquaresOld.previousStep = MarchingSquaresOld.nextStep;

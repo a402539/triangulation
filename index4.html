@@ -66,7 +66,7 @@
     <input type="button" onclick="clearRect()" value="Очистить холст" />
     <input type="button" onclick="rgba_hist()" value="Гистограмма" />
     <input id="but2" type="button" onclick="drawScan()" value="Нарисовать скан" />
-    <input id="but1" type="button" onclick="contur()" value="Найти очередной контур" />
+    <input id="but1" type="button" onclick="contur()" value="Найти и отрисовать контуры и дырки" />
 <!--
 gco = [ 'source-over','source-in','source-out','source-atop',
             'destination-over','destination-in','destination-out','destination-atop',
@@ -75,8 +75,9 @@ gco = [ 'source-over','source-in','source-out','source-atop',
             'difference', 'exclusion', 'hue', 'saturation', 'color', 'luminosity'
           ]
 -->              
-    <br>внешние контура
-    <br>0
+    <!--
+    <br>внешние контуры
+    <br>контур 0
     <input type="button" onclick="drawConturs(0,0,'source-over')" value="source-over" />
     <input type="button" onclick="drawConturs(0,0,'source-atop')" value="source-atop" />
     <input type="button" onclick="drawConturs(0,0,'source-in')" value="source-in" />
@@ -85,9 +86,9 @@ gco = [ 'source-over','source-in','source-out','source-atop',
     <input type="button" onclick="drawConturs(0,0,'destination_atop')" value="destination_atop" />
     <input type="button" onclick="drawConturs(0,0,'destination_in')" value="destination_in" />
     <input type="button" onclick="drawConturs(0,0,'destination_out')" value="destination_out" />
-    <input type="button" onclick="drawConturs(0,0,'copy')" value="copy" />
+    <input type="button" onclick="drawConturs(0,0,'copy')" value="copy"
     <input type="button" onclick="drawConturs(0,0,'xor')" value="xor" />
-    <br>1
+    <br>контур 1
     <input type="button" onclick="drawConturs(1,0,'source-over')" value="source-over" />
     <input type="button" onclick="drawConturs(1,0,'source-atop')" value="source-atop" />
     <input type="button" onclick="drawConturs(1,0,'source-in')" value="source-in" />
@@ -98,7 +99,7 @@ gco = [ 'source-over','source-in','source-out','source-atop',
     <input type="button" onclick="drawConturs(1,0,'destination_out')" value="destination_out" />
     <input type="button" onclick="drawConturs(1,0,'copy')" value="copy" />
     <input type="button" onclick="drawConturs(1,0,'xor')" value="xor" />
-    <br>2
+    <br>контур 2
     <input type="button" onclick="drawConturs(2,0,'source-over')" value="source-over" />
     <input type="button" onclick="drawConturs(2,0,'source-atop')" value="source-atop" />
     <input type="button" onclick="drawConturs(2,0,'source-in')" value="source-in" />
@@ -110,7 +111,8 @@ gco = [ 'source-over','source-in','source-out','source-atop',
     <input type="button" onclick="drawConturs(2,0,'copy')" value="copy" />
     <input type="button" onclick="drawConturs(2,0,'xor')" value="xor" />
     <br>
-    <input type="button" onclick="findHoles()" value="Найти дырки" />
+    <input type="button" onclick="findHoles()" value="Найти все дырки всех контуров" />
+    <!--
     <br>0
     <input type="button" onclick="drawConturs(0,1,'source-over')" value="source-over" />
     <input type="button" onclick="drawConturs(0,1,'source-atop')" value="source-atop" />
@@ -122,28 +124,36 @@ gco = [ 'source-over','source-in','source-out','source-atop',
     <input type="button" onclick="drawConturs(0,1,'destination_out')" value="destination_out" />
     <input type="button" onclick="drawConturs(0,1,'copy')" value="copy" />
     <input type="button" onclick="drawConturs(0,1,'xor')" value="xor" />
-    <br>1
-    <input type="button" onclick="drawConturs(1,2,'source-over')" value="source-over" />
-    <input type="button" onclick="drawConturs(1,2,'source-atop')" value="source-atop" />
-    <input type="button" onclick="drawConturs(1,2,'source-in')" value="source-in" />
-    <input type="button" onclick="drawConturs(1,2,'source-out')" value="source-out" />
-    <input type="button" onclick="drawConturs(1,2,'destination_over')" value="destination_over" />
-    <input type="button" onclick="drawConturs(1,2,'destination_atop')" value="destination_atop" />
-    <input type="button" onclick="drawConturs(1,2,'destination_in')" value="destination_in" />
-    <input type="button" onclick="drawConturs(1,2,'destination_out')" value="destination_out" />
-    <input type="button" onclick="drawConturs(1,2,'copy')" value="copy" />
-    <input type="button" onclick="drawConturs(1,2,'xor')" value="xor" />
+    <br>дырки контура 1
+    <!--
+    <input type="button" onclick="drawConturs(1,1,'source-over')" value="source-over" />
+    <input type="button" onclick="drawConturs(1,1,'source-atop')" value="source-atop" />
+    <input type="button" onclick="drawConturs(1,1,'source-in')" value="source-in" />
+    <input type="button" onclick="drawConturs(1,1,'source-out')" value="source-out" />
+    <input type="button" onclick="drawConturs(1,1,'destination_over')" value="destination_over" />
+    <input type="button" onclick="drawConturs(1,1,'destination_atop')" value="destination_atop" />
+    <input type="button" onclick="drawConturs(1,1,'destination_in')" value="destination_in" />
+    <input type="button" onclick="drawConturs(1,1,'destination_out')" value="destination_out" />
+    <input type="button" onclick="drawConturs(1,1,'copy')" value="copy" />
+    <input type="button" onclick="drawConturs(1,1,'xor')" value="контур 1 дырка 0 xor" />
+    <input type="button" onclick="drawConturs(1,2,'xor')" value="контур 1 дырка 1 xor" />
+    <input type="button" onclick="drawConturs(2,1,'xor')" value="контур 2 дырка 0 xor" />
+    <input type="button" onclick="drawConturs(2,1,'xor')" value="контур 2 дырка 1 xor" />
+		<br>
+    <input type="button" onclick="strokeConturs()" value="Отрисовать контуры с дырками" />
+    <!--
     <br>2
-    <input type="button" onclick="drawConturs(2,3,'source-over')" value="source-over" />
-    <input type="button" onclick="drawConturs(2,3,'source-atop')" value="source-atop" />
-    <input type="button" onclick="drawConturs(2,3,'source-in')" value="source-in" />
-    <input type="button" onclick="drawConturs(2,3,'source-out')" value="source-out" />
-    <input type="button" onclick="drawConturs(2,3,'destination_over')" value="destination_over" />
-    <input type="button" onclick="drawConturs(2,3,'destination_atop')" value="destination_atop" />
-    <input type="button" onclick="drawConturs(2,3,'destination_in')" value="destination_in" />
-    <input type="button" onclick="drawConturs(2,3,'destination_out')" value="destination_out" />
-    <input type="button" onclick="drawConturs(2,3,'copy')" value="copy" />
-    <input type="button" onclick="drawConturs(2,3,'xor')" value="xor" />
+    <input type="button" onclick="drawConturs(2,1,'source-over')" value="source-over" />
+    <input type="button" onclick="drawConturs(2,1,'source-atop')" value="source-atop" />
+    <input type="button" onclick="drawConturs(2,1,'source-in')" value="source-in" />
+    <input type="button" onclick="drawConturs(2,1,'source-out')" value="source-out" />
+    <input type="button" onclick="drawConturs(2,1,'destination_over')" value="destination_over" />
+    <input type="button" onclick="drawConturs(2,1,'destination_atop')" value="destination_atop" />
+    <input type="button" onclick="drawConturs(2,1,'destination_in')" value="destination_in" />
+    <input type="button" onclick="drawConturs(2,1,'destination_out')" value="destination_out" />
+    <input type="button" onclick="drawConturs(2,1,'copy')" value="copy" />
+    <input type="button" onclick="drawConturs(2,1,'xor')" value="xor" />
+    -->
     </td>
     <td id="td1">                 </td>
   	</tr></table>
@@ -197,13 +207,20 @@ gco = [ 'source-over','source-in','source-out','source-atop',
 	        
 	        // 0,0,0,0: 1756083
 					// 255,255,0,255: 52618
-					//for (var c=0; c<10; c++){ // цикл по внешним контурам
-						//console.log('контур',(c+1)); rgba_hist();
-		        outlinePoints = [];
-		        outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas, 0); console.log(outlinePoints);
-						//if (outlinePoints.length==0) break;
+					for (var cc=0; cc<4; cc++){ // цикл по внешним контурам
+						console.log(`контур ${cc}`); //rgba_hist();
+		        outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas, 0); console.log(outlinePoints); // внешний контур
+						if (outlinePoints.length==0) break;
 						res.push([outlinePoints]);
-						//drawConturs(res.length-1, "destination_in"); // {0,0,0,0: 838538, 0,0,0,255: 11819, 255,255,0,255: 222853}
+						drawConturs(outlinePoints); // скрыть найденный внешний контур
+						for (hh=0; hh<4; hh++){ // цикл по дыркам
+			        outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas, 1); console.log(outlinePoints); // дырка
+							if (outlinePoints.length==0) break;
+							res[cc].push(outlinePoints);
+							drawConturs(outlinePoints); // скрыть найденную дырку
+						}
+						strokeConturs();
+						// {0,0,0,0: 838538, 0,0,0,255: 11819, 255,255,0,255: 222853}
 						//ppath = points2path(outlinePoints);
 		        /*
 		        context.fillStyle = `rgba(${5*c}, ${5*c}, ${5*c}, 1)`;//"#FF0000";
@@ -244,7 +261,7 @@ gco = [ 'source-over','source-in','source-out','source-atop',
 						//console.log(outlinePoints);
 						//break;
 						//rgba_hist(context);
-					//};
+					};
 					return;
 					
 					//context.drawImage(image, 0, 0, canvas.width, canvas.height);
@@ -289,10 +306,13 @@ gco = [ 'source-over','source-in','source-out','source-atop',
         };
         function findHoles(){
         	for (var cc=0; cc<res.length; cc++){
-		        outlinePoints = [];
-		        outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas, cc); console.log(outlinePoints);
-						if (outlinePoints.length==0) continue;
-						res[cc].push([outlinePoints]);
+        		for (var hh=0; hh<3; hh++){
+			        outlinePoints = [];
+			        outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas, cc, hh); console.log(outlinePoints);
+							if (outlinePoints.length==0) break;
+							res[cc].push(outlinePoints);
+							drawConturs(outlinePoints, cc, hh, "xor");
+						}
 					}
         }
         function clearRect(){
@@ -311,23 +331,37 @@ gco = [ 'source-over','source-in','source-out','source-atop',
 					context.fill();
 					console.log(`контур ${conturN} из ${r.length} точек нарисован`);
 				}
-        function drawConturs(cc, hh, globalCompositeOperation){
-        	console.log('рисуем контур, всего точек', res[cc].length);
-        	console.log('гистограмма до'); rgba_hist();
-        	context.globalCompositeOperation = globalCompositeOperation;//"source-over";
+        function drawConturs(p){
+        	//if (p.length < 3) {console.log(`нет точек в контуре ${cc}`); return;}
+        	console.log(`рисуем контур, всего точек ${p.length}`);
+        	//console.log('гистограмма до'); rgba_hist();
+        	context.globalCompositeOperation = "xor";//globalCompositeOperation;//"source-over";
 					//context.fillstyle = "red";
-	        context.fillStyle = `rgba(255, 255, ${cc}, 1)`;//"#FF0000";
+	        context.fillStyle = `rgba(255, 255, 1, 1)`;//"#FF0000";
 					context.beginPath();
-					//for (var cc=0; cc<arr_points.length; cc++){
-						var r = res[cc][hh]; // cc - номер внешнего контура // hh - номер дырки
-						context.moveTo(r[0], r[1]);
-						for(var i=2; i<r.length; i+=2){
-							context.lineTo(r[i], r[i+1]);
-						}
-						context.lineTo(r[0], r[1]);
-						context.fill();
-					//}
-        	console.log('гистограмма после'); rgba_hist();
+					context.moveTo(p[0], p[1]);
+					for(var i=2; i<p.length; i+=2){
+						context.lineTo(p[i], p[i+1]);
+					}
+					context.lineTo(p[0], p[1]);
+					context.fill();
+        	//console.log('гистограмма после'); rgba_hist();
+        }
+        function strokeConturs(){
+        	for (cc=0; cc<res.length; cc++){
+        		for (hh=0; hh<res[cc].length; hh++){
+        			p = res[cc][hh];
+			        context.fillStyle = `green`;//"#FF0000";
+							context.beginPath();
+							context.moveTo(p[0], p[1]);
+							for(var i=2; i<p.length; i+=2){
+								context.lineTo(p[i], p[i+1]);
+							}
+							context.lineTo(p[0], p[1]);
+							context.stroke();
+        			
+        		}
+        	}
         }
         function drawScan(){
         	context.drawImage(image, 0, 0, canvas.width, canvas.height);
