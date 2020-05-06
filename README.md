@@ -63,8 +63,7 @@ N - двумерный массив, число цветов 2, преобраз
 Текущая версия [index3.html](https://a402539.github.io/triangulation/index3.html)
 
 Marching Square [index4.html](https://a402539.github.io/triangulation/index4.html)
-[index5.html](https://a402539.github.io/triangulation/index5.html)
-[index6.html](https://a402539.github.io/triangulation/index6.html)
+[index44.html](https://a402539.github.io/triangulation/index44.html)
 
 ## Увеличение минимального расстояния между точками [enlarge.html](https://a402539.github.io/triangulation/enlarge.html) см. [wiki](../../wiki)
 
