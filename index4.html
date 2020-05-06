@@ -158,7 +158,7 @@ gco = [ 'source-over','source-in','source-out','source-atop',
     <td id="td1">                 </td>
   	</tr></table>
     <canvas id="canvas"></canvas>
-	  <img id="img1" src="974.png"></img>
+	  <img id="img1" src="847.png"></img>
 
    <script>
 				
@@ -207,13 +207,13 @@ gco = [ 'source-over','source-in','source-out','source-atop',
 	        
 	        // 0,0,0,0: 1756083
 					// 255,255,0,255: 52618
-					for (var cc=0; cc<4; cc++){ // цикл по внешним контурам
+					for (var cc=0; cc<20; cc++){ // цикл по внешним контурам
 						console.log(`контур ${cc}`); //rgba_hist();
 		        outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas, 0); console.log(outlinePoints); // внешний контур
 						if (outlinePoints.length==0) break;
 						res.push([outlinePoints]);
 						drawConturs(outlinePoints); // скрыть найденный внешний контур
-						for (hh=0; hh<4; hh++){ // цикл по дыркам
+						for (hh=0; hh<20; hh++){ // цикл по дыркам
 			        outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas, 1); console.log(outlinePoints); // дырка
 							if (outlinePoints.length==0) break;
 							res[cc].push(outlinePoints);
