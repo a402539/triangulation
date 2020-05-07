@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<!-- saved from url=(0151)https://web.archive.org/web/20170314232750/http://devblog.phillipspiess.com/better%20know%20an%20algorithm/2010/02/23/better-know-marching-squares.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1258"><script src="./Phill Spiess_files/analytics.js" type="text/javascript"></script>
+<script type="text/javascript">window.addEventListener('DOMContentLoaded',function(){var v=archive_analytics.values;v.service='wb';v.server_name='wwwb-app57.us.archive.org';v.server_ms=1042;archive_analytics.send_pageview({});});</script><script type="text/javascript" src="./Phill Spiess_files/ait-client-rewrite.js" charset="utf-8"></script>
+<script type="text/javascript">
+WB_wombat_Init("https://web.archive.org/web/", "20170314232750", "devblog.phillipspiess.com:80");
+</script>
+<script type="text/javascript" src="./Phill Spiess_files/wbhack.js" charset="utf-8"></script>
+<script type="text/javascript">
+__wbhack.init('https://web.archive.org/web');
+</script>
+<script type="text/javascript" src="./Phill Spiess_files/playback.bundle.js" charset="utf-8"></script>
+<link rel="stylesheet" type="text/css" href="./Phill Spiess_files/banner-styles.css">
+<link rel="stylesheet" type="text/css" href="./Phill Spiess_files/iconochive.css">
+<!-- End Wayback Rewrite JS Include -->
+
+  
+  
+  <title>Phill Spiess</title>
+  <link rel="stylesheet" type="text/css" media="all" href="./Phill Spiess_files/reset.css">
+  <link rel="stylesheet" type="text/css" media="all" href="./Phill Spiess_files/960.css">
+  <link rel="stylesheet" type="text/css" media="all" href="./Phill Spiess_files/main.css">
+
+  <link rel="shortcut icon" href="https://web.archive.org/web/20170314232750im_/http://devblog.phillipspiess.com/wp-content/themes/blass2/favicon.ico">
+</head>
+<body><!-- BEGIN WAYBACK TOOLBAR INSERT -->
+<style type="text/css">
+body {
+  margin-top:0 !important;
+  padding-top:0 !important;
+  /*min-width:800px !important;*/
+}
+</style>
+<div id="wm-ipp-base" lang="en" style="display: block; direction: ltr;">
+</div><div id="donato" style="position:relative;width:100%;">
+  <div id="donato-base">
+    <iframe id="donato-if" src="./Phill Spiess_files/donate.html" scrolling="no" frameborder="0" style="width:100%; height:100%">
+    </iframe>
+  </div>
+</div><script type="text/javascript">
+__wm.bt(625,27,25,2,"web","http://devblog.phillipspiess.com/better know an algorithm/2010/02/23/better-know-marching-squares.html","20170314232750",1996,"/_static/",["/_static/css/banner-styles.css?v=1588730750","/_static/css/iconochive.css?v=1588730750"]);
+</script>
+<!-- END WAYBACK TOOLBAR INSERT -->
+
+<header>
+    <div class="container_12">
+        <div><a name="up" id="up"></a></div>
+        <div class="grid_10">
+            <h1><a class="title-link" href="https://web.archive.org/web/20170314232750/http://devblog.phillipspiess.com/">Phill Spiess</a></h1>
+        </div>
+        <div class="grid_1 header-page-link"><a href="https://web.archive.org/web/20170314232750/http://devblog.phillipspiess.com/">Home</a></div>
+        <div class="grid_1 header-page-link"><a href="https://web.archive.org/web/20170314232750/http://devblog.phillipspiess.com/projects/">Projects</a></div>
+    </div>
+</header>
+
+<div class="container_12 island">
+    <div id="content" class="grid_9">
+    <h1>Better Know An Algorithm: Marching Squares</h1>
+<p>There are a number of useful algorithms that every game programmer should be aware of and know how to code. One of my goals is to explain how these algorithms work and provide code samples. If the algorithms have a cool visualization, than I’ll try to provide one of those as well.</p>
+
+<p>Without further ado, let’s start with our first <strong>Better Know An Algorithm (BKAA)</strong> with <strong>The Marching Squares Algorithm</strong> – THE FIGHTIN' SQUARES!</p>
+
+<h1>What does it do?</h1>
+
+<p>You’ve seen the output of this algorithm all over the place. When you use the magic wand tool in Adobe Photoshop, it produces the ‘ants marching’ perimeter of a colored area. Marching Squares gets its name from the way it works – it takes a square area of an image and marches around the perimeter of an object.</p>
+
+<p>For example, if you wanted to select the first big sprite from this Tyrian sprite sheet from <a href="https://web.archive.org/web/20170314232750/http://www.lostgarden.com/">Lost Garden</a>:</p>
+
+<p><img src="./Phill Spiess_files/originalsprite.png" alt="Example Tyrian Sprite Sheet"></p>
+
+<p>Example Tyrian Sprite Sheet</p>
+
+<p>And produce an outline (with the sprite sheet on the top, and without on the bottom):</p>
+
+<p><img src="./Phill Spiess_files/No-Post-Process-1092-points.png" alt="First Outline"></p>
+
+<p>Marching Squares Outline</p>
+
+<p><img src="./Phill Spiess_files/NoPostOutline.png" alt="Outline With No Sprite"></p>
+
+<p>Points Produced by the Marching Squares Algorithm</p>
+
+<p>Pretty cool, huh? Well, maybe not yet. The application isn’t immediately obvious. You could (and I’m not saying you should) use this algorithm to do things like trace topographies in heightmaps, determine interior/exterior spaces, or route some pathfinding. So you’ve seen what it does, butâ€¦</p>
+
+<h1>How does it work?</h1>
+
+<p>The algorithm is actually very simple. Essentially, we will be running a loop where we look at 4 pixels at a time. Depending on the state of those pixels, we move in 1 of four directions. To begin, we start from the upper left pixel in the image and we progress to the right until we reach a border.  Once there, we look at the state of our four pixels, and move accordingly. The diagram below shows the 16 possible states, and the resulting move they cause.</p>
+
+<p><img src="./Phill Spiess_files/MarchingStates.png" alt="Marching States"></p>
+
+<p>States of Marching Squares</p>
+
+<p>To see the algorithm in action, I’ve made a simple excerpt of it in this animation. The green square represents the current 4 pixels, and their state is also shown in the lower right. As you can see, in this case we are simply checking if the pixels are white or colored to determine the state of the four pixels. You could easily use transparency to run your algorithm, or any other color. You’ll see more about that in the code.</p>
+
+<p><img src="./Phill Spiess_files/marchingmario.gif" alt="Marching Squares on Mario"></p>
+
+<p>Marching Squares working on Mario</p>
+
+<p>I’ve reversed the direction of the algorithm in this example to demonstrate that it does work either direction. Just reverse the arrows in the diagram above to travel clockwise. Alright, enough talk, let’s code!</p>
+
+<h1>The Code</h1>
+
+<p>Let’s go ahead and create a simple class, MarchingSquare, that will do our heavy lifting. It will have one public method that takes in a texture and return a list of points that defines the perimeter, and a number of smaller worker functions.</p>
+
+<div class="highlight"><pre><code class="c#"><span class="k">using</span> <span class="nn">Microsoft.Xna.Framework</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Microsoft.Xna.Framework.Graphics</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Systems.Collections.Generic</span><span class="p">;</span>
+ 
+<span class="k">public</span> <span class="k">class</span> <span class="nc">MarchingSquare</span>
+<span class="p">{</span>
+  <span class="c1">// A simple enumeration to represent the direction we</span>
+  <span class="c1">// just moved, and the direction we will next move.</span>
+  <span class="k">private</span> <span class="k">enum</span> <span class="n">StepDirection</span>
+  <span class="p">{</span>
+    <span class="n">None</span><span class="p">,</span>
+    <span class="n">Up</span><span class="p">,</span>
+    <span class="n">Left</span><span class="p">,</span>
+    <span class="n">Down</span><span class="p">,</span>
+    <span class="n">Right</span>
+  <span class="p">}</span>
+ 
+  <span class="c1">// Some variables to make our function</span>
+  <span class="c1">// calls a little smaller, probably shouldn't</span>
+  <span class="c1">// expose these to the public though.</span>
+ 
+  <span class="c1">// Holds the color information for our texture</span>
+  <span class="k">private</span> <span class="n">Color</span><span class="p">[]</span> <span class="n">colorData</span><span class="p">;</span>
+ 
+  <span class="c1">// Our texture</span>
+  <span class="k">private</span> <span class="n">Texture2D</span> <span class="n">texture</span><span class="p">;</span>
+ 
+  <span class="c1">// The direction we previously stepped</span>
+  <span class="k">private</span> <span class="n">StepDirection</span> <span class="n">previousStep</span><span class="p">;</span>
+ 
+  <span class="c1">// Our next step direction:</span>
+  <span class="k">private</span> <span class="n">StepDirection</span> <span class="n">nextStep</span><span class="p">;</span>
+ 
+  <span class="c1">// Takes a texture and returns a list of pixels that</span>
+  <span class="c1">// define the perimeter of the upper-left most</span>
+  <span class="c1">// object in that texture, using alpha==0 to determine</span>
+  <span class="c1">// the boundary.</span>
+  <span class="k">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Vector2</span><span class="p">&gt;</span> <span class="n">DoMarch</span><span class="p">(</span><span class="n">Texture2D</span> <span class="n">target</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="c1">// Nothing to see... yet</span>
+  <span class="p">}</span>
+ 
+  <span class="c1">// Finds the first pixel in the perimeter of the image</span>
+  <span class="k">private</span> <span class="n">Vector2</span> <span class="nf">FindStartPoint</span><span class="p">()</span>
+  <span class="p">{</span>
+    <span class="c1">// Nothing to see... yet.</span>
+  <span class="p">}</span>
+ 
+  <span class="c1">// Performs the main while loop of the algorithm</span>
+  <span class="k">private</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Vector2</span><span class="p">&gt;</span> <span class="n">WalkPerimeter</span><span class="p">(</span><span class="kt">int</span> <span class="n">startX</span><span class="p">,</span> <span class="kt">int</span> <span class="n">startY</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="c1">// Nothing to see... yet.</span>
+  <span class="p">}</span>
+ 
+  <span class="c1">// Determines and sets the state of the 4 pixels that</span>
+  <span class="c1">// represent our current state, and sets our current and</span>
+  <span class="c1">// previous directions</span>
+  <span class="k">private</span> <span class="k">void</span> <span class="nf">Step</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">)</span>
+  <span class="p">{</span>
+   <span class="c1">// Nothing to see... yet.</span>
+  <span class="p">}</span> 
+ 
+  <span class="c1">// Determines if a single pixel is solid (we test against</span>
+  <span class="c1">// alpha values, you can write your own test if you want</span>
+  <span class="c1">// to test for a different color.)</span>
+  <span class="k">private</span> <span class="kt">bool</span> <span class="nf">IsPixelSolid</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="c1">// Nothing to see... yet.</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></div>
+
+
+<p>Alright, we’ve laid some ground work, let’s look at these functions in a little more depth. Starting with the easiest of the bunch IsPixelSolid which just checks to see if a single pixel (given x and y coordinates) is solid.</p>
+
+<div class="highlight"><pre><code class="c#"><span class="c1">// Determines if a single pixel is solid (we test against</span>
+<span class="c1">// alpha values, you can write your own test if you want</span>
+<span class="c1">// to test for a different color.)</span>
+<span class="k">private</span> <span class="kt">bool</span> <span class="nf">IsPixelSolid</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">// Make sure we don't pick a point outside our</span>
+  <span class="c1">// image boundary!</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="p">&lt;</span> <span class="m">0</span> <span class="p">||</span> <span class="n">y</span> <span class="p">&lt;</span> <span class="m">0</span> <span class="p">||</span>
+      <span class="n">x</span> <span class="p">&gt;=</span> <span class="n">texture</span><span class="p">.</span><span class="n">Width</span> <span class="p">||</span> <span class="n">y</span> <span class="p">&gt;=</span> <span class="n">texture</span><span class="p">.</span><span class="n">Height</span><span class="p">)</span>
+      <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+
+  <span class="c1">// Check the color value of the pixel</span>
+  <span class="c1">// If it isn't 100% transparent, it is solid</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">colorData</span><span class="p">[</span><span class="n">x</span> <span class="p">+</span> <span class="n">y</span> <span class="p">*</span> <span class="n">texture</span><span class="p">.</span><span class="n">Width</span><span class="p">].</span><span class="n">A</span> <span class="p">&gt;</span> <span class="m">0</span><span class="p">)</span>
+      <span class="k">return</span> <span class="k">true</span><span class="p">;</span>
+
+  <span class="c1">// Otherwise, it's not solid</span>
+  <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div>
+
+
+<p>Next, let’s take care of another simple function, FindStartPoint, which is responsible for finding the coordinates of the first point on the perimeter of the sprite we are tracing. In this example, I start in the upper left and continue scanning to the right until I hit a non-empty pixel.</p>
+
+<div class="highlight"><pre><code class="c#"><span class="c1">// Locates the perimeter of a sprite within the texture</span>
+    <span class="c1">// starting from the upper left and moving right.</span>
+    <span class="k">private</span> <span class="n">Vector2</span> <span class="nf">FindStartPoint</span><span class="p">()</span>
+    <span class="p">{</span>
+      <span class="c1">// Scan along the whole image</span>
+      <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">pixel</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">pixel</span> <span class="p">&lt;</span> <span class="n">colorData</span><span class="p">.</span><span class="n">Length</span><span class="p">;</span> <span class="n">pixel</span><span class="p">++)</span>
+      <span class="p">{</span>
+        <span class="c1">// If the pixel is not entirely transparent</span>
+        <span class="c1">// we've found a start point</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">colorData</span><span class="p">[</span><span class="n">pixel</span><span class="p">].</span><span class="n">A</span> <span class="p">&gt;</span> <span class="m">0</span><span class="p">)</span>
+          <span class="k">return</span> <span class="k">new</span> <span class="nf">Vector2</span><span class="p">(</span><span class="n">pixel</span> <span class="p">%</span> <span class="n">texture</span><span class="p">.</span><span class="n">Width</span><span class="p">,</span>
+                  <span class="n">pixel</span> <span class="p">/</span> <span class="n">texture</span><span class="p">.</span><span class="n">Width</span><span class="p">);</span>
+      <span class="p">}</span>
+   
+      <span class="c1">// If we get here</span>
+      <span class="c1">// we've scanned the whole image and found nothing.</span>
+      <span class="k">return</span> <span class="n">Vector2</span><span class="p">.</span><span class="n">Zero</span><span class="p">;</span>
+    <span class="p">}</span></code></pre></div>
+
+
+<p>Here’s the code for Step, we’ll break it down a little.</p>
+
+<div class="highlight"><pre><code class="c#"><span class="c1">// Determines and sets the state of the 4 pixels that</span>
+    <span class="c1">// represent our current state, and sets our current and</span>
+    <span class="c1">// previous directions</span>
+    <span class="k">private</span> <span class="k">void</span> <span class="nf">Step</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="c1">// Scan our 4 pixel area</span>
+      <span class="kt">bool</span> <span class="n">upLeft</span> <span class="p">=</span> <span class="n">IsPixelSolid</span><span class="p">(</span><span class="n">x</span><span class="p">-</span><span class="m">1</span><span class="p">,</span> <span class="n">y</span><span class="p">-</span><span class="m">1</span><span class="p">);</span>
+      <span class="kt">bool</span> <span class="n">upRight</span> <span class="p">=</span> <span class="n">IsPixelSolid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">-</span><span class="m">1</span><span class="p">);</span>
+      <span class="kt">bool</span> <span class="n">downLeft</span> <span class="p">=</span> <span class="n">IsPixelSolid</span><span class="p">(</span><span class="n">x</span><span class="p">-</span><span class="m">1</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
+      <span class="kt">bool</span> <span class="n">downRight</span> <span class="p">=</span> <span class="n">IsPixelSolid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
+   
+      <span class="c1">// Store our previous step</span>
+      <span class="n">previousStep</span> <span class="p">=</span> <span class="n">nextStep</span><span class="p">;</span>
+   
+      <span class="c1">// Determine which state we are in</span>
+      <span class="kt">int</span> <span class="n">state</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span>
+   
+      <span class="k">if</span> <span class="p">(</span><span class="n">upLeft</span><span class="p">)</span>
+         <span class="n">state</span> <span class="p">|=</span> <span class="m">1</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">upRight</span><span class="p">)</span>
+         <span class="n">state</span> <span class="p">|=</span> <span class="m">2</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">downLeft</span><span class="p">)</span>
+         <span class="n">state</span> <span class="p">|=</span> <span class="m">4</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">downRight</span><span class="p">)</span>
+         <span class="n">state</span> <span class="p">|=</span> <span class="m">8</span><span class="p">;</span>
+   
+      <span class="c1">// State now contains a number between 0 and 15</span>
+      <span class="c1">// representing our state.</span>
+      <span class="c1">// In binary, it looks like 0000-1111 (in binary)</span>
+   
+      <span class="c1">// An example. Let's say the top two pixels are filled,</span>
+      <span class="c1">// and the bottom two are empty.</span>
+      <span class="c1">// Stepping through the if statements above with a state</span>
+      <span class="c1">// of 0b0000 initially produces:</span>
+      <span class="c1">// Upper Left == true ==&gt;  0b0001</span>
+      <span class="c1">// Upper Right == true ==&gt; 0b0011</span>
+      <span class="c1">// The others are false, so 0b0011 is our state</span>
+      <span class="c1">// (That's 3 in decimal.)</span>
+   
+      <span class="c1">// Looking at the chart above, we see that state</span>
+      <span class="c1">// corresponds to a move right, so in our switch statement</span>
+      <span class="c1">// below, we add a case for 3, and assign Right as the</span>
+      <span class="c1">// direction of the next step. We repeat this process</span>
+      <span class="c1">// for all 16 states.</span>
+   
+      <span class="c1">// So we can use a switch statement to determine our</span>
+      <span class="c1">// next direction based on</span>
+      <span class="k">switch</span> <span class="p">(</span><span class="n">state</span> <span class="p">)</span>
+      <span class="p">{</span>
+        <span class="k">case</span> <span class="m">1</span><span class="p">:</span> <span class="n">nextStep</span> <span class="p">=</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">Up</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="m">2</span><span class="p">:</span> <span class="n">nextStep</span> <span class="p">=</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">Right</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="m">3</span><span class="p">:</span> <span class="n">nextStep</span> <span class="p">=</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">Right</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="m">4</span><span class="p">:</span> <span class="n">nextStep</span> <span class="p">=</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">Left</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="m">5</span><span class="p">:</span> <span class="n">nextStep</span> <span class="p">=</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">Up</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="m">6</span><span class="p">:</span>
+          <span class="k">if</span> <span class="p">(</span><span class="n">previousStep</span><span class="p">==</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">Up</span><span class="p">)</span>
+          <span class="p">{</span>
+            <span class="n">nextStep</span> <span class="p">=</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">Left</span><span class="p">;</span>
+          <span class="p">}</span>
+          <span class="k">else</span>
+          <span class="p">{</span>
+            <span class="n">nextStep</span> <span class="p">=</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">Right</span><span class="p">;</span>
+          <span class="p">}</span>
+          <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="m">7</span><span class="p">:</span> <span class="n">nextStep</span> <span class="p">=</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">Right</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="m">8</span><span class="p">:</span> <span class="n">nextStep</span> <span class="p">=</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">Down</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="m">9</span><span class="p">:</span>
+          <span class="k">if</span> <span class="p">(</span><span class="n">previousStep</span><span class="p">==</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">Right</span><span class="p">)</span>
+          <span class="p">{</span>
+            <span class="n">nextStep</span> <span class="p">=</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">Up</span><span class="p">;</span>
+          <span class="p">}</span>
+          <span class="k">else</span>
+          <span class="p">{</span>
+            <span class="n">nextStep</span> <span class="p">=</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">Down</span><span class="p">;</span>
+          <span class="p">}</span>
+          <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="m">10</span><span class="p">:</span> <span class="n">nextStep</span> <span class="p">=</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">Down</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="m">11</span><span class="p">:</span> <span class="n">nextStep</span> <span class="p">=</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">Down</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="m">12</span><span class="p">:</span> <span class="n">nextStep</span> <span class="p">=</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">Left</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="m">13</span><span class="p">:</span> <span class="n">nextStep</span> <span class="p">=</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">Up</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="m">14</span><span class="p">:</span> <span class="n">nextStep</span> <span class="p">=</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">Left</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+        <span class="k">default</span><span class="p">:</span>
+          <span class="n">nextStep</span> <span class="p">=</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">None</span><span class="p">;</span>
+          <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span></code></pre></div>
+
+
+<p>Now, the astute among you will notice that there are two states that don’t follow a simple pattern. States 6 and 9, the two diagonal states (0110 and 1001 respectively, also the middle two states in the far right column in the image above) have a small quirk. If you always travel a single direction when you encounter these states you will occasionally get caught in a loop. Here’s an example:</p>
+
+<p><img src="./Phill Spiess_files/MarchingProblem.png" alt="Marching Squares on Mario"></p>
+
+<p>Marching Squares Problem</p>
+
+<p>Look at the two red squares, let’s say we were tracing along from the left when we encountered them. The diagram above would have us travel up into the hollowed out center area, which is probably what we want to do. So we travel up, then follow along the perimeter of the interior blank area until we hit the two red squares again. The algorithm says to go up, so we go up again, back into the center area. If we don’t account for this, we’ll get stuck in a loop forever tracing the interior shape. So we just watch where we came from. If we came from the left, we go up, otherwise we go down. Problem solved.</p>
+
+<p>Now that we can actually take single steps, WalkPerimeter simply takes a starting point and keeps taking steps until we’ve walked the entire perimeter. Take note, this method requires initX and initY to be a point on the perimeter of the object we are tracing, or else it will never return.</p>
+
+<div class="highlight"><pre><code class="c#"><span class="k">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Vector2</span><span class="p">&gt;</span> <span class="n">WalkPerimeter</span><span class="p">(</span><span class="kt">int</span> <span class="n">startX</span><span class="p">,</span> <span class="kt">int</span> <span class="n">startY</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="c1">// Do some sanity checking, so we aren't</span>
+      <span class="c1">// walking outside the image</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">startX</span><span class="p">&lt;</span> <span class="m">0</span><span class="p">)</span>
+        <span class="n">startX</span><span class="p">=</span> <span class="m">0</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">startX</span><span class="p">&gt;</span> <span class="n">texture</span><span class="p">.</span><span class="n">Width</span><span class="p">)</span>
+        <span class="n">startX</span><span class="p">=</span> <span class="n">texture</span><span class="p">.</span><span class="n">Width</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">startY</span><span class="p">&lt;</span> <span class="m">0</span><span class="p">)</span>
+        <span class="n">startY</span><span class="p">=</span> <span class="m">0</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">startY</span><span class="p">&gt;</span> <span class="n">texture</span><span class="p">.</span><span class="n">Height</span><span class="p">)</span>
+        <span class="n">startY</span><span class="p">=</span> <span class="n">texture</span><span class="p">.</span><span class="n">Height</span><span class="p">;</span>
+     
+      <span class="c1">// Set up our return list</span>
+      <span class="n">List</span><span class="p">&lt;</span><span class="n">Vector2</span><span class="p">&gt;</span> <span class="n">pointList</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Vector2</span><span class="p">&gt;();</span>
+     
+      <span class="c1">// Our current x and y positions, initialized</span>
+      <span class="c1">// to the init values passed in</span>
+      <span class="kt">int</span> <span class="n">x</span> <span class="p">=</span> <span class="n">startX</span><span class="p">;</span>
+      <span class="kt">int</span> <span class="n">y</span> <span class="p">=</span> <span class="n">startY</span><span class="p">;</span>
+     
+      <span class="c1">// The main while loop, continues stepping until</span>
+      <span class="c1">// we return to our initial points</span>
+      <span class="k">do</span>
+      <span class="p">{</span>
+        <span class="c1">// Evaluate our state, and set up our next direction</span>
+        <span class="n">Step</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
+     
+        <span class="c1">// If our current point is within our image</span>
+        <span class="c1">// add it to the list of points</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="p">&gt;=</span> <span class="m">0</span> <span class="p">&amp;&amp;</span>
+            <span class="n">x</span> <span class="p">&lt;</span> <span class="n">texture</span><span class="p">.</span><span class="n">Width</span> <span class="p">&amp;&amp;</span>
+            <span class="n">y</span> <span class="p">&gt;=</span> <span class="m">0</span> <span class="p">&amp;&amp;</span>
+            <span class="n">y</span> <span class="p">&lt;</span> <span class="n">texture</span><span class="p">.</span><span class="n">Height</span><span class="p">)</span>
+          <span class="n">pointList</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="k">new</span> <span class="n">Vector2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">));</span>
+     
+        <span class="k">switch</span> <span class="p">(</span><span class="n">nextStep</span><span class="p">)</span>
+        <span class="p">{</span>
+          <span class="k">case</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">Up</span><span class="p">:</span>    <span class="n">y</span><span class="p">--;</span> <span class="k">break</span><span class="p">;</span>
+          <span class="k">case</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">Left</span><span class="p">:</span>  <span class="n">x</span><span class="p">--;</span> <span class="k">break</span><span class="p">;</span>
+          <span class="k">case</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">Down</span><span class="p">:</span>  <span class="n">y</span><span class="p">++;</span> <span class="k">break</span><span class="p">;</span>
+          <span class="k">case</span> <span class="n">StepDirection</span><span class="p">.</span><span class="n">Right</span><span class="p">:</span> <span class="n">x</span><span class="p">++;</span> <span class="k">break</span><span class="p">;</span>
+          <span class="k">default</span><span class="p">:</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">x</span> <span class="p">!=</span> <span class="n">startX</span><span class="p">||</span> <span class="n">y</span> <span class="p">!=</span> <span class="n">initY</span><span class="p">);</span>
+     
+      <span class="k">return</span> <span class="n">pointList</span><span class="p">;</span>
+    <span class="p">}</span></code></pre></div>
+
+
+<p>Finally, we just have DoMarch, our public facing method responsible for putting everything together.</p>
+
+<div class="highlight"><pre><code class="c#"><span class="c1">// Takes a texture and returns a list of pixels that</span>
+    <span class="c1">// define the perimeter of the upper-left most</span>
+    <span class="c1">// object in that texture, using alpha==0 to determine</span>
+    <span class="c1">// the boundary.</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Vector2</span><span class="p">&gt;</span> <span class="n">DoMarch</span><span class="p">(</span><span class="n">Texture2D</span> <span class="n">target</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="n">texture</span> <span class="p">=</span> <span class="n">target</span><span class="p">;</span>
+      <span class="c1">// Create an array large enough to hold our texture data</span>
+      <span class="n">colorData</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Color</span><span class="p">[</span><span class="n">texture</span><span class="p">.</span><span class="n">Height</span> <span class="p">*</span> <span class="n">texture</span><span class="p">.</span><span class="n">Width</span><span class="p">];</span>
+   
+      <span class="c1">// Get our color information out of the texture and</span>
+      <span class="c1">// into our traversable array</span>
+      <span class="n">texture</span><span class="p">.</span><span class="n">GetData</span>
+  <span class="p">(</span><span class="n">colorData</span><span class="p">);</span>
+   
+      <span class="c1">// Find the start points</span>
+      <span class="n">Vector2</span> <span class="n">perimeterStart</span> <span class="p">=</span> <span class="n">FindStartPoint</span><span class="p">();</span>
+   
+      <span class="c1">// Return the list of points</span>
+      <span class="k">return</span> <span class="nf">WalkPerimeter</span><span class="p">((</span><span class="kt">int</span><span class="p">)</span><span class="n">perimeterStart</span><span class="p">.</span><span class="n">X</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">perimeterStart</span><span class="p">.</span><span class="n">Y</span><span class="p">);</span>
+    <span class="p">}</span></code></pre></div>
+
+
+<p>And we’re done!</p>
+
+    </div>
+
+    <div id="sidebar" class="grid_3">
+          <h2>About this Blog</h2>
+
+          <p class="small">Most notable for his <a href="https://web.archive.org/web/20170314232750/http://www.youtube.com/watch?v=7_HMLvLB7b0">romhack marriage proposal</a>, Phill now works as a software developer for an internet retailer in the Pacific NW. His real passion is developing games and sharing what he learns along the way.<br>
+          <br>
+          He someday hopes to break into the game dev industry, and always welcomes visitors to send him an email at: <a href="https://web.archive.org/web/20170314232750/mailto:devblog@phillipspiess.com">devblog@phillipspiess.com</a>
+          </p>
+    </div>
+</div>
+
+<footer style="text-align:center;">
+    <p>&#8593; <a href="https://web.archive.org/web/20170314232750/http://devblog.phillipspiess.com/better%20know%20an%20algorithm/2010/02/23/better-know-marching-squares.html#up" title="Go upwards" target="_self">Back to top</a></p>
+    <p>© 2014 Phill Spiess</p>
+</footer>
+
+
+
+<!--
+     FILE ARCHIVED ON 23:27:50 Mar 14, 2017 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 16:29:10 May 06, 2020.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+-->
+<!--
+playback timings (ms):
+  CDXLines.iter: 14.26 (3)
+  esindex: 0.017
+  PetaboxLoader3.datanode: 63.673 (4)
+  exclusion.robots.policy: 0.368
+  captures_list: 66.47
+  PetaboxLoader3.resolve: 900.504
+  load_resource: 942.749
+  LoadShardBlock: 42.952 (3)
+  exclusion.robots: 0.384
+  RedisCDXSource: 5.815
+--></body></html>
