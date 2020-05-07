@@ -24,38 +24,40 @@ function rgba_hist(flag) {
 	}
 	// console.log(ap, iStamp);
 	var out = JSON.stringify(ap) + ' time: ' + (Date.now() - tStamp) + ' мсек.';
-	if (flag) logInfo.innerHTML = out;
+	// if (flag) logInfo.innerHTML = out;
 	return out;
 }
 
 function clearRect() {
 	context.clearRect(0,0,context.canvas.width,context.canvas.height);
-	logInfo.innerHTML = 'холст очищен';
+	// logInfo.innerHTML = 'холст очищен';
 }
 function drawScan() {
 	context.drawImage(image, 0, 0, canvas.width, canvas.height);
-	logInfo.innerHTML = 'Скан нарисован';
+	// logInfo.innerHTML = 'Скан нарисован';
 }
 function contur() {
+	var tStamp = Date.now();
 	for (var cc=0; cc<20; cc++){ // цикл по внешним контурам
-		console.log(`контур ${cc}`); //rgba_hist();
-    outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas, 0); console.log(outlinePoints); // внешний контур
+		// console.log(`контур ${cc}`); //rgba_hist();
+    outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas, 0); // console.log(outlinePoints); // внешний контур
 		if (outlinePoints.length==0) break;
 		res.push([outlinePoints]);
 		drawConturs(outlinePoints); // скрыть найденный внешний контур
 		for (hh=0; hh<20; hh++){ // цикл по дыркам
-      outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas, 1); console.log(outlinePoints); // дырка
+      outlinePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas, 1); // console.log(outlinePoints); // дырка
 			if (outlinePoints.length==0) break;
 			res[cc].push(outlinePoints);
 			drawConturs(outlinePoints); // скрыть найденную дырку
 		}
-		strokeConturs();
 	}
+	console.log(' time: ' + (Date.now() - tStamp) + ' мсек.');
+	strokeConturs();
 }
 
 function drawConturs(p){
 	//if (p.length < 3) {console.log(`нет точек в контуре ${cc}`); return;}
-	console.log(`рисуем контур, всего точек ${p.length}`);
+	// console.log(`рисуем контур, всего точек ${p.length}`);
 	//console.log('гистограмма до'); rgba_hist();
 	context.globalCompositeOperation = "xor";//globalCompositeOperation;//"source-over";
 	//context.fillstyle = "red";
