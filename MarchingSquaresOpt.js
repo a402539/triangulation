@@ -10,6 +10,8 @@
 (function (window){
 
     const MarchingSquaresOpt = {};
+    
+    w0 = 0; h0 = 0; // ABV
 
     MarchingSquaresOpt.getBlobOutlinePoints = function(source_array, width, height=0){
         // Note: object should not be on the border of the array, since there is
@@ -22,7 +24,7 @@
             len = width * height,
             data = new Uint8Array(len);
           for (let i = 0; i < len; ++i){
-              data[i] = data4[i << 2];
+              data[i] = (data4[i << 2]==255 && data4[(i << 2) + 3] == 255)? 255: 0; // data4[i << 2]
           }
           source_array = data;
         } else if (0 == height){
@@ -32,8 +34,8 @@
         // find the starting point
         const startingPoint = MarchingSquaresOpt.getFirstNonTransparentPixelTopDown(source_array, width, height);
         if (null === startingPoint){
-            console.log('[Warning] Marching Squares could not find an object in the given array');
-            return [];
+           console.log('[Warning] Marching Squares could not find an object in the given array');
+           return [];
         }
 
         // return list of w and h positions
@@ -41,17 +43,29 @@
     };
 
     MarchingSquaresOpt.getFirstNonTransparentPixelTopDown = function(source_array, width, height){
-        let idx;
-        for(let h = 0|0; h < height; ++h){
-            idx = (h * width)|0;
-            for(let w = 0|0; w < width; ++w){
+    	let idx=null;
+    	for(i=0; i<source_array.length; i++) {
+    		if(source_array[i]) {
+    			idx = i;
+    		break;}
+    	}
+    	if(null==idx) return null;
+    	w = idx%width|0; h = (idx-w)/width|0;
+    	return {w: w, h: h};
+    	/*
+        let idx = h0*width + w0; // ABV
+        for(let h = h0|0; h < height; ++h){ // ABV //for(let h = 0|0; h < height; ++h){
+            w00 = (h==h0)? w0: 0; // ABV
+            for(let w = w00|0; w < width; ++w){ // ABV
                 if(source_array[idx] > 0){
+                		w0 = w; h0 = h; // ABV
                     return {w : w, h : h};
                 }
                 ++idx;
             }
         }
         return null;
+      */
     };
 
     MarchingSquaresOpt.walkPerimeter = function(source_array, width, height, start_w, start_h){
