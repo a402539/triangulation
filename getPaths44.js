@@ -1,8 +1,23 @@
 var image = document.getElementById('img1');
-var canvas = document.getElementById('canvas');
-var context = canvas.getContext('2d');
+var canvas = document.getElementById('canvas'),
+		canvas2 = document.getElementById('canvas2'),
+		canvas3 = document.getElementById('canvas3');
+var context = canvas.getContext('2d'),
+		context2 = canvas2.getContext('2d'),
+		context3 = canvas3.getContext('2d');
 window.onload = function() {
 	canvas.width = image.width; canvas.height = image.height;
+	context.imageSmoothingEnabled = false;
+	//context.drawImage(image, 1, 1);
+	//context.globalCompositeOperation = "source-over";
+	//context.fillStyle = `rgba(100,100,100,1)`;
+	canvas2.width = 201; canvas2.height = 201;
+	//context2.fillRect(0,0,200,200);
+	context2.imageSmoothingEnabled = false;
+	context2.scale(67, 67);
+	canvas3.width = 3; canvas3.height = 3;
+	context3.imageSmoothingEnabled = false;
+	//context3.globalCompositeOperation = "xor";
 }
 
 var logInfo = document.getElementById('logInfo'),
@@ -57,14 +72,14 @@ function contur() {
 		if (!points.length) break;
 		//rgba_hist();
 		//rgba_(255,255,0,255);
-		var ppoints = points2path(points);
+		var ppoints = points2path2(points);
 		context.fill(ppoints); // "{"0,0,0,0":849853,"0,0,0,255":252,"255,255,0,255":223105} time: 7548 мсек."
 		//context.stroke(ppoints); // "{"0,0,0,0":849322,"0,0,0,127":538,"0,0,0,128":214,"255,255,0,127":120,"255,255,0,255":222914,"129,129,0,127":5,"128,128,0,128":66,"0,0,0,255":31} time: 7648 мсек."
 		holes = [];
 		for (j = 0; j < 10; j++) { // цикл по дыркам
 			holePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas, 1);
 			if (!holePoints.length) break;
-			var phole = points2path(holePoints);
+			var phole = points2path2(holePoints);
 			holes.push(phole);
 			context.fill(phole);
 		}
@@ -84,14 +99,17 @@ function conturNew() {
 		startContur = findStart(false);
 		points = findPerimeter(false); //MarchingSquaresOld.getBlobOutlinePoints(canvas, 0);
 		if (!points.length) break;
-		var ppoints = points2path(points);
-		context.fill(ppoints);
+		xor(points); 
+		var ppoints = points2path(points);	
+		//context.fill(ppoints);
 		holes = [];
 		for (j = 0; j < 10; j++) { // цикл по дыркам
-			holePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas, 1);
+			startHole = findStart(true);
+			holePoints = findPerimeter(true); //holePoints = MarchingSquaresOld.getBlobOutlinePoints(canvas, 1);
 			if (!holePoints.length) break;
-			var phole = points2path(holePoints);
-			holes.push(phole);
+			xor(holePoints); 
+			var phole = points2path(holePoints); 
+			//holes.push(phole);
 			context.fill(phole);
 		}
 		paths.push({cont: ppoints, holes: holes});
@@ -128,54 +146,72 @@ function findPerimeter(hole){
 	points = [{w: w, h: h}];
 	dir = "направо"; //"вниз", "налево", "вверх"
 	do {
-		idx = ((h*width + w)|0)<<2;
+		idx = ((h*width + w)|0)<<2; width4 = width<<2|0;
+		//console.log(context.getImageData(w-1, h-1, 3, 3).data);
+		context3.putImageData(context.getImageData(w>0?w-1:0, h>0?h-1:0, w>0?3:2, h>0?3:2), w>0?0:1, h>0?0:1);
+		//context3.fillStyle = `rgba(100,100,100,0.5)`;
+		context3.fillRect(1,1,1,1);
+		context2.clearRect(0,0,3,3);
+		context2.drawImage(canvas3, 0, 0);
 		switch (dir){
 			case "направо":
+				context3.fillRect(0,1,1,1);
+				//context3.putImageData(context.getImageData(w, h, 3, 3), 0, 0);
+				//context2.drawImage(canvas3, 0, 0);
 				switch (true){
-					case h > 0 && ad[idx-width+3] > hole:
-						dir = "вверх"; h--; break;
+					case h > 0 && ad[idx-width4+3] > hole:
+						dir = "вверх"; h--; //console.log('идем слева вверх'); break;
 					case w + 1 < width && ad[idx+7] > hole:
-						dir = "направо"; w++; break;
-					case h + 1 < height && ad[idx+width+3] > hole:
-						dir = "вниз"; h++; break;
+						dir = "направо"; w++; //console.log('идем слева направо'); break;
+					case h + 1 < height && ad[idx+width4+3] > hole:
+						dir = "вниз"; h++; //console.log('идем слева вниз'); break;
 					case w > 0 && ad[idx-1] > hole:
-						dir = "налево"; w--; break;
+						dir = "налево"; w--; //console.log('идем слева налево'); break;
 				}
 				break;
 			case "вниз":
+				context3.fillRect(1,0,1,1);
+				//context3.putImageData(context.getImageData(w, h, 3, 3), 0, 0);
+				//context2.drawImage(canvas3, 0, 0);
 				switch (true){
 					case w + 1 < width && ad[idx+7] > hole:
-						dir = "направо"; w++; break;
-					case h + 1 < height && ad[idx+width+3] > hole:
-						dir = "вниз"; h++; break;
+						dir = "направо"; w++; //console.log('идем сверху направо'); break;
+					case h + 1 < height && ad[idx+width4+3] > hole:
+						dir = "вниз"; h++; //console.log('идем сверху вниз'); break;
 					case w > 0 && ad[idx-1] > hole:
-						dir = "налево"; w--; break;
-					case h > 0 && ad[idx-width+3] > hole:
-						dir = "вверх"; h--; break;
+						dir = "налево"; w--; //console.log('идем сверху налево'); break;
+					case h > 0 && ad[idx-width4+3] > hole:
+						dir = "вверх"; h--; //console.log('идем сверху вверх'); break;
 				}
 				break;
 			case "налево":
+				context3.fillRect(2,1,1,1);
+				//context3.putImageData(context.getImageData(w, h, 3, 3), 0, 0);
+				//context2.drawImage(canvas3, 0, 0);
 				switch (true){
-					case h + 1 < height && ad[idx+width+3] > hole:
-						dir = "вниз"; h++; break;
+					case h + 1 < height && ad[idx+width4+3] > hole:
+						dir = "вниз"; h++; //console.log('идем справа вниз'); break;
 					case w > 0 && ad[idx-1] > hole:
-						dir = "налево"; w--; break;
-					case h > 0 && ad[idx-width+3] > hole:
-						dir = "вверх"; h--; break;
+						dir = "налево"; w--; //console.log('идем справа налево'); break;
+					case h > 0 && ad[idx-width4+3] > hole:
+						dir = "вверх"; h--; //console.log('идем справа вверх'); break;
 					case w + 1 < width && ad[idx+7] > hole:
-						dir = "направо"; w++; break;
+						dir = "направо"; w++; //console.log('идем справа направо'); break;
 				}
 				break;
 			case "вверх":
+				context3.fillRect(1,2,1,1);
+				//context3.putImageData(context.getImageData(w, h, 3, 3), 0, 0);
+				//context2.drawImage(canvas3, 0, 0);
 				switch (true){
 					case w > 0 && ad[idx-1] > hole:
-						dir = "налево"; w--; break;
-					case h > 0 && ad[idx-width+3] > hole:
-						dir = "вверх"; h--; break;
+						dir = "налево"; w--; //console.log('идем снизу налево'); break;
+					case h > 0 && ad[idx-width4+3] > hole:
+						dir = "вверх"; h--; //console.log('идем снизу вверх'); break;
 					case w + 1 < width && ad[idx+7] > hole:
-						dir = "направо"; w++; break;
-					case h + 1 < height && ad[idx+width+3] > hole:
-						dir = "вниз"; h++; break;
+						dir = "направо"; w++; //console.log('идем снизу направо'); break;
+					case h + 1 < height && ad[idx+width4+3] > hole:
+						dir = "вниз"; h++; //console.log('идем снизу вниз'); break;
 				}
 				break;
 			//if (hole < ad[3+(idx+w)<<2]) return {w: w, h: h};
@@ -184,6 +220,17 @@ function findPerimeter(hole){
 	}
 	while (w!=w0 || h!=h0);
 	return points;
+}
+
+function xor(points) {
+	context.moveTo(points[0].w, points[0].h);
+	for(var i = 1; i < points.length; i++) {
+		context.lineTo(points[i].w, points[i].h);
+	}
+	context.lineTo(points[0].w, points[0].h);
+	//path.closePath();
+	//return path
+	context.fill();
 }
 
 function strokePaths() {
@@ -195,8 +242,19 @@ function strokePaths() {
 
 function points2path(points) {
 	var path = new Path2D();
+	path.moveTo(points[0].w, points[0].h);
+	for(var i = 1; i < points.length; i++) {
+		path.lineTo(points[i].w, points[i].h);
+	}
+	path.lineTo(points[0].w, points[0].h);
+	//path.closePath();
+	return path
+}
+
+function points2path2(points) {
+	var path = new Path2D();
 	path.moveTo(points[0], points[1]);
-	for(var i = 2; i < points.length; i += 2) {
+	for(var i = 2; i < points.length; i+=2) {
 		path.lineTo(points[i], points[i+1]);
 	}
 	path.lineTo(points[0], points[1]);
